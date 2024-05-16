@@ -80,8 +80,8 @@ export function getBanners() {
   return axios.get(GET_BANNERS, {})
 }
 
-export function getVendors(lat: any, long: any, skip: any, limit: any) {
-  return axios.get(GET_VENDORS + `?lat=${lat}&long=${long}&skip=${skip}&limit=${limit}`, {})
+export function getVendors(lat: any, long: any, skip: any, limit: any,search:any) {
+  return axios.get(GET_VENDORS + `?lat=${lat}&long=${long}&skip=${skip}&limit=${limit}&search=${search}`, {})
 }
 
 export function getUsersList(search: string, skip: number, limit: number) {

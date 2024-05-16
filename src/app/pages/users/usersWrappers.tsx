@@ -31,10 +31,10 @@ const UsersWrapper = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    getUserList(searchUser);
+    getUserList();
   }, [searchUser, skip]);
 
-  const getUserList = (searchUser) => {
+  const getUserList = () => {
     getUsersList(searchUser, skip, limit).then((res: any) => {
       if ((res.data.responseCode === 200)) {
         setUsers(res.data.data);
@@ -65,9 +65,7 @@ const UsersWrapper = () => {
   };
 
   const handleSearch = (event: any) => {
-    if (event && event.target.value !== "") {
-      setSearchUser(event.target.value);
-    }
+    setSearchUser(event.target.value);
   };
 
   const editUser = (id: string) => {
@@ -80,11 +78,11 @@ const UsersWrapper = () => {
         if (res.data.responseCode === 200) {
           toast.success("User Deleted Successfully");
           setModalShow(false);
-          getUserList(searchUser);
+          getUserList();
         }
       });
       setModalShow(false);
-      getUserList(searchUser);
+      getUserList();
     }
   };
 
