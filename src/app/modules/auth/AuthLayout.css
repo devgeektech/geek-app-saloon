@@ -1,0 +1,104 @@
+/*Colors Variables*/
+/*Font Size Variables*/
+/*Font Weight Variable*/
+/*Line Height Variables*/
+/*Padding Variables*/
+/*Border Radius Variables*/
+/*transition Variables*/
+/* letter-spacing Variables*/
+/*Margin Variables*/
+/* Box Shadow Variables*/
+/*Width Variables*/
+.inner-back-gold-clr {
+  background: rgba(243, 203, 142, 0.59);
+  -webkit-backdrop-filter: blur(2px);
+          backdrop-filter: blur(2px);
+  width: 100%;
+  padding: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.form-width .logo-upr {
+  width: 100%;
+}
+.form-width .logo-upr img {
+  width: 14rem;
+}
+.form-width .discrption {
+  color: #8D8D8D !important;
+  font-weight: 400 !important;
+}
+.form-width .inner-otp-fields input {
+  width: 3.74rem !important;
+  padding: 1.1rem 1.1rem !important;
+  text-align: center;
+}
+.form-width .inr-timer {
+  color: #131C1B;
+}
+.form-width .inr-timer h5 {
+  font-size: 1.85rem;
+  font-weight: 500;
+}
+
+@media (max-width: 992px) {
+  .for-mob-back {
+    background-image: url("../../../../public/media/misc/M1_S1_1.png");
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    height: auto !important;
+  }
+  .for-mob-back .logo-upr {
+    display: none;
+  }
+  .for-mob-back .form-width {
+    width: 100%;
+    padding: 4rem 0;
+  }
+  .for-mob-back .form-width h1 {
+    color: #fff !important;
+  }
+  .for-mob-back .form-width .discrption {
+    color: #fff !important;
+  }
+  .for-mob-back .form-width a.forget-link {
+    color: #fff !important;
+  }
+  .for-mob-back .form-width label {
+    color: #fff !important;
+  }
+  .for-mob-back .form-width input {
+    border: 1px solid #d6d6d6 !important;
+    background: rgba(255, 255, 255, 0.8) !important;
+  }
+  .for-mob-back .form-width button {
+    box-shadow: 0px 4px 15px 0px rgba(255, 255, 255, 0.18);
+  }
+  .for-mob-back .form-width .inner-otp-fields input {
+    width: 3.74rem !important;
+    padding: 1.1rem 1.1rem !important;
+    text-align: center;
+  }
+  .for-mob-back .form-width .inr-timer h5 {
+    color: #fff;
+  }
+  .for-mob-back .inner-back-gold-clr {
+    padding: 0.4rem;
+  }
+  .for-mob-back .inner-back-gold-clr img {
+    width: 9rem;
+  }
+  .for-mob-hide {
+    background-image: none !important;
+  }
+}
+@media (max-width: 350px) {
+  .for-mob-back .form-width .inner-otp-fields input {
+    width: 16% !important;
+    padding: 0.8rem 0.8rem !important;
+    text-align: center;
+  }
+}/*# sourceMappingURL=AuthLayout.css.map */

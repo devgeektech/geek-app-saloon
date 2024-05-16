@@ -1,0 +1,42 @@
+.main-inr-btns {
+  width: 100%;
+  text-align: center;
+  .next-btn {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    button,
+    span {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      border: none;
+      background: transparent;
+      box-shadow: 1px 4px 8px -2px #888888;
+      color: #888;
+      font-size: 14px;
+      font-style: normal;
+      font-weight: 600;
+      line-height: normal;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: .5s;
+      &:hover{
+        color: #131c1b !important;
+        background: #f3cb8e !important;
+        transition: .5s;
+        &:hover path{
+          fill:#131c1b;
+        }
+      }
+    }
+    span.active {
+      color: #131c1b !important;
+      background: #f3cb8e !important;
+    }
+  }
+}

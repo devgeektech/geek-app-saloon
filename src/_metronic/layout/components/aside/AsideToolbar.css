@@ -1,0 +1,106 @@
+/*Colors Variables*/
+/*Font Size Variables*/
+/*Font Weight Variable*/
+/*Line Height Variables*/
+/*Padding Variables*/
+/*Border Radius Variables*/
+/*transition Variables*/
+/* letter-spacing Variables*/
+/*Margin Variables*/
+/* Box Shadow Variables*/
+/*Width Variables*/
+.inr-dropdown-location .dropdown .location-dorpdown.btn-primary {
+  padding: 0 !important;
+  color: #131C1B !important;
+  font-size: 1.1rem !important;
+  font-weight: 400 !important;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.inr-dropdown-location .dropdown .location-dorpdown.btn-primary:hover,
+.inr-dropdown-location .dropdown .location-dorpdown.btn-primary .show > .btn.btn-primary {
+  background: transparent !important;
+  background-color: #fff !important;
+}
+.inr-dropdown-location .dropdown .location-dorpdown.btn-primary i {
+  color: #131C1B !important;
+}
+.inr-dropdown-location .dropdown .location-dorpdown.btn-primary::after {
+  color: #131C1B !important;
+}
+.inr-dropdown-location .dropdown .location-dorpdown.btn-primary .dropdown .btn-check:checked + .btn.btn-primary,
+.inr-dropdown-location .dropdown .location-dorpdown.btn-primary .dropdown .btn-check:active + .btn.btn-primary,
+.inr-dropdown-location .dropdown .location-dorpdown.btn-primary .dropdown .btn.btn-primary:focus:not(.btn-active),
+.inr-dropdown-location .dropdown .location-dorpdown.btn-primary .dropdown .btn.btn-primary:hover:not(.btn-active),
+.inr-dropdown-location .dropdown .location-dorpdown.btn-primary .dropdown .btn.btn-primary:active:not(.btn-active),
+.inr-dropdown-location .dropdown .location-dorpdown.btn-primary .dropdown .btn.btn-primary.active,
+.inr-dropdown-location .dropdown .location-dorpdown.btn-primary .dropdown .btn.btn-primary.show,
+.inr-dropdown-location .dropdown .location-dorpdown.btn-primary .dropdown .show > .btn.btn-primary {
+  background-color: transparent !important;
+}
+.inr-dropdown-location .dropdown .dropdown-menu.show a {
+  color: #131C1B !important;
+  font-size: 1.1rem !important;
+  font-weight: 400 !important;
+}
+
+.inr-dropdown-location .show.dropdown button#dropdown-basic {
+  background: transparent !important;
+}
+
+.inr-dropdown-login button.btn.btn-primary {
+  padding: 0 !important;
+}
+.inr-dropdown-login button.btn.btn-primary:hover {
+  background: transparent !important;
+  background-color: transparent !important;
+}
+.inr-dropdown-login button.btn.btn-primary::after {
+  display: none;
+}
+.inr-dropdown-login .log-out-left {
+  width: 3rem;
+  padding: 0;
+}
+.inr-dropdown-login .log-out-left img {
+  width: 100%;
+}
+.inr-dropdown-login .loginWrap {
+  display: flex;
+  justify-content: space-between;
+}
+.inr-dropdown-login .loginWrap .log-out-right {
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-left: 10px;
+}
+.inr-dropdown-login .loginWrap .log-out-right h5 {
+  font-size: 1.125rem;
+  color: #131C1B;
+  font-weight: 600;
+  font-family: "PoppinsRegular";
+}
+.inr-dropdown-login .loginWrap .log-out-right a {
+  background: #F7E5E3;
+  color: #C0392B !important;
+  border: 1px solid rgba(192, 57, 43, 0.5);
+  font-size: 0.924rem !important;
+  line-height: 171.429% !important;
+  border-radius: 0.8rem;
+  padding: 0px 10px;
+  width: -moz-fit-content;
+  width: fit-content;
+}
+
+.show.dropdown .btn.btn-primary {
+  background: transparent !important;
+  background-color: transparent !important;
+}
+
+.content_container {
+  padding: 0 10px;
+}/*# sourceMappingURL=AsideToolbar.css.map */

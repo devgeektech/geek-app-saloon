@@ -1,0 +1,37 @@
+.dashboardContent {
+    padding: 15px;
+    .weeklyBlocks {
+        .card {
+            padding: 20px;
+            border-radius: 12px;
+            background: #FFF;
+            box-shadow: 0px 0px 12px 0px rgba(0, 0, 0, 0.12);
+            p {
+                color: #F3CB8E;
+                font-family: 'PoppinsRegular';
+                font-size: 16px;
+                font-style: normal;
+                font-weight: 500;
+                line-height: normal;
+                letter-spacing: 0.32px;
+                text-transform: uppercase;
+            }
+            h3 {
+                color: #454256;
+                font-family: 'Poppins-Bold';
+                font-size: 48px;
+                font-style: normal;
+                line-height: normal;
+            }
+        }
+    }
+    .chartBlocks {
+        .chartWrapper {
+            .chartBlock {
+                img {
+                    width: 100%;
+                }
+            }
+        }
+    }
+}

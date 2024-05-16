@@ -1,0 +1,106 @@
+@import '../../../_metronic/assets/scss/variables.scss';
+
+.inner-back-gold-clr {
+  background: rgba(243, 203, 142, 0.59);
+  backdrop-filter: blur(2px);
+  width: 100%;
+  padding: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.form-width{
+.logo-upr {
+  width: 100%;
+  img {
+    width: 14rem;
+  }
+}
+.discrption{
+  color:$color8D8D8D !important;
+  font-weight: $Normal !important;
+}
+.inner-otp-fields {
+  input {
+    width: 3.74rem !important;
+    padding: $padding14px $padding14px !important;
+    text-align: center;
+  }
+}
+.inr-timer {
+  color: $fontColor131C1B;
+  h5 {
+    font-size: $font24px;
+    font-weight: $Medium;
+  }
+}
+}
+@media (max-width: 992px) {
+  .for-mob-back {
+    background-image: url('../../../../public/media/misc/M1_S1_1.png');
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    height: auto !important;
+    .logo-upr {
+      display: none;
+    }
+    .form-width {
+      width: 100%;
+      padding: 4rem 0;
+      h1 {
+        color: $White !important;
+      }
+      .discrption{
+        color:$White !important;
+      }
+      a.forget-link {
+        color: $White !important;
+      }
+      label {
+        color: $White !important;
+      }
+      input {
+        border: 1px solid #d6d6d6 !important;
+        background: rgba(255, 255, 255, 0.8) !important;
+      }
+      button {
+        box-shadow: 0px 4px 15px 0px rgba(255, 255, 255, 0.18);
+      }
+      .inner-otp-fields {
+        input {
+          width: 3.74rem !important;
+          padding: $padding14px $padding14px !important;
+          text-align: center;
+        }
+      }
+      .inr-timer {
+        h5 {
+          color: $White;
+        }
+      }
+    }
+    .inner-back-gold-clr {
+      padding: 0.4rem;
+      img {
+        width: 9rem;
+      }
+    }
+  }
+  .for-mob-hide {
+    background-image: none !important;
+  }
+}
+@media (max-width: 350px) {
+  .for-mob-back {
+    .form-width {
+      .inner-otp-fields {
+        input {
+          width: 16% !important;
+          padding: 0.8rem 0.8rem !important;
+          text-align: center;
+        }
+      }
+    }
+  }
+}

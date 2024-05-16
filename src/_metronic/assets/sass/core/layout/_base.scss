@@ -1,0 +1,126 @@
+//
+// Root
+//
+// @import url('https://fonts.googleapis.com/css2?family=Manrope:wght@200;300;400;500;600;700;800&family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap');
+
+/* cyrillic-ext */
+@font-face { 
+  font-family: 'manrope';
+  src: url('../../../fonts/manrope/regular.otf') format('embeded-opentype');
+  src: url('../../../fonts/manrope/regular.otf') format('truetype'),
+       url('../../../fonts/manrope/regular.woff') format('woff'),
+       url('../../../fonts/manrope/regular.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+}
+@font-face { 
+  font-family: 'manrope';
+  src: url('../../../fonts/manrope/medium.otf') format('embeded-opentype');
+  src: url('../../../fonts/manrope/medium.otf') format('truetype'),
+       url('../../../fonts/manrope/medium.woff') format('woff'),
+       url('../../../fonts/manrope/medium.woff2') format('woff2');
+  font-weight: 500;
+  font-style: normal;
+}
+@font-face { 
+  font-family: 'manrope';
+  src: url('../../../fonts/manrope/semibold.otf') format('embeded-opentype');
+  src: url('../../../fonts/manrope/semibold.otf') format('truetype'),
+       url('../../../fonts/manrope/semibold.woff') format('woff'),
+       url('../../../fonts/manrope/semibold.woff2') format('woff2');
+  font-weight: 600;
+  font-style: normal;
+}
+@font-face { 
+  font-family: 'manrope';
+  src: url('../../../fonts/manrope/bold.otf') format('embeded-opentype');
+  src: url('../../../fonts/manrope/bold.otf') format('truetype'),
+       url('../../../fonts/manrope/bold.woff') format('woff'),
+       url('../../../fonts/manrope/bold.woff2') format('woff2');
+  font-weight: 700;
+  font-style: normal;
+}
+@font-face { 
+  font-family: 'manrope';
+  src: url('../../../fonts/manrope/bold.otf') format('embeded-opentype');
+  src: url('../../../fonts/manrope/bold.otf') format('truetype'),
+       url('../../../fonts/manrope/bold.woff') format('woff'),
+       url('../../../fonts/manrope/bold.woff2') format('woff2');
+  font-weight: 800;
+  font-style: normal;
+}
+@font-face { 
+  font-family: 'PoppinsRegular';
+  src: url('../../../fonts/poppins/PoppinsRegular.eot') format('embeded-opentype');
+  src: url('../../../fonts/poppins/PoppinsRegular.ttf') format('truetype'),
+       url('../../../fonts/poppins/PoppinsRegular.woff') format('woff'),
+       url('../../../fonts/poppins/PoppinsRegular.otf') format('otf');
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face { 
+  font-family: 'Poppins-Bold';
+  src: url('../../../fonts/poppins/Poppins-Bold.eot') format('embeded-opentype');
+  src: url('../../../fonts/poppins/Poppins-Bold.ttf') format('truetype'),
+       url('../../../fonts/poppins/Poppins-Bold.woff') format('woff'),
+       url('../../../fonts/poppins/Poppins-Bold.otf') format('otf');
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face { 
+  font-family: 'Poppins-ExtraBold';
+  src: url('../../../fonts/poppins/Poppins-ExtraBold.eot') format('embeded-opentype');
+  src: url('../../../fonts/poppins/Poppins-ExtraBold.ttf') format('truetype'),
+       url('../../../fonts/poppins/Poppins-ExtraBold.woff') format('woff'),
+       url('../../../fonts/poppins/Poppins-ExtraBold.otf') format('otf');
+  font-weight: normal;
+  font-style: normal;
+}
+
+
+html {
+  font-family: 'Manrope' !important;
+  text-size-adjust: 100%;
+}
+
+html,
+body {
+  height: 100%;
+  margin: 0px;
+  padding: 0px;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-size: $root-font-size !important; 
+  font-weight: $font-weight-base;
+  font-family: 'Manrope' !important;
+
+  // Tablet mode
+  @include media-breakpoint-down(lg) {
+    font-size: $root-font-size-lg !important;
+  }
+
+  // Mobile mode
+  @include media-breakpoint-down(md) {
+    font-size: $root-font-size-md !important;
+  }
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+
+  a:hover,
+  a:active,
+  a:focus {
+    text-decoration: none !important;
+  }
+}
+
+canvas {
+  user-select: none;
+}
+
+// Angular integration
+router-outlet {
+  display: none;
+}

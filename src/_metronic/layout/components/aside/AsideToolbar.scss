@@ -1,0 +1,115 @@
+@import '../../../assets/scss/variables.scss';
+
+.inr-dropdown-location {
+  .dropdown {
+    .location-dorpdown.btn-primary {
+      padding: 0 !important;
+      color: $primaryColor !important;
+      font-size: $font14px !important;
+      font-weight: $Normal !important;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+
+      &:hover,
+      .show>.btn.btn-primary {
+        background: transparent !important;
+        background-color: $White !important;
+      }
+
+      i {
+        color: $primaryColor !important;
+      }
+
+      &::after {
+        color: $primaryColor !important;
+      }
+
+      .dropdown .btn-check:checked+.btn.btn-primary,
+      .dropdown .btn-check:active+.btn.btn-primary,
+      .dropdown .btn.btn-primary:focus:not(.btn-active),
+      .dropdown .btn.btn-primary:hover:not(.btn-active),
+      .dropdown .btn.btn-primary:active:not(.btn-active),
+      .dropdown .btn.btn-primary.active,
+      .dropdown .btn.btn-primary.show,
+      .dropdown .show>.btn.btn-primary {
+        background-color: transparent !important;
+      }
+    }
+
+    .dropdown-menu.show {
+      a {
+        color: $primaryColor !important;
+        font-size: $font14px !important;
+        font-weight: $Normal !important;
+      }
+    }
+  }
+}
+
+.inr-dropdown-location .show.dropdown button#dropdown-basic {
+  background: transparent !important;
+}
+
+.inr-dropdown-login {
+  button.btn.btn-primary {
+    padding: 0 !important;
+
+    &:hover {
+      background: transparent !important;
+      background-color: transparent !important;
+    }
+
+    &::after {
+      display: none;
+    }
+  }
+
+  .log-out-left {
+    width: 3rem;
+    padding: 0;
+
+    img {
+      width: 100%;
+    }
+  }
+  .loginWrap {
+    display: flex;
+    justify-content: space-between;
+  .log-out-right {
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-left: 10px;
+
+      h5 {
+        font-size: $font18px;
+        color: $primaryColor;
+        font-weight: $SemiBold;
+        font-family: 'PoppinsRegular';
+      }
+      
+      a {
+        background: $fontColorF7E5E3;
+        color: $fontColorC0392B !important;
+        border: 1px solid $fontColorRbg;
+        font-size: $font12px !important;
+        line-height: $lineHeight24px !important;
+        border-radius: $borderRadius10px;
+        padding: $paddingLogout;
+        width: fit-content;
+      }
+    }
+  }
+}
+
+.show.dropdown .btn.btn-primary {
+  background: transparent !important;
+  background-color: transparent !important;
+}
+
+.content_container {
+  padding: 0 10px;
+}
