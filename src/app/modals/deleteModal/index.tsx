@@ -6,6 +6,7 @@ import './style.scss'
 
 function MyVerticallyCenteredModal(props) {
   return (
+    
     <Modal {...props} size='md' aria-labelledby='contained-modal-title-vcenter' centered>
       <div className='delete-modal'>
         <Modal.Header>
