@@ -64,7 +64,8 @@ export default function Tableinner(props: any) {
                 <td>{service?.name ? service.name : ''}</td>
                 <td className='text-center'>
                   <img
-                    src={service.image ? service.image : Jhondeo}
+                    src={service.image ? `http://localhost:3000/${service.image}` : pencilEditIcon}
+
                     className='user-img'
                     alt='noimg'
                   />

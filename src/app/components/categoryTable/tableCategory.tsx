@@ -51,11 +51,7 @@ export default function TableCategory() {
                   <td>{listValue?.name}</td>
                   <td>
                     <img
-                      src={
-                        listValue.photo
-                          ? listValue.photo
-                          : pencilEditIcon
-                      }
+                      src={listValue.photo ? `http://localhost:3000/${listValue.photo}` : pencilEditIcon}
                       className='user-img'
                       alt='catimage'
                     />
