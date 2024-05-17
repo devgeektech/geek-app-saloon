@@ -11,14 +11,18 @@ export const CREATE_CATEGORY = `${API_URL}/category`
 export const GET_CATEGORY = `${API_URL}/category`
 export const CREATE_SUB_CATEGORY = `${API_URL}/subcategory`
 export const GET_SUB_CATEGORY = `${API_URL}/subcategory`
-export const GET_BANNERS = `${API_URL}/banner/getBanners`
+
 export const GET_VENDORS = `${API_URL}/vendor/getNearbyVendorList`
 export const GET_USERS = `${API_URL}/users`
 export const DELETE_USER = `${API_URL}/users`
-export const ADD_BANNER = `${API_URL}/banner/addBanner`
+
+export const BANNER = `${API_URL}/banner`
+
+
 export const ADD_SERVICE = `${API_URL}/product`
 export const FILE_UPLOAD = `${API_URL}/product/upload`
 export const GET_ALL_PRODUCT = `${API_URL}/product`
+
 
 // Server should return AuthModel
 export function login(email: any, password: any) {
@@ -87,9 +91,6 @@ export function getSubCreateCategory(search: string, skip: number, limit: number
 
 // **************************SERVICES API ************************
 
-export function addService(body: any) {
-  return axios.post(ADD_SERVICE, body)
-}
 
 
 export function editService(body: any) {
@@ -106,13 +107,6 @@ export function modalStatus(value) {
   return value
 }
 
-
-
-
-export function getBanners() {
-  return axios.get(GET_BANNERS, {})
-}
-
 export function getVendors(lat: any, long: any, skip: any, limit: any) {
   return axios.get(GET_VENDORS + `?lat=${lat}&long=${long}&skip=${skip}&limit=${limit}`, {})
 }
@@ -126,7 +120,14 @@ export function deleteUserApi(id: string) {
 }
 
 export function addBanner(body: any) {
-  return axios.post(ADD_BANNER, { body })
+  return axios.post(BANNER, { body })
+}
+
+export function getBanners() {
+  return axios.get(BANNER, {})
+}
+export function deleteBanner(id) {
+  return axios.delete(BANNER + `/${id}`)
 }
 
 
@@ -135,6 +136,13 @@ export function commonFileUpload(file: any) {
   return axios.post(FILE_UPLOAD, file)
 }
 
+export function addService(body: any) {
+  return axios.post(ADD_SERVICE, body)
+}
+
+
 export function getAllServices(search: string, skip: number, limit: number) {
   return axios.get(GET_ALL_PRODUCT + `?search=${search}&skip=${skip}&limit=${limit}`)
 }
+
+

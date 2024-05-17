@@ -114,7 +114,7 @@ const PrivateRoutes = () => {
               </SuspensedView>
             }
           ></Route>
-          <Route path='add' element={<AddBanner />} />
+          {/* <Route path='add' element={<AddBanner />} /> */}
         </Route>
         <Route
           path='vendor'

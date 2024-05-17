@@ -1,0 +1,30 @@
+.dropzone {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 200px;
+    border: 2px dashed #D3178A;
+    padding: 2rem;
+    border-radius: 20px;
+
+    h1 {
+        font-family: 'Lato';
+        font-size: 14px;
+        font-weight: 400;
+        line-height: 22px;
+        letter-spacing: 0em;
+    }
+
+    button {
+        box-shadow: 1px 1px 3px 0px #0000000F;
+        border: 1px solid #E1E6EF;
+        font-family: 'Lato';
+        font-size: 14px;
+        font-weight: 600;
+        letter-spacing: 0em;
+        padding: 10px 15px;
+        border-radius: 10px;
+    }
+   
+}
