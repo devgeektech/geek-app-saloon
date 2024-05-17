@@ -3,12 +3,12 @@ import {
   fetchUserListSuccess,
   fetchUserListFailure,
 } from "../reducer/userSlice";
-import { getUsersList } from "../../services/_requests"; // Your API functions
+import { getUsersList } from "../../services/_requests";
 
 function* fetchUserListSaga(action) {
   try {
-    const token = action.payload;
-    const response = yield call(getUsersList, token);
+    const { search, skip, limit } = action.payload;
+    const response = yield call(getUsersList,search,skip,limit);
     yield put(fetchUserListSuccess(response));
   } catch (error) {
     yield put(fetchUserListFailure(error));

@@ -13,6 +13,8 @@ export const CREATE_SUB_CATEGORY = `${API_URL}/subcategory`
 export const GET_SUB_CATEGORY = `${API_URL}/subcategory`
 
 export const GET_VENDORS = `${API_URL}/vendor/getNearbyVendorList`
+export const DELETE_VENDOR = `${API_URL}/vendor/deleteVendor`
+
 export const GET_USERS = `${API_URL}/users`
 export const DELETE_USER = `${API_URL}/users`
 
@@ -107,12 +109,12 @@ export function modalStatus(value) {
   return value
 }
 
-export function getVendors(lat: any, long: any, skip: any, limit: any) {
-  return axios.get(GET_VENDORS + `?lat=${lat}&long=${long}&skip=${skip}&limit=${limit}`, {})
+export function getVendors(lat: any, long: any, skip: any, limit: any, search: any) {
+  return axios.get(GET_VENDORS + `?lat=${lat}&long=${long}&skip=${skip}&limit=${limit}&search=${search}`, {})
 }
 
-export function getUsersList(search: string) {
-  return axios.get(GET_USERS + `?search=${search}`, {})
+export function getUsersList(search: string, skip: number, limit: number) {
+  return axios.get(GET_USERS + `?search=${search}&skip=${skip}&limit=${limit}`, {})
 }
 
 export function deleteUserApi(id: string) {
@@ -123,8 +125,8 @@ export function addBanner(body: any) {
   return axios.post(BANNER, { body })
 }
 
-export function getBanners() {
-  return axios.get(BANNER, {})
+export function getBanners(search: string, skip: number, limit: number) {
+  return axios.get(BANNER + `?search=${search}&skip=${skip}&limit=${limit}`, {})
 }
 export function deleteBanner(id) {
   return axios.delete(BANNER + `/${id}`)
@@ -145,4 +147,72 @@ export function getAllServices(search: string, skip: number, limit: number) {
   return axios.get(GET_ALL_PRODUCT + `?search=${search}&skip=${skip}&limit=${limit}`)
 }
 
+
+// Server should return AuthModel
+
+// Server should return AuthModel
+
+
+// // Server should return object => { result: boolean } (Is Email in DB)
+// export function requestPassword(email: string) {
+//   return axios.post<{ result: boolean }>(REQUEST_PASSWORD_URL, {
+//     email,
+//   })
+// }
+
+// export function getUserByToken(token: string) {
+//   return axios.post<UserModel>(GET_USER_BY_ACCESSTOKEN_URL, {
+//     api_token: token,
+//   })
+// }
+
+// export function adminLogin(email: string, password: string) {
+//   return axios.post<AuthModel>(ADMIN_LOGIN_URL, {
+//     email,
+//     password,
+//   })
+// }
+
+// export function createCategory(name: string, photo: string) {
+//   return axios.post(CREATE_CATEGORY, {
+//     name,
+//     photo,
+//   })
+// }
+
+// export function getCategory(search: string,skip:number,limit:number) {
+//   return axios.get(GET_CATEGORY, {})
+// }
+
+// export function getBanners() {
+//   return axios.get(GET_BANNERS, {})
+// }
+
+
+
+
+
+// export function deleteUserApi(id: string) {
+//   return axios.delete(DELETE_USER + `/${id}`, {})
+// }
+
+export function deleteVender(id: string) {
+  return axios.delete(DELETE_VENDOR + `/${id}`, {})
+}
+
+// export function addBanner(body: any) {
+//   return axios.post(ADD_BANNER, { body })
+// }
+
+// export function addService(body: any) {
+//   return axios.post(ADD_SERVICE, body)
+// }
+
+// export function commonFileUpload(file: any) {
+//   return axios.post(FILE_UPLOAD, file)
+// }
+
+// export function getAllServices() {
+//   return axios.get(GET_ALL_PRODUCT)
+// }
 

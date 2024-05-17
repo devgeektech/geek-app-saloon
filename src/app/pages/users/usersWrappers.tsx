@@ -10,7 +10,7 @@ import ModalInner from "../../modals/deleteModal";
 
 import "./userStyle.scss";
 import { Dropdown, Tab, Table, Tabs } from "react-bootstrap";
-import { deleteUserApi, getUsersList } from "../../modules/auth/core/_requests";
+import { deleteUserApi, getUsersList } from "../../services/_requests";
 import { useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import Pagination from "../../components/pagenation/index";

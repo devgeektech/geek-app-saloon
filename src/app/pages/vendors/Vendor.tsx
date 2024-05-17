@@ -3,7 +3,7 @@ import { PageTitle } from '../../../_metronic/layout/core'
 import coupon from '../../../_metronic/images/coupon.svg'
 import searchIcon from '../../../_metronic/images/searchIcon.svg'
 import dummyImg from '../../../_metronic/images/dummy.webp'
-import { deleteVender, getVendors } from '../../modules/auth/core/_requests'
+import { deleteVender, getVendors } from '../../services/_requests'
 import Pagination from '../../components/pagenation'
 import React, { useEffect, useState } from 'react'
 import pencilEditIcon from '../../../_metronic/images/pencilEditIcon.svg'
@@ -276,7 +276,6 @@ const ShopWrapper = () => {
         openModal={modalShow}
         closeModal={deleteCloseModal}
       />
-      {/* Dashboard Page Html End */}
 
 
       <>

@@ -2,42 +2,51 @@ import { useIntl } from "react-intl";
 import { PageTitle } from "../../../_metronic/layout/core";
 import coupon from "../../../_metronic/images/coupon.svg";
 import searchIcon from "../../../_metronic/images/searchIcon.svg";
-import { Button, Col, Container, Dropdown, Form, Modal, Row, Tab, Table, Tabs } from "react-bootstrap";
+import { Col, Container, Form, Modal, Row, Table } from "react-bootstrap";
 import Pagination from "../../components/pagenation";
-import { useNavigate } from "react-router-dom";
-import { useEffect, useRef, useState } from "react";
-import { getBanners } from "../../modules/auth/core/_requests";
+import { useEffect, useState } from "react";
+import { deleteBanner, getBanners } from "../../services/_requests";
 import pencilEditIcon from "../../../_metronic/images/pencilEditIcon.svg";
 import deleteIcon from "../../../_metronic/images/deleteIcon.svg";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import { toAbsoluteUrl } from "../../../_metronic/helpers";
+// import { toAbsoluteUrl } from "../../../_metronic/helpers";
 import clsx from "clsx";
 import { addBanner, commonFileUpload } from "../../services/_requests";
-import "./BannerStyle.scss"
-import dummyImage from "../../../_metronic/images/dummy.webp"
+import "./styles.scss"
+// import dummyImage from "../../../_metronic/images/dummy.webp"
+import ModalInner from "../../modals/deleteModal";
+import { toast } from "react-toastify";
 
 const BannerWrapper = () => {
-  const inputRef: any = useRef();
   const [banners, setBanners] = useState([]);
-  const [file, setFile] = useState('');
+  const [file, setFile] = useState<any>(null);
   const [show, setShow] = useState(false)
+  const [modalShow, setModalShow] = useState(false);
   const intl = useIntl();
-  const navigate = useNavigate();
+  const [deleteUserId, setDeleteUserId] = useState("");
+  const [search, setSearch] = useState("");
+  const [limit, setLimit] = useState(10)
+  const [skip, setSkip] = useState(0)
 
   useEffect(() => {
-    getBanners().then((res: any) => {
-      setBanners(res.data?.data);
-    });
+    getBannersList();
   }, []);
 
-  const modalClose = () => {
-    setShow(false);
-  };
-  const modalShow = () => {
+  const getBannersList = async () => {
+    await getBanners(search, skip, limit).then((res: any) => {
+      setBanners(res.data?.data);
+    });
+  }
+
+
+  const addBannerModal = () => {
     setShow(true);
   };
 
+  const closeBannerModal = () => {
+    setShow(false);
+  };
 
   const initialValues = {
     name: '',
@@ -55,12 +64,13 @@ const BannerWrapper = () => {
     initialValues,
     validationSchema: serviceSchema,
     onSubmit: async (values, { setStatus, setSubmitting }) => {
-      const data = { ...values }
-      data['photo'] = data.image;
       addBanner(values).then((res: any) => {
-        modalClose();
-        getBanners()
-      }).catch()
+        closeBannerModal();
+        getBannersList()
+        formik.resetForm();
+      }).catch((error) => {
+        toast.error(error.response.data.responseMessage)
+      })
 
     },
   })
@@ -78,9 +88,36 @@ const BannerWrapper = () => {
     }
   }
 
-  const deleteBanner = (id) => {
-    deleteBanner(id);
-    getBanners()
+  const deleteUser: any = async (event: any) => {
+    if (event === true) {
+      await deleteBanner(deleteUserId)
+        .then((res: any) => {
+          getBanners(search, skip, limit)
+          toast.success("Banner Deleted Successfully");
+          setModalShow(false);
+          getBannersList();
+        }).catch((err) => {
+          console.log(err)
+        })
+    }
+  };
+
+  const deleteOpenModal = (id: string) => {
+    setModalShow(true);
+    setDeleteUserId(id);
+  };
+
+  const deleteCloseModal = () => {
+    setModalShow(false);
+  };
+
+  const getImageUrl = (imageUrl) => {
+    const baseUploadPath = process.env.REACT_APP_IMAGE_URL;
+    if (imageUrl.startsWith('upload')) {
+      return baseUploadPath + imageUrl;
+    } else {
+      return imageUrl;
+    }
   }
 
   return (
@@ -96,7 +133,7 @@ const BannerWrapper = () => {
               Banners
             </h2>
           </div>
-          <button onClick={modalShow} className="yellowBtn">
+          <button onClick={() => { addBannerModal() }} className="yellowBtn">
             Add
           </button>
         </div>
@@ -159,14 +196,13 @@ const BannerWrapper = () => {
                         <td>
                           <img
                             className="profileImg"
-                            src={item?.photo}
+                            src={getImageUrl(item.image)}
                             alt=""
                           />
                         </td>
 
                         <td>{item.createdAt}</td>
                         <td className="active">
-                          Active
                           <label className="switch">
                             <input type="checkbox" />
                             <span className="slider round"></span>
@@ -177,7 +213,7 @@ const BannerWrapper = () => {
                             <button className="editBtn">
                               <img src={pencilEditIcon} alt="pencilEditIcon" />
                             </button>
-                            <button onClick={() => { deleteBanner(item._id) }} className="deleteBtn">
+                            <button onClick={() => { deleteOpenModal(item._id) }} className="deleteBtn">
                               <img src={deleteIcon} alt="deleteIcon" />
                             </button>
                           </div>
@@ -201,7 +237,7 @@ const BannerWrapper = () => {
         </div>
       </div>
 
-      <Modal show={show} onHide={modalClose}>
+      <Modal show={show} onHide={closeBannerModal}>
         <form onSubmit={formik.handleSubmit}>
           <Modal.Header>
             <Modal.Title>Add</Modal.Title>
@@ -309,7 +345,7 @@ const BannerWrapper = () => {
                   <Col sm={6} className='mt-4'>
                     <div>
                       {file && (
-                        <img className='w-100 rounded-2' src={file && file} alt='UploadImage' />
+                        <img className='w-100 rounded-2' src={file} alt='UploadImage' />
                       )}
                     </div>
                   </Col>
@@ -324,8 +360,7 @@ const BannerWrapper = () => {
               </Button> */}
               <button
                 className="blackBtn btn-sm mx-2"
-                type="submit"
-                id="kt_sign_in_submit"
+                // id="kt_sign_in_submit"
               // disabled={formik.isSubmitting || !formik.isValid}
               >
                 {/* {!loading &&  */}
@@ -364,6 +399,15 @@ const BannerWrapper = () => {
           </Modal.Footer>
         </form>
       </Modal>
+
+
+      <ModalInner
+        deleteUserClbk={(e: any) => {
+          deleteUser(e);
+        }}
+        openModal={modalShow}
+        closeModal={deleteCloseModal}
+      />
     </>
   );
 };
