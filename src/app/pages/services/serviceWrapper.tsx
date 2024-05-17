@@ -85,6 +85,8 @@ const ServiceWrapper = () => {
   //   dispatch(getSubCategoryRequest({}))
   // }, [dispatch])
 
+  
+
 
   const paginitionClbk = (val?: any) => {
     let skip1 = (val - 1) * limit

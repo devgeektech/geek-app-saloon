@@ -48,7 +48,7 @@ export default function TableSubCategory() {
                 <td>{subCat?.name}</td>
                 <td>
                   <img
-                    src={subCat.image ? `http://localhost:3000/${subCat.image}` : pencilEditIcon}
+                    src={subCat.image ? subCat.image : pencilEditIcon}
                     className='user-img'
                     alt='img'
                   />
