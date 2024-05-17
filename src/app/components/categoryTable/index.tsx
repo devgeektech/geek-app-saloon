@@ -56,6 +56,9 @@ export default function CategoryTabs() {
     dispatch(getCategoryRequest({}))
   }
 
+
+
+
   return (
     <form onSubmit={formik.handleSubmit}>
       <div className='main-category'>

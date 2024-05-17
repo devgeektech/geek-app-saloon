@@ -28,6 +28,14 @@ export default function TableSubCategory() {
     setModalShow(true)
   }
 
+  function getImageUrl(imageUrl) {
+    const baseUploadPath = process.env.PUBLIC_URL;
+    if (imageUrl.startsWith('/upload')) {
+      return baseUploadPath + imageUrl;
+    } else {
+      return imageUrl;
+    }
+  }
 
   return (
     <div>
@@ -48,7 +56,7 @@ export default function TableSubCategory() {
                 <td>{subCat?.name}</td>
                 <td>
                   <img
-                    src={subCat.image ? `http://localhost:3000/${subCat.image}` : pencilEditIcon}
+                    src={subCat.image ? getImageUrl(subCat.image) : pencilEditIcon}
                     className='user-img'
                     alt='img'
                   />

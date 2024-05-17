@@ -12,7 +12,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { closeModalRequest, openModalRequest } from '../../redux/reducer/modalSlice'
 import { editServiceRequestData } from '../../redux/reducer/serviceSlice'
 
-export default function Tableinner(props: any) {
+export default function Servicetable(props: any) {
   const dispatch = useDispatch()
   const [services, setServices] = useState([])
   // const [modalShow, setModalShow] = useState(false)
@@ -30,6 +30,15 @@ export default function Tableinner(props: any) {
   const deleteOpenModal = () => {
 
     // setModalShow(true)
+  }
+
+  function getImageUrl(imageUrl) {
+    const baseUploadPath = process.env.PUBLIC_URL;
+    if (imageUrl.startsWith('/upload')) {
+      return baseUploadPath + imageUrl;
+    } else {
+      return imageUrl;
+    }
   }
 
   return (
@@ -64,7 +73,7 @@ export default function Tableinner(props: any) {
                 <td>{service?.name ? service.name : ''}</td>
                 <td className='text-center'>
                   <img
-                    src={service.image ? `http://localhost:3000/${service.image}` : pencilEditIcon}
+                    src={service.image ? getImageUrl(service.image) : pencilEditIcon}
 
                     className='user-img'
                     alt='noimg'

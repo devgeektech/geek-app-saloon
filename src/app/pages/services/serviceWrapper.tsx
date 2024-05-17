@@ -27,6 +27,7 @@ import { serviceRequest, getServiceRequest } from '../../redux/reducer/serviceSl
 import { closeModalRequest, openModalRequest } from '../../redux/reducer/modalSlice'
 import { getCategoryRequest } from '../../redux/reducer/categorySlice'
 import { getSubCategoryRequest } from '../../redux/reducer/subCategorySlice'
+import Servicetable from '../../components/serviceTable/index'
 
 const ServiceWrapper = () => {
   const dispatch = useDispatch()
@@ -233,7 +234,7 @@ const ServiceWrapper = () => {
                 </div> */}
               </div>
               <div className='tableWrapper my-5'>
-                <TableInner />
+                <Servicetable />
               </div>
               {/* <div className='select-all mt-4 d-flex align-items-center'>
                 <label className='d-flex align-items-center gap-2'>

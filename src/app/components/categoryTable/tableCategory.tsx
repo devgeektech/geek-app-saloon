@@ -31,6 +31,16 @@ export default function TableCategory() {
 
   const deleteUser = (event: any) => { }
 
+
+  function getImageUrl(imageUrl) {
+    const baseUploadPath = process.env.PUBLIC_URL;
+    if (imageUrl.startsWith('/upload')) {
+      return baseUploadPath + imageUrl;
+    } else {
+      return imageUrl;
+    }
+  }
+
   return (
     <>
       <Table responsive className='table table-bordered'>
@@ -51,7 +61,7 @@ export default function TableCategory() {
                   <td>{listValue?.name}</td>
                   <td>
                     <img
-                      src={listValue.photo ? `http://localhost:3000/${listValue.photo}` : pencilEditIcon}
+                      src={listValue.photo ? getImageUrl(listValue.photo) : pencilEditIcon}
                       className='user-img'
                       alt='catimage'
                     />
