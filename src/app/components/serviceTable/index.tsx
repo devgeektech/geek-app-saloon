@@ -33,7 +33,7 @@ export default function Servicetable(props: any) {
   }
 
   function getImageUrl(imageUrl) {
-    const baseUploadPath = process.env.PUBLIC_URL;
+    const baseUploadPath = process.env.REACT_APP_PUBLIC_URL;
     if (imageUrl.startsWith('/upload')) {
       return baseUploadPath + imageUrl;
     } else {
