@@ -6,6 +6,7 @@ import ModalInner from '../../modals/deleteModal'
 import './style.scss'
 import { useDispatch, useSelector } from 'react-redux'
 import { getCategoryRequest } from '../../redux/reducer/categorySlice'
+import dummyImg from '../../../_metronic/images/dummy.webp'
 
 export default function TableCategory() {
   const dispatch = useDispatch()
@@ -33,8 +34,8 @@ export default function TableCategory() {
 
 
   function getImageUrl(imageUrl) {
-    const baseUploadPath = process.env.REACT_APP_PUBLIC_URL;
-    if (imageUrl.startsWith('/upload')) {
+    const baseUploadPath = process.env.REACT_APP_IMAGE_URL;
+    if (imageUrl.startsWith('upload')) {
       return baseUploadPath + imageUrl;
     } else {
       return imageUrl;
@@ -61,7 +62,7 @@ export default function TableCategory() {
                   <td>{listValue?.name}</td>
                   <td>
                     <img
-                      src={listValue.photo ? getImageUrl(listValue.photo) : pencilEditIcon}
+                      src={listValue.photo ? getImageUrl(listValue.photo) : dummyImg}
                       className='user-img'
                       alt='catimage'
                     />

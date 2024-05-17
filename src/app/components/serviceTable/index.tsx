@@ -6,6 +6,7 @@ import Jhondeo2 from '../../../_metronic/images/jhondeo2.png'
 import Jhondeo3 from '../../../_metronic/images/jhondeo3.png'
 import pencilEditIcon from '../../../_metronic/images/pencilEditIcon.svg'
 import deleteIcon from '../../../_metronic/images/deleteIcon.svg'
+import dummyImg from '../../../_metronic/images/dummy.webp'
 import { Dropdown, Tab, Table, Tabs } from 'react-bootstrap'
 import ModalInner from '../../modals/deleteModal'
 import { useDispatch, useSelector } from 'react-redux'
@@ -32,9 +33,9 @@ export default function Servicetable(props: any) {
     // setModalShow(true)
   }
 
-  function getImageUrl(imageUrl) {
-    const baseUploadPath = process.env.REACT_APP_PUBLIC_URL;
-    if (imageUrl.startsWith('/upload')) {
+  const getImageUrl = (imageUrl) => {
+    const baseUploadPath = process.env.REACT_APP_IMAGE_URL;
+    if (imageUrl.startsWith('upload')) {
       return baseUploadPath + imageUrl;
     } else {
       return imageUrl;
@@ -73,7 +74,7 @@ export default function Servicetable(props: any) {
                 <td>{service?.name ? service.name : ''}</td>
                 <td className='text-center'>
                   <img
-                    src={service.image ? getImageUrl(service.image) : pencilEditIcon}
+                    src={service.image ? getImageUrl(service.image) : dummyImg}
 
                     className='user-img'
                     alt='noimg'

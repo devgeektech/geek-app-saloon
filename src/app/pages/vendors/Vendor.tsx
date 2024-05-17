@@ -2,6 +2,7 @@ import { useIntl } from 'react-intl'
 import { PageTitle } from '../../../_metronic/layout/core'
 import coupon from '../../../_metronic/images/coupon.svg'
 import searchIcon from '../../../_metronic/images/searchIcon.svg'
+import dummyImg from '../../../_metronic/images/dummy.webp'
 import { deleteVender, getVendors } from '../../modules/auth/core/_requests'
 import Pagination from '../../components/pagenation'
 import React, { useEffect, useState } from 'react'
@@ -137,6 +138,14 @@ const ShopWrapper = () => {
     },
   })
 
+  const getImageUrl = (imageUrl) => {
+    const baseUploadPath = process.env.REACT_APP_IMAGE_URL;
+    if (imageUrl.startsWith('upload')) {
+      return baseUploadPath + imageUrl;
+    } else {
+      return imageUrl;
+    }
+  }
   return (
     <>
       <PageTitle breadcrumbs={[]}>{intl.formatMessage({ id: 'MENU.DASHBOARD' })}</PageTitle>
@@ -207,7 +216,7 @@ const ShopWrapper = () => {
                       {/* <td>{`${index + 1}`}</td> */}
                       <td>{item?.name}</td>
                       <td>
-                        <img className='profileImg' src={item?.photo} alt='' />
+                        <img className='profileImg' src={item?.photo ? getImageUrl(item?.photo) : dummyImg} alt='' />
                       </td>
 
                       <td>{item?.phone}</td>
@@ -237,11 +246,13 @@ const ShopWrapper = () => {
                       </td>
                     </tr>
                   ))}
-                {vendors.length === 0 && <>
+
+              </tbody>
+
+            </Table>
+            {vendors.length === 0 && <>
                   <NoDataFound />
                 </>}
-              </tbody>
-            </Table>
             <div className='select-all mt-4 d-flex align-items-center'>
               <label className='d-flex align-items-center gap-2'>
                 {/* <input type='checkbox'></input>select-all */}

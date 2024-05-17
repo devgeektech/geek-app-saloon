@@ -9,6 +9,7 @@ import deleteIcon from '../../../_metronic/images/deleteIcon.svg'
 import { Dropdown, Tab, Table, Tabs } from 'react-bootstrap'
 import ModalInner from '../../modals/deleteModal'
 import { useDispatch, useSelector } from 'react-redux'
+import dummyImg from '../../../_metronic/images/dummy.webp'
 
 export default function TableSubCategory() {
   const dispatch = useDispatch()
@@ -29,8 +30,8 @@ export default function TableSubCategory() {
   }
 
   function getImageUrl(imageUrl) {
-    const baseUploadPath = process.env.REACT_APP_PUBLIC_URL;
-    if (imageUrl.startsWith('/upload')) {
+    const baseUploadPath = process.env.REACT_APP_IMAGE_URL;
+    if (imageUrl.startsWith('upload')) {
       return baseUploadPath + imageUrl;
     } else {
       return imageUrl;
@@ -56,7 +57,7 @@ export default function TableSubCategory() {
                 <td>{subCat?.name}</td>
                 <td>
                   <img
-                    src={subCat.image ? getImageUrl(subCat.image) : pencilEditIcon}
+                    src={subCat.image ? getImageUrl(subCat.image) : dummyImg}
                     className='user-img'
                     alt='img'
                   />

@@ -15,6 +15,7 @@ import { useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import Pagination from "../../components/pagenation/index";
 import NoDataFound from "../../components/common/NoDataFound";
+import dummyImg from '../../../_metronic/images/dummy.webp'
 
 
 const UsersWrapper = () => {
@@ -174,9 +175,11 @@ const UsersWrapper = () => {
                         {/* <td>{index + 1}</td> */}
                         {/* <td>545151511451</td> */}
                         <td>{user?.name}</td>
-                        <td className="text-center">
+                        <td>
                           <img
-                            src={Jhondeo}
+                            src={user.profilePicture
+                              ? user.profilePicture
+                              : dummyImg}
                             className="user-img"
                             alt="profileImg"
                           />
@@ -226,11 +229,11 @@ const UsersWrapper = () => {
                     );
                   })}
 
-                  {users&&users.length ===0 && <>
-                   <NoDataFound/>
-                  </>}
               </tbody>
             </Table>
+            {users && users.length === 0 && <>
+              <NoDataFound />
+            </>}
           </div>
           {/* <div className='select-all mt-4 d-flex align-items-center'>
                 <label className='d-flex align-items-center gap-2'>
