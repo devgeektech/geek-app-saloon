@@ -124,9 +124,11 @@ export function deleteUserApi(id: string) {
 export function addBanner(body: any) {
   return axios.post(BANNER, { body })
 }
-
 export function getBanners(search: string, skip: number, limit: number) {
   return axios.get(BANNER + `?search=${search}&skip=${skip}&limit=${limit}`, {})
+}
+export function getBanner(id) {
+  return axios.get(BANNER + `/${id}`)
 }
 export function deleteBanner(id) {
   return axios.delete(BANNER + `/${id}`)

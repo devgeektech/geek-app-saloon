@@ -72,7 +72,7 @@ export default function Servicetable(props: any) {
                 {/* <td>{index + 1}</td> */}
                 <td>12</td>
                 <td>{service?.name ? service.name : ''}</td>
-                <td className='text-center'>
+                <td>
                   <img
                     src={service.image ? getImageUrl(service.image) : dummyImg}
 
@@ -105,12 +105,12 @@ export default function Servicetable(props: any) {
                         viewBox='0 0 13 14'
                         fill='none'
                       >
-                        <path
+                        {/* <path
                           d='M4 11.5L8 7.5L4 3.5'
                           stroke='#8D8D8D'
                           strokeLinecap='round'
                           strokeLinejoin='round'
-                        />
+                        /> */}
                       </svg>
                     </button>
                   </div>

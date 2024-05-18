@@ -215,12 +215,12 @@ const UsersWrapper = () => {
                                 viewBox="0 0 13 14"
                                 fill="none"
                               >
-                                <path
+                                {/* <path
                                   d="M4 11.5L8 7.5L4 3.5"
                                   stroke="#8D8D8D"
                                   strokeLinecap="round"
                                   strokeLinejoin="round"
-                                />
+                                /> */}
                               </svg>
                             </button>
                           </div>

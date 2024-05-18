@@ -54,14 +54,15 @@ const HeaderToolbar = () => {
                   </div>
                   <h5 className=' ms-lg-2'>Admin</h5>
                 </div>
-                <button onClick={logOut} className='btn btn-sm btn-danger ms-lg-2'>Logout</button>
+                {/* <button onClick={logOut} className='btn btn-sm btn-danger ms-lg-2'>Logout</button> */}
               </div>
             </div>
           </Dropdown.Toggle>
 
-          {/* <Dropdown.Menu>
+          <Dropdown.Menu>
             <Dropdown.Item onClick={logOut}>Logout</Dropdown.Item>
-          </Dropdown.Menu> */}
+            <Dropdown.Item >Profile</Dropdown.Item>
+          </Dropdown.Menu>
         </Dropdown>
       </div>
     </div>

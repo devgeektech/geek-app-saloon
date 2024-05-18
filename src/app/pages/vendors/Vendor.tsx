@@ -10,32 +10,17 @@ import pencilEditIcon from '../../../_metronic/images/pencilEditIcon.svg'
 import deleteIcon from '../../../_metronic/images/deleteIcon.svg'
 import './style.scss'
 import ModalInner from '../../modals/deleteModal'
-import settingIcon from '../../../_metronic/images/setting.svg'
-import TableInner from '../../components/serviceTable/index'
 import './style.scss'
 import Form from 'react-bootstrap/Form'
 import '../appointment/style.scss'
-import { Col, Dropdown, FloatingLabel, Row, Tab, Table, Tabs } from 'react-bootstrap'
-import CategoryTabs from '../../components/categoryTable/index'
-import TableCategory from '../../components/categoryTable/tableCategory'
-import SubCategoryTabs from '../../components/subCategoryTabs/index'
-import TableSubCategory from '../../components/subCategoryTabs/tableSubCategory'
-import Button from 'react-bootstrap/Button'
+import { Col, Row, Table, } from 'react-bootstrap'
 import Modal from 'react-bootstrap/Modal'
 import { toast } from 'react-toastify'
 import { useFormik } from 'formik'
 import * as Yup from 'yup'
 import clsx from 'clsx'
 import { commonFileUpload } from '../../services/_requests'
-import { useDispatch, useSelector } from 'react-redux'
-import { serviceRequest, getServiceRequest } from '../../redux/reducer/serviceSlice'
-import { closeModalRequest, openModalRequest } from '../../redux/reducer/modalSlice'
-import { getCategoryRequest } from '../../redux/reducer/categorySlice'
-import { getSubCategoryRequest } from '../../redux/reducer/subCategorySlice'
 import NoDataFound from '../../components/common/NoDataFound'
-
-
-
 
 const ShopWrapper = () => {
   const intl = useIntl()
@@ -45,64 +30,14 @@ const ShopWrapper = () => {
   const [limit, setLimit] = useState(10)
   const [skip, setSkip] = useState(0)
   const [totalRecord, setTotalRecord] = useState(0)
-  const [modalShow, setModalShow] = React.useState(false);
+  const [modalShow, setModalShow] = useState(false);
   const [deleteUserId, setDeleteUserId] = useState("");
   const [searchUser, setSearchUser] = useState("");
-
   const [show, setShow] = useState(false)
-  const dispatch = useDispatch()
-
 
   useEffect(() => {
     vendorsList()
   }, [skip, searchUser])
-
-  const deleteOpenModal = (id: string) => {
-    setModalShow(true);
-    setDeleteUserId(id);
-  };
-
-  const deleteCloseModal = () => {
-    setModalShow(false);
-  };
-
-  const paginitionClbk = (val?: any) => {
-    let skip1 = (val - 1) * limit
-    setSkip(skip1)
-  }
-
-  const vendorsList = () => {
-    getVendors(lat, lng, skip, limit, searchUser).then((res: any) => {
-      if (res.status === 200) {
-        setVendors(res.data?.data)
-        setTotalRecord(res.data?.totalRecord)
-      } else {
-
-      }
-    })
-  }
-  const handleSearch = (event: any) => {
-    setSearchUser(event.target.value);
-  };
-
-
-  const deleteUser: any = async (event: any) => {
-    if (event === true) {
-      await deleteVender(deleteUserId).then((res: any) => {
-        if (res.data.responseCode === 200) {
-          toast.success("User Deleted Successfully");
-          setModalShow(false);
-          vendorsList();
-        }
-      });
-      setModalShow(false);
-      vendorsList();
-    }
-  };
-
-  const modalClose = () => {
-    dispatch(closeModalRequest({}))
-  }
 
   const initialValues = {
     name: '',
@@ -133,10 +68,20 @@ const ShopWrapper = () => {
     initialValues,
     validationSchema: serviceSchema,
     onSubmit: async (values, { setStatus, setSubmitting }) => {
-      dispatch(serviceRequest({ ...values }))
-      dispatch(closeModalRequest({}))
+
     },
   })
+
+  const vendorsList = () => {
+    getVendors(lat, lng, skip, limit, searchUser).then((res: any) => {
+      if (res.status === 200) {
+        setVendors(res.data?.data)
+        setTotalRecord(res.data?.totalRecord)
+      } else {
+
+      }
+    })
+  }
 
   const getImageUrl = (imageUrl) => {
     const baseUploadPath = process.env.REACT_APP_IMAGE_URL;
@@ -146,6 +91,45 @@ const ShopWrapper = () => {
       return imageUrl;
     }
   }
+
+  const deleteOpenModal = (id: string) => {
+    setModalShow(true);
+    setDeleteUserId(id);
+  };
+
+  const deleteCloseModal = () => {
+    setModalShow(false);
+  };
+
+  const paginitionClbk = (val?: any) => {
+    let skip1 = (val - 1) * limit
+    setSkip(skip1)
+  }
+
+
+  const deleteUser: any = async (event: any) => {
+    if (event === true) {
+      await deleteVender(deleteUserId).then((res: any) => {
+        if (res.data.responseCode === 200) {
+          toast.success("User Deleted Successfully");
+          setModalShow(false);
+          vendorsList();
+        }
+      });
+      setModalShow(false);
+      vendorsList();
+    }
+  };
+
+  const addBannerModal = () => {
+    setShow(true);
+  };
+
+  const closeBannerModal = () => {
+    setShow(false);
+  };
+
+
   return (
     <>
       <PageTitle breadcrumbs={[]}>{intl.formatMessage({ id: 'MENU.DASHBOARD' })}</PageTitle>
@@ -157,15 +141,13 @@ const ShopWrapper = () => {
               Vendors
             </h2>
           </div>
-          <button className='yellowBtn'>Add</button>
+          <button onClick={() => { addBannerModal() }} className='yellowBtn'>Add</button>
         </div>
         <div className='tabWrapper'>
           <div className='searchbar_filter d-flex justify-content-end mb-5'>
             <div className='searchbar'>
               <input
-                onChange={(e) => {
-                  handleSearch(e);
-                }}
+                onChange={(e) => setSearchUser(e.target.value)}
                 type='text' className='form-control' placeholder='Search...' />
               <button>
                 <img src={searchIcon} alt='searchIcon' />
@@ -251,8 +233,8 @@ const ShopWrapper = () => {
 
             </Table>
             {vendors.length === 0 && <>
-                  <NoDataFound />
-                </>}
+              <NoDataFound />
+            </>}
             <div className='select-all mt-4 d-flex align-items-center'>
               <label className='d-flex align-items-center gap-2'>
                 {/* <input type='checkbox'></input>select-all */}
@@ -279,7 +261,7 @@ const ShopWrapper = () => {
 
 
       <>
-        <Modal show={show} onHide={modalClose}>
+        <Modal show={show} onHide={closeBannerModal}>
           <form onSubmit={formik.handleSubmit}>
             <Modal.Header>
               <Modal.Title>Add</Modal.Title>
@@ -405,24 +387,26 @@ const ShopWrapper = () => {
               </div>
             </Modal.Body>
             <Modal.Footer>
-
-              <div className='d-grid mb-10'>
-                {/* <Button className='blackBtn btn-sm' onClick={cancelButton}>
-                Cancel
-              </Button> */}
+              <div className="d-grid d-flex mb-10">
                 <button
-                  className='blackBtn btn-sm'
-                  type='submit'
-                  id='kt_sign_in_submit'
-                // disabled={formik.isSubmitting || !formik.isValid}
+                  onClick={closeBannerModal}
+                  className="blackBtn btn-sm mx-2"
+                  type="button"
                 >
-                  {/* {!loading && <span className='indicator-label'>Add</span>}
-                  {loading && (
-                    <span className='indicator-progress' style={{ display: 'block' }}>
-                      Please wait...
-                      <span className='spinner-border spinner-border-sm align-middle ms-2'></span>
-                    </span>
-                  )} */}
+                  <span className="indicator-label1">Cancel</span>
+                </button>
+                <button className="blackBtn btn-sm" type="submit" id="kt_sign_in_submit"              >
+                  <span className="indicator-label">Add</span>
+                  {/* } */}
+                  {/* {loading && (
+                  <span
+                    className="indicator-progress"
+                    style={{ display: "block" }}
+                  >
+                    Please wait...
+                    <span className="spinner-border spinner-border-sm align-middle ms-2"></span>
+                  </span>
+                )} */}
                 </button>
               </div>
             </Modal.Footer>

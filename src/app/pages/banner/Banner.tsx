@@ -5,7 +5,7 @@ import searchIcon from "../../../_metronic/images/searchIcon.svg";
 import { Col, Container, Form, Modal, Row, Table } from "react-bootstrap";
 import Pagination from "../../components/pagenation";
 import { useEffect, useState } from "react";
-import { deleteBanner, getBanners } from "../../services/_requests";
+import { deleteBanner, getBanner, getBanners } from "../../services/_requests";
 import pencilEditIcon from "../../../_metronic/images/pencilEditIcon.svg";
 import deleteIcon from "../../../_metronic/images/deleteIcon.svg";
 import { useFormik } from "formik";
@@ -17,6 +17,7 @@ import "./styles.scss"
 // import dummyImage from "../../../_metronic/images/dummy.webp"
 import ModalInner from "../../modals/deleteModal";
 import { toast } from "react-toastify";
+import NoDataFound from "../../components/common/NoDataFound";
 
 const BannerWrapper = () => {
   const [banners, setBanners] = useState([]);
@@ -27,26 +28,11 @@ const BannerWrapper = () => {
   const [deleteUserId, setDeleteUserId] = useState("");
   const [search, setSearch] = useState("");
   const [limit, setLimit] = useState(10)
-  const [skip, setSkip] = useState(0)
+  const [skip, setSkip] = useState(0);
 
   useEffect(() => {
     getBannersList();
   }, []);
-
-  const getBannersList = async () => {
-    await getBanners(search, skip, limit).then((res: any) => {
-      setBanners(res.data?.data);
-    });
-  }
-
-
-  const addBannerModal = () => {
-    setShow(true);
-  };
-
-  const closeBannerModal = () => {
-    setShow(false);
-  };
 
   const initialValues = {
     name: '',
@@ -68,12 +54,21 @@ const BannerWrapper = () => {
         closeBannerModal();
         getBannersList()
         formik.resetForm();
+        setTimeout(() => {
+          setFile(null)
+        }, 1000);
       }).catch((error) => {
         toast.error(error.response.data.responseMessage)
       })
 
     },
   })
+
+  const getBannersList = async () => {
+    await getBanners(search, skip, limit).then((res: any) => {
+      setBanners(res.data?.data);
+    });
+  }
 
   const handleFileChange = async (e) => {
     if (e.target?.files && e.target?.files.length > 0) {
@@ -85,6 +80,25 @@ const BannerWrapper = () => {
           formik.setFieldValue('image', res.data.data.url)
         }
       })
+    }
+  }
+
+  const getBannerDetail = async (id: any) => {
+    await getBanner(id).then((res) => {
+      const { name, image, type } = res.data.data;
+      formik.setValues({ name, image, type });
+      setFile(`${process.env.REACT_APP_IMAGE_URL}${image}`)
+      addBannerModal()
+    }).catch((error) => { console.log(error) })
+
+  }
+
+  const getImageUrl = (imageUrl) => {
+    const baseUploadPath = process.env.REACT_APP_IMAGE_URL;
+    if (imageUrl.startsWith('upload')) {
+      return baseUploadPath + imageUrl;
+    } else {
+      return imageUrl;
     }
   }
 
@@ -102,23 +116,29 @@ const BannerWrapper = () => {
     }
   };
 
+  // Delete modal dialog
   const deleteOpenModal = (id: string) => {
     setModalShow(true);
     setDeleteUserId(id);
+    setFile(null)
   };
 
   const deleteCloseModal = () => {
     setModalShow(false);
   };
 
-  const getImageUrl = (imageUrl) => {
-    const baseUploadPath = process.env.REACT_APP_IMAGE_URL;
-    if (imageUrl.startsWith('upload')) {
-      return baseUploadPath + imageUrl;
-    } else {
-      return imageUrl;
-    }
-  }
+  // Add and edit modal
+  const addBannerModal = () => {
+    setShow(true);
+  };
+
+  const closeBannerModal = () => {
+    setShow(false);
+    formik.resetForm();
+    setTimeout(() => {
+      setFile(null)
+    }, 500);
+  };
 
   return (
     <>
@@ -179,7 +199,7 @@ const BannerWrapper = () => {
                     <th>Image</th>
 
                     <th>Created At</th>
-                    <th>Status</th>
+                    <th>Type</th>
                     <th>Action</th>
                   </tr>
                 </thead>
@@ -202,15 +222,16 @@ const BannerWrapper = () => {
                         </td>
 
                         <td>{item.createdAt}</td>
-                        <td className="active">
+                        <td>{item.type}</td>
+                        {/* <td className="active">
                           <label className="switch">
                             <input type="checkbox" />
                             <span className="slider round"></span>
                           </label>
-                        </td>
+                        </td> */}
                         <td>
                           <div className="d-flex">
-                            <button className="editBtn">
+                            <button onClick={() => { getBannerDetail(item._id) }} className="editBtn">
                               <img src={pencilEditIcon} alt="pencilEditIcon" />
                             </button>
                             <button onClick={() => { deleteOpenModal(item._id) }} className="deleteBtn">
@@ -222,6 +243,9 @@ const BannerWrapper = () => {
                     ))}
                 </tbody>
               </Table>
+              {banners.length === 0 && <>
+                <NoDataFound />
+              </>}
               {banners.length > 10 && (
                 <div className="mt-5">
                   <Pagination />
@@ -342,48 +366,26 @@ const BannerWrapper = () => {
                       </div>
                     </div>
                   </Col>
-                  <Col sm={6} className='mt-4'>
+                  {file && <Col sm={6} className='mt-4'>
                     <div>
-                      {file && (
-                        <img className='w-100 rounded-2' src={file} alt='UploadImage' />
-                      )}
+                      <img className='w-100 rounded-2' src={file} alt='UploadImage' />
                     </div>
-                  </Col>
+                  </Col>}
                 </Row>
               </form>
             </Container>
           </Modal.Body>
           <Modal.Footer>
             <div className="d-grid d-flex mb-10">
-              {/* <Button className='blackBtn btn-sm' onClick={cancelButton}>
-                Cancel
-              </Button> */}
               <button
+                onClick={closeBannerModal}
                 className="blackBtn btn-sm mx-2"
-                // id="kt_sign_in_submit"
-              // disabled={formik.isSubmitting || !formik.isValid}
+                type="button"
               >
-                {/* {!loading &&  */}
-                <span className="indicator-label">Cancel</span>
-                {/* } */}
-                {/* {loading && (
-                  <span
-                    className="indicator-progress"
-                    style={{ display: "block" }}
-                  >
-                    Please wait...
-                    <span className="spinner-border spinner-border-sm align-middle ms-2"></span>
-                  </span>
-                )} */}
+                <span className="indicator-label1">Cancel</span>
               </button>
-              <button
-                className="blackBtn btn-sm"
-                type="submit"
-                id="kt_sign_in_submit"
-              // disabled={formik.isSubmitting || !formik.isValid}
-              >
-                {/* {!loading &&  */}
-                <span className="indicator-label">Add Banner</span>
+              <button className="blackBtn btn-sm" type="submit" id="kt_sign_in_submit"              >
+                <span className="indicator-label">Add</span>
                 {/* } */}
                 {/* {loading && (
                   <span
