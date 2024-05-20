@@ -76,22 +76,16 @@ const ServiceWrapper = () => {
   }, [dispatch, search1, skip1, limit1]);
 
   useEffect(() => {
+    console.log("first")
     dispatch(getServiceRequest({ search2, skip2, limit2 }));
   }, [dispatch, search2, skip2, limit2]);
 
 
-  // useEffect(() => {
-  //   dispatch(getCategoryRequest({}))
-  //   dispatch(getServiceRequest({}))
-  //   dispatch(getSubCategoryRequest({}))
-  // }, [dispatch])
-
-  
-
+  console.log(serviceState,"serviceState")
 
   const paginitionClbk = (val?: any) => {
     let skip1 = (val - 1) * limit
-    setSkip1(skip1)
+    setSkip2(skip1)
   }
 
 
