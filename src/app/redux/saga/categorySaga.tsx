@@ -1,4 +1,4 @@
-import {put} from 'redux-saga/effects'
+import { put } from 'redux-saga/effects'
 import * as Effects from 'redux-saga/effects'
 import {
   addCategorySuccess,
@@ -6,12 +6,12 @@ import {
   getCategoryListSuccess,
   getCategoryListFailure,
 } from '../reducer/categorySlice'
-import {createCategory, getCategory} from '../../services/_requests' // Your API functions
+import { createCategory, getCategory } from '../../services/_requests' // Your API functions
 
 const call: any = Effects.call
 
 function* addcategorySaga(action) {
-  const {name, image} = action.payload
+  const { name, image } = action.payload
   try {
     const createCategoryRes = yield call(createCategory, name, image)
     yield put(addCategorySuccess(createCategoryRes.data))
@@ -24,11 +24,11 @@ function* getCategorySaga(action) {
   try {
     const { search, skip, limit } = action.payload;
 
-    const createCategoryRes = yield call(getCategory,search, skip, limit)
+    const createCategoryRes = yield call(getCategory, search, skip, limit)
     yield put(getCategoryListSuccess(createCategoryRes.data))
   } catch (error: any) {
     yield put(getCategoryListFailure(error.response))
   }
 }
 
-export {addcategorySaga, getCategorySaga}
+export { addcategorySaga, getCategorySaga }

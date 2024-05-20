@@ -10,8 +10,15 @@ const serviceSlice = createSlice({
     loading: false,
     error: null,
     isModalOpen: false,
+    selectedTab: 'service', // default tab
+    skip: 0, // initial value for skip
+    limit: 10, // initial value for limit
+    search:''
   },
   reducers: {
+    setSelectedTab: (state:any, action) => {
+      state.selectedTab = action.payload;
+    },
     serviceRequest: (state, action) => {
       return {...state, loading: true, error: null}
     },
@@ -40,6 +47,8 @@ const serviceSlice = createSlice({
         loading: false,
         serviceList: action.payload.data,
         totalRecord: action.payload.totalRecord,
+        skip: action.payload.skip,
+        limit: action.payload.limit,
       }
     },
     getServiceFailure: (state, action) => {
@@ -81,6 +90,7 @@ export const {
   editServiceRequest,
   editServiceSuccess,
   editServiceFailure,
+  setSelectedTab
 } = serviceSlice.actions
 
 export const serviceReducer = serviceSlice.reducer

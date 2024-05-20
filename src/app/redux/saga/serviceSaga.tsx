@@ -1,4 +1,4 @@
-import {put} from 'redux-saga/effects'
+import { put } from 'redux-saga/effects'
 import * as Effects from 'redux-saga/effects'
 import {
   addService,
@@ -7,6 +7,7 @@ import {
   editServiceData,
   getAllServices,
   getSubCreateCategory,
+  selectTab,
 } from '../../services/_requests' // Your API functions
 import {
   addServiceFailure,
@@ -15,9 +16,18 @@ import {
   editServiceSuccess,
   getServiceFailure,
   getServiceSuccess,
+  setSelectedTab,
 } from '../reducer/serviceSlice'
 
 const call: any = Effects.call
+
+function* selectedTabSaga(action) {
+  const { payload } = action
+  const res = yield call(selectTab, payload)
+  setSelectedTab(res)
+}
+
+
 
 function* addServiceSaga(action) {
   try {
@@ -29,9 +39,9 @@ function* addServiceSaga(action) {
 }
 
 function* getServiceSaga(action) {
-  const { search2, skip2, limit2 } = action.payload;
+  const { search, skip, limit } = action.payload;
   try {
-    const res = yield call(getAllServices, search2, skip2, limit2)
+    const res = yield call(getAllServices, search, skip, limit)
     yield put(getServiceSuccess(res.data))
   } catch (error: any) {
     yield put(getServiceFailure(error.response))
@@ -39,10 +49,10 @@ function* getServiceSaga(action) {
 }
 
 function* editServiceSaga(action) {
-  const {payload} = action
+  const { payload } = action
 
   try {
-    const res = yield call(editService, {...payload})
+    const res = yield call(editService, { ...payload })
     // yield put(editServiceSuccess(res.data))
   } catch (error: any) {
     // yield put(getServiceFailure(error.response))
@@ -51,11 +61,12 @@ function* editServiceSaga(action) {
 
 function* editServiceDataSaga(action) {
   try {
-    const res = yield call(editServiceData, {...action.payload})
-    yield put(editServiceRequestDataSuccess({...res}))
+    const res = yield call(editServiceData, { ...action.payload })
+    yield put(editServiceRequestDataSuccess({ ...res }))
   } catch (error: any) {
     yield put(getServiceFailure(error.response))
   }
 }
 
-export {addServiceSaga, getServiceSaga, editServiceSaga, editServiceDataSaga}
+
+export { selectedTabSaga, addServiceSaga, getServiceSaga, editServiceSaga, editServiceDataSaga }

@@ -21,9 +21,9 @@ function* addSubCategorySaga(action) {
 }
 
 function* getSubCategorySaga(action) {
-  const { search1, skip1, limit1 } = action.payload
+  const { search, skip, limit } = action.payload
   try {
-    const res = yield call(getSubCreateCategory, search1, skip1, limit1);
+    const res = yield call(getSubCreateCategory, search, skip, limit);
     yield put(getSubCategoryListSuccess(res.data))
   } catch (error: any) {
     yield put(getSubCategoryListFailure(error.response))

@@ -5,6 +5,9 @@ const initialState = {
   subCategoryList: [],
   error: null,
   loading: false,
+  skip: 0, // initial value for skip
+  limit: 10, // initial value for limit
+  search:''
 };
 
 const subCategorySlice = createSlice({

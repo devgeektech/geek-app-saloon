@@ -21,7 +21,7 @@ import { toast } from 'react-toastify'
 import { useFormik } from 'formik'
 import * as Yup from 'yup'
 import clsx from 'clsx'
-import { commonFileUpload } from '../../services/_requests'
+import { commonFileUpload, selectTab } from '../../services/_requests'
 import { useDispatch, useSelector } from 'react-redux'
 import { serviceRequest, getServiceRequest } from '../../redux/reducer/serviceSlice'
 import { closeModalRequest, openModalRequest } from '../../redux/reducer/modalSlice'
@@ -34,60 +34,50 @@ const ServiceWrapper = () => {
   const intl = useIntl()
   const [loading, setLoading] = useState(false)
   const [show, setShow] = useState(false)
-  const [key, setKey] = useState('Services')
   const [file, setFile] = useState('')
   const [subCategories, setSubcategories] = useState([])
   const [selectedCategory, setSelectedCategory] = useState('')
-  const [selectedSubCategory, setSelectedSubCategory] = useState('')
+  const [selectedSubCategory, setSelectedSubCategory] = useState('');
+
+  const state: any = useSelector((state) => state);
+
   const categoriesState: [] = useSelector((state: any) => state.category.categoryList)
   const subCategriesState: [] = useSelector((state: any) => state.subcategory.subCategoryList)
-  const serviceState: [] = useSelector((state: any) => state.service.serviceList)
+  const serviceState: [] = useSelector((state: any) => state.service.serviceList);
+  const [selectedTab, setSelectedTab] = useState(state.service.selectedTab);
 
-  const state: any = useSelector(state => state);
 
-  // category
-  const [services, setServices] = useState([])
   const [limit, setLimit] = useState(10)
   const [skip, setSkip] = useState(0)
-  const [totalRecord, setTotalRecord] = useState(state.category.totalRecord);
+  const [totalRecord, setTotalRecord] = useState(state?.category?.totalRecord);
   const [search, setSearch] = useState('')
 
-  // subcategory
-  const [skip1, setSkip1] = useState(0)
-  const [totalRecord1, setTotalRecord1] = useState(state.subcategory.totalRecord);
-  const [search1, setSearch1] = useState('')
-  const [limit1, setLimit1] = useState(10)
-
-  // services
-  const [skip2, setSkip2] = useState(0)
-  const [totalRecord2, setTotalRecord2] = useState(state.service.totalRecord);
-  const [search2, setSearch2] = useState('')
-  const [limit2, setLimit2] = useState(10)
 
   const { isOpen } = useSelector((state: any) => state.modal);
 
 
   useEffect(() => {
-    dispatch(getCategoryRequest({ search, skip, limit }));
+    if (selectedTab === 'service') {
+      dispatch(getServiceRequest({ search, skip, limit }));
+    }
   }, [dispatch, search, skip, limit]);
 
   useEffect(() => {
-    dispatch(getSubCategoryRequest({ search1, skip1, limit1 }));
-  }, [dispatch, search1, skip1, limit1]);
+    if (selectedTab === 'category') {
+      dispatch(getCategoryRequest({ search, skip, limit }));
+    }
+  }, [dispatch, search, skip, limit]);
 
   useEffect(() => {
-    console.log("first")
-    dispatch(getServiceRequest({ search2, skip2, limit2 }));
-  }, [dispatch, search2, skip2, limit2]);
-
-
-  console.log(serviceState,"serviceState")
+    if (selectedTab === 'subcategory') {
+      dispatch(getSubCategoryRequest({ search, skip, limit }));
+    }
+  }, [dispatch, search, skip, limit]);
 
   const paginitionClbk = (val?: any) => {
-    let skip1 = (val - 1) * limit
-    setSkip2(skip1)
+    let skip = (val - 1) * limit
+    setSkip(skip)
   }
-
 
   useEffect(() => {
     setShow(isOpen)
@@ -124,6 +114,8 @@ const ServiceWrapper = () => {
     onSubmit: async (values, { setStatus, setSubmitting }) => {
       dispatch(serviceRequest({ ...values }))
       dispatch(closeModalRequest({}))
+      // clearForm
+      clearFormData()
     },
   })
 
@@ -174,8 +166,38 @@ const ServiceWrapper = () => {
     dispatch(closeModalRequest({}))
   }
   const modalShow = () => {
-    dispatch(openModalRequest({}))
+    dispatch(openModalRequest({}));
   }
+
+  const onChangeTab = (key) => {
+    setSelectedTab(key)  // Updating local state
+    dispatch(selectTab(key))  // Dispatching to Redux
+    // Re-fetch data based on selected tab
+    switch (key) {
+      case 'service':
+        dispatch(getServiceRequest({ search, skip, limit }))
+        break
+      case 'category':
+        dispatch(getCategoryRequest({ search, skip, limit }))
+        break
+      case 'subcategory':
+        dispatch(getSubCategoryRequest({ search, skip, limit }))
+        break
+      default:
+        break
+    }
+  }
+
+
+  const clearFormData = () => {
+    formik.resetForm();
+    setSelectedCategory('');
+    setSelectedSubCategory('')
+    setTimeout(() => {
+      setFile('')
+    }, 500);
+  }
+
 
   return (
     <>
@@ -196,12 +218,12 @@ const ServiceWrapper = () => {
         <div className='tabWrapper'>
           {/* <p className='viewList'>viewing 2 of 6 of 6</p> */}
           <Tabs
-            activeKey={key}
-            onSelect={(k: any) => setKey(k)}
-            defaultActiveKey='Services'
+            activeKey={selectedTab}
+            onSelect={(k: any) => onChangeTab(k)}
+            defaultActiveKey='service'
             id='uncontrolled-tab-example'
           >
-            <Tab eventKey='Services' title='Services'>
+            <Tab eventKey='service' title='Services'>
               <div className='searchbar_filter d-flex justify-content-end'>
                 <div className='searchbar'>
                   <input type='text' className='form-control' placeholder='Search...' />
@@ -235,17 +257,17 @@ const ServiceWrapper = () => {
                   <input type='checkbox'></input>select-all
                 </label>
               </div> */}
-              {totalRecord2 > 10 && <Pagination
+              {totalRecord > 10 && <Pagination
                 data={serviceState}
-                limit={limit2}
-                totalRecord={totalRecord2}
+                limit={limit}
+                totalRecord={totalRecord}
                 paginitionClbk={(e: any) => {
                   paginitionClbk(e)
                 }}
               />}
             </Tab>
             {/* Category Tab Started */}
-            <Tab eventKey='Category' title='Category'>
+            <Tab eventKey='category' title='Category'>
               <CategoryTabs />
               <div className='searchbar_filter d-flex justify-content-end'>
                 <div className='searchbar'>
@@ -275,7 +297,7 @@ const ServiceWrapper = () => {
             </Tab>
 
             {/*Sub Category Tab Started */}
-            <Tab eventKey='Sub-Category' title='Sub-Category'>
+            <Tab eventKey='subcategory' title='Subcategory'>
               <SubCategoryTabs />
               <div className='searchbar_filter d-flex justify-content-end'>
                 <div className='searchbar'>
@@ -310,10 +332,10 @@ const ServiceWrapper = () => {
                   <input type='checkbox'></input>select-all
                 </label>
               </div> */}
-              {totalRecord1 > 10 && <Pagination
+              {totalRecord > 10 && <Pagination
                 data={subCategriesState}
-                limit={limit1}
-                totalRecord={totalRecord1}
+                limit={limit}
+                totalRecord={totalRecord}
                 paginitionClbk={(e: any) => {
                   paginitionClbk(e)
                 }}
@@ -590,14 +612,14 @@ const ServiceWrapper = () => {
             <Modal.Footer>
 
               <div className='d-grid mb-10'>
-              {/* <Button className='blackBtn btn-sm' onClick={cancelButton}>
+                {/* <Button className='blackBtn btn-sm' onClick={cancelButton}>
                 Cancel
               </Button> */}
                 <button
                   className='blackBtn btn-sm'
                   type='submit'
                   id='kt_sign_in_submit'
-                  // disabled={formik.isSubmitting || !formik.isValid}
+                // disabled={formik.isSubmitting || !formik.isValid}
                 >
                   {!loading && <span className='indicator-label'>Add</span>}
                   {loading && (

@@ -5,6 +5,9 @@ const initialState = {
   categoryList: [],
   error: null,
   loading: false,
+  skip: 0, // initial value for skip
+  limit: 10, // initial value for limit
+  search:''
 };
 
 const categorySlice = createSlice({
@@ -50,6 +53,8 @@ const categorySlice = createSlice({
         loading: false,
         categoryList: action.payload.data,
         totalRecord: action.payload.totalRecord,
+        skip: action.payload.skip,
+        limit: action.payload.limit,
       };
     },
     getCategoryListFailure: (state, action) => {

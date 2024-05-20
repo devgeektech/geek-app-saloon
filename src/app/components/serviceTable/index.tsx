@@ -1,9 +1,4 @@
-import { useIntl } from 'react-intl'
 import React, { useEffect, useState } from 'react'
-import Jhondeo from '../../../_metronic/images/jhonDeo.svg'
-import Jhondeo1 from '../../../_metronic/images/jhondeo1.png'
-import Jhondeo2 from '../../../_metronic/images/jhondeo2.png'
-import Jhondeo3 from '../../../_metronic/images/jhondeo3.png'
 import pencilEditIcon from '../../../_metronic/images/pencilEditIcon.svg'
 import deleteIcon from '../../../_metronic/images/deleteIcon.svg'
 import dummyImg from '../../../_metronic/images/dummy.webp'
@@ -47,10 +42,6 @@ export default function Servicetable(props: any) {
       <Table responsive className='table table-bordered'>
         <thead>
           <tr>
-            {/* <th>
-              <input type='checkbox' />
-            </th> */}
-            {/* <th>Sr no</th> */}
             <th>Service ID</th>
             <th>Service Name</th>
             <th>Photo</th>

@@ -1,5 +1,6 @@
 import axios from 'axios'
 import { AuthModel, UserModel, CategoryModel } from './_models'
+import { setSelectedTab } from '../redux/reducer/serviceSlice'
 // import {AuthProvider, setupAxios} from '../../app'
 const API_URL = process.env.REACT_APP_API_URL
 export const GET_USER_BY_ACCESSTOKEN_URL = `${API_URL}/auth/verify_token`
@@ -144,6 +145,12 @@ export function addService(body: any) {
   return axios.post(ADD_SERVICE, body)
 }
 
+export function selectTab(tab) {
+  return {
+    type: setSelectedTab.type,
+    payload: tab,
+  };
+}
 
 export function getAllServices(search: string, skip: number, limit: number) {
   return axios.get(GET_ALL_PRODUCT + `?search=${search}&skip=${skip}&limit=${limit}`)

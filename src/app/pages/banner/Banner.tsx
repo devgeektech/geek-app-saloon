@@ -83,7 +83,7 @@ const BannerWrapper = () => {
     }
   }
 
-  const getBannerDetail = async (id: any) => {
+  const editBanner = async (id: any) => {
     await getBanner(id).then((res) => {
       const { name, image, type } = res.data.data;
       formik.setValues({ name, image, type });
@@ -231,7 +231,7 @@ const BannerWrapper = () => {
                         </td> */}
                         <td>
                           <div className="d-flex">
-                            <button onClick={() => { getBannerDetail(item._id) }} className="editBtn">
+                            <button onClick={() => { editBanner(item._id) }} className="editBtn">
                               <img src={pencilEditIcon} alt="pencilEditIcon" />
                             </button>
                             <button onClick={() => { deleteOpenModal(item._id) }} className="deleteBtn">

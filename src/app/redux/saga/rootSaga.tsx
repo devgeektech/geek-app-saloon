@@ -3,7 +3,7 @@ import {loginSaga} from './authSaga'
 import {fetchUserListSaga} from './usersSaga'
 import {addcategorySaga, getCategorySaga} from './categorySaga'
 import {addSubCategorySaga, getSubCategorySaga} from './subCategorySaga'
-import {addServiceSaga, editServiceDataSaga, editServiceSaga, getServiceSaga} from './serviceSaga'
+import {addServiceSaga, editServiceDataSaga, editServiceSaga, getServiceSaga, selectedTabSaga} from './serviceSaga'
 import {closeModalSaga, openModalSaga} from './modalSaga'
 
 function* rootSaga() {
@@ -14,6 +14,7 @@ function* rootSaga() {
   yield takeLatest('subcategory/addSubCategoryRequest', addSubCategorySaga)
   yield takeLatest('subcategory/getSubCategoryRequest', getSubCategorySaga)
   // Services Request
+  yield takeLatest('service/setSelectedTab', selectedTabSaga)
   yield takeLatest('service/serviceRequest', addServiceSaga)
   yield takeLatest('service/getServiceRequest', getServiceSaga)
   yield takeLatest('service/editServiceRequest', editServiceSaga)
