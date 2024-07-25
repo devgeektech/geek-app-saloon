@@ -18,7 +18,7 @@ import { useEffect, useState } from 'react'
 import Button from 'react-bootstrap/Button'
 import Modal from 'react-bootstrap/Modal'
 import { toast } from 'react-toastify'
-import { useFormik } from 'formik'
+import { Field, FormikProvider, useFormik } from 'formik'
 import * as Yup from 'yup'
 import clsx from 'clsx'
 import { commonFileUpload, selectTab } from '../../services/_requests'
@@ -28,6 +28,9 @@ import { closeModalRequest, openModalRequest } from '../../redux/reducer/modalSl
 import { getCategoryRequest } from '../../redux/reducer/categorySlice'
 import { getSubCategoryRequest } from '../../redux/reducer/subCategorySlice'
 import Servicetable from '../../components/serviceTable/index'
+import FieldInputText from '../../components/InputFeilds/InputTextField'
+import FieldSelectInput from '../../components/InputFeilds/InputSelectField'
+import FieldInputTextarea from '../../components/InputFeilds/InputTextareaField'
 
 const ServiceWrapper = () => {
   const dispatch = useDispatch()
@@ -42,6 +45,7 @@ const ServiceWrapper = () => {
   const state: any = useSelector((state) => state);
 
   const categoriesState: [] = useSelector((state: any) => state.category.categoryList)
+  debugger
   const subCategriesState: [] = useSelector((state: any) => state.subcategory.subCategoryList)
   const serviceState: [] = useSelector((state: any) => state.service.serviceList);
   const [selectedTab, setSelectedTab] = useState(state.service.selectedTab);
@@ -54,6 +58,25 @@ const ServiceWrapper = () => {
 
 
   const { isOpen } = useSelector((state: any) => state.modal);
+
+  const [isSubCategoryDisabled, setIsSubCategoryDisabled] = useState(true);
+
+const handleCategoryChange = (e: any) => {
+  const selectedCategoryId = e.target.value;
+  formik.setFieldValue('category', selectedCategoryId);
+  setSelectedCategory(selectedCategoryId);
+  setSelectedSubCategory('');
+  formik.setFieldValue('subcategory', '');
+
+  if (selectedCategoryId) {
+    setIsSubCategoryDisabled(false); // Enable subcategory dropdown
+    const result = subCategriesState.filter((item) => item['categoryId']['_id'] === selectedCategoryId);
+    setSubcategories([...result]);
+  } else {
+    setIsSubCategoryDisabled(true); // Disable subcategory dropdown
+    setSubcategories([]); // Clear subcategories
+  }
+}
 
 
   useEffect(() => {
@@ -95,25 +118,28 @@ const ServiceWrapper = () => {
   }
 
   const serviceSchema = Yup.object().shape({
-    name: Yup.string().required('Name is required'),
-    image: Yup.string().required('Image is required'),
-    category: Yup.string().required('category is required'),
-    subcategory: Yup.string().required('Sub category is required'),
+    name: Yup.string().required('Required'),
+    image: Yup.string().required('Required'),
+    category: Yup.string().required('Required'),
+    subcategory: Yup.string().required('Required'),
     gender: Yup.array().min(1).required('Please Select a gender'),
     description: Yup.string()
-      .min(10, 'Minimum 10 charectors')
-      .max(50, 'Maximum 50 charectors')
-      .required('Description is required'),
-    time: Yup.string().required('Time is required'),
-    cost: Yup.string().required('Cost is required'),
+      .min(10, 'Minimum 10 characters')
+      .max(50, 'Maximum 50 characters')
+      .required('Required'),
+    time: Yup.string().required('Required'),
+    cost: Yup.string().required('Required'),
   })
 
   const formik = useFormik({
     initialValues,
     validationSchema: serviceSchema,
+    validateOnChange: false,
+    validateOnBlur: false,
     onSubmit: async (values, { setStatus, setSubmitting }) => {
       dispatch(serviceRequest({ ...values }))
       dispatch(closeModalRequest({}))
+
       // clearForm
       clearFormData()
     },
@@ -144,15 +170,17 @@ const ServiceWrapper = () => {
     }
   }
 
-  const handleCategoryChange = (e: any) => {
-    formik.setFieldValue('category', e.target.value)
-    setSelectedCategory(e.target.value)
-    setSelectedSubCategory('')
-    formik.setFieldValue('subcategory', '')
-    const result = subCategriesState.filter((item) => item['categoryId']['_id'] === e.target.value)
-    setSubcategories([...result])
-  }
+  // const handleCategoryChange = (e: any) => {
+  //   formik.setFieldValue('category', e.target.value)
+  //   setSelectedCategory(e.target.value)
+  //   setSelectedSubCategory('')
+  //   formik.setFieldValue('subcategory', '')
+  //   const result = subCategriesState.filter((item) => item['categoryId']['_id'] === e.target.value)
+  //   setSubcategories([...result])
+  // }
 
+
+  
   const handleSubCategoryChange = (e: any) => {
     formik.setFieldValue('subcategory', e.target.value)
     setSelectedSubCategory(e.target.value)
@@ -346,17 +374,26 @@ const ServiceWrapper = () => {
       </div>
       <>
         <Modal show={show} onHide={modalClose}>
-          <form onSubmit={formik.handleSubmit}>
-            <Modal.Header>
-              <Modal.Title>Add</Modal.Title>
-            </Modal.Header>
-            <Modal.Body>
-              <div>
-                <Row>
-                  <Col sm={6}>
-                    <div className='fv-row mb-4'>
-                      <label className='form-label'>Name</label>
-                      <input
+          <FormikProvider value={formik}>
+
+            <form onSubmit={formik.handleSubmit}>
+              <Modal.Header>
+                <Modal.Title>Add</Modal.Title>
+              </Modal.Header>
+              <Modal.Body>
+                <div>
+                  <Row>
+                    <Col sm={6}>
+                      <div className='fv-row mb-4'>
+                        {/* <label className='form-label'>Name</label> */}
+                        <Field
+                          name="name"
+                          validate={serviceSchema}
+                          type="text"
+                          label="Name"
+                          component={FieldInputText}
+                        />
+                        {/* <input
                         type='text'
                         autoComplete='off'
                         placeholder='Service Name'
@@ -377,10 +414,20 @@ const ServiceWrapper = () => {
                             <span role='alert'>{formik.errors.name}</span>
                           </div>
                         </div>
-                      )}
-                    </div>
-                    <div className='fv-row mb-4'>
-                      <label className='form-label'>Category</label>
+                      )} */}
+                      </div>
+                      <div className='fv-row mb-4'>
+                        <Field
+                          as="select"
+                          name="category"
+                          validate={serviceSchema}
+                          label="Select Category"
+                          options={categoriesState}
+                          component={FieldSelectInput}
+                          placeholder="Select Category"
+                          
+                        />
+                        {/* <label className='form-label'>Category</label>
                       <select
                         aria-label='Default select example'
                         placeholder='Category'
@@ -415,10 +462,10 @@ const ServiceWrapper = () => {
                             <span role='alert'>{formik.errors.category}</span>
                           </div>
                         </div>
-                      )}
-                    </div>
-                    <div className='fv-row mb-4'>
-                      <label className='form-label'>Sub category</label>
+                      )} */}
+                      </div>
+                      <div className='fv-row mb-4'>
+                        {/* <label className='form-label'>Sub category</label>
                       <select
                         aria-label='Default select example'
                         placeholder='Sub category'
@@ -455,183 +502,132 @@ const ServiceWrapper = () => {
                             <span role='alert'>{formik.errors.subcategory}</span>
                           </div>
                         </div>
-                      )}
-                    </div>
-                  </Col>
-                  <Col sm={6}>
-                    <div>
-                      <label className='form-label'>
-                        <small>Upload Picture</small>
-                      </label>
-                      <div className='fv-row mb-4'>
-                        <input
-                          type='file'
-                          placeholder='Image'
-                          // {...formik.getFieldProps('image')}
-                          className={clsx(
-                            'form-control bg-transparent',
-                            {
-                              'is-invalid': formik.touched.image && formik.errors.image,
-                            },
-                            {
-                              'is-valid': formik.touched.image && !formik.errors.image,
-                            }
-                          )}
-                          // value={formik.values.image}
-                          onChange={(e: any) => {
-                            handleFileChange(e)
-                          }}
-                        />
-                        {formik.touched.image && formik.errors.image && (
-                          <div className='fv-plugins-message-container'>
-                            <div className='fv-help-block'>
-                              <span role='alert'>{formik.errors.image}</span>
-                            </div>
-                          </div>
-                        )}
-                      </div>
-                      <div>
-                        {file && (
-                          <img className='w-100 rounded-2' src={file && file} alt='UploadImage' />
-                        )}
-                      </div>
-                    </div>
-                  </Col>
-                </Row>
-                <Row>
-                  <Col>
-                    {tags.map((tag: any) => (
-                      <div key={tag}>
-                        <input
-                          {...formik.getFieldProps('gender')}
-                          id={tag}
-                          type='checkbox'
-                          name={tag}
-                          checked={formik.values.gender.includes(tag as never)}
-                          onChange={handleChange}
-                        />
-                        <label htmlFor={tag}>{tag}</label>
-                      </div>
-                    ))}
-                    {formik.touched.gender && formik.errors.gender && (
-                      <div className='fv-plugins-message-container'>
-                        <div className='fv-help-block'>
-                          <span role='alert'>{formik.errors.gender}</span>
-                        </div>
-                      </div>
-                    )}
-                  </Col>
-                </Row>
-                <Row>
-                  <Col>
-                    <div className='fv-row mb-4'>
-                      <label className='form-label'>Description</label>
-                      <Form.Control
-                        type='text'
-                        autoComplete='off'
-                        placeholder='Service Name'
-                        {...formik.getFieldProps('description')}
-                        className={clsx(
-                          'form-control bg-transparent',
-                          {
-                            'is-invalid': formik.touched.description && formik.errors.description,
-                          },
-                          {
-                            'is-valid': formik.touched.description && !formik.errors.description,
-                          }
-                        )}
-                      />
-                      {formik.touched.description && formik.errors.description && (
-                        <div className='fv-plugins-message-container'>
-                          <div className='fv-help-block'>
-                            <span role='alert'>{formik.errors.description}</span>
-                          </div>
-                        </div>
-                      )}
-                    </div>
-                  </Col>
-                </Row>
-                <Row>
-                  <Col sm={6}>
-                    <div className='fv-row mb-4'>
-                      <label className='form-label'>Cost</label>
-                      <Form.Control
-                        type='text'
-                        autoComplete='off'
-                        placeholder='Cost'
-                        {...formik.getFieldProps('cost')}
-                        className={clsx(
-                          'form-control bg-transparent',
-                          {
-                            'is-invalid': formik.touched.cost && formik.errors.cost,
-                          },
-                          {
-                            'is-valid': formik.touched.cost && !formik.errors.cost,
-                          }
-                        )}
-                      />
-                      {formik.touched.cost && formik.errors.cost && (
-                        <div className='fv-plugins-message-container'>
-                          <div className='fv-help-block'>
-                            <span role='alert'>{formik.errors.cost}</span>
-                          </div>
-                        </div>
-                      )}
-                    </div>
-                  </Col>
-                  <Col sm={6}>
-                    <div className='fv-row mb-4'>
-                      <label className='form-label'>Time</label>
-                      <input
-                        type='text'
-                        autoComplete='off'
-                        placeholder='Time'
-                        {...formik.getFieldProps('time')}
-                        className={clsx(
-                          'form-control bg-transparent',
-                          {
-                            'is-invalid': formik.touched.time && formik.errors.time,
-                          },
-                          {
-                            'is-valid': formik.touched.time && !formik.errors.time,
-                          }
-                        )}
-                      />
-                      {formik.touched.time && formik.errors.time && (
-                        <div className='fv-plugins-message-container'>
-                          <div className='fv-help-block'>
-                            <span role='alert'>{formik.errors.time}</span>
-                          </div>
-                        </div>
-                      )}
-                    </div>
-                  </Col>
-                </Row>
-              </div>
-            </Modal.Body>
-            <Modal.Footer>
+                      )} */}
 
-              <div className='d-grid mb-10'>
-                {/* <Button className='blackBtn btn-sm' onClick={cancelButton}>
+                        <Field
+                          as="select"
+                          name="subcategory"
+                          validate={serviceSchema}
+                          label="Select Sub-Category"
+                          options={subCategriesState}
+                          component={FieldSelectInput}
+                          placeholder="Select Sub-Category"
+                          onChange={handleSubCategoryChange}
+
+                        />
+                      </div>
+                    </Col>
+                    <Col sm={6}>
+                      <div>
+                        <label className='form-label'>
+                          <small>Upload Picture</small>
+                        </label>
+                        <div className='fv-row mb-4'>
+                          <input
+                            type='file'
+                            placeholder='Image'
+                            // {...formik.getFieldProps('image')}
+                            className={clsx(
+                              'form-control bg-transparent',
+                              {
+                                'is-invalid': formik.touched.image && formik.errors.image,
+                              },
+                              {
+                                'is-valid': formik.touched.image && !formik.errors.image,
+                              }
+                            )}
+                            // value={formik.values.image}
+                            onChange={(e: any) => {
+                              handleFileChange(e)
+                            }}
+                          />
+                          {formik.touched.image && formik.errors.image && (
+                            <div className='fv-plugins-message-container'>
+                              <div className='fv-help-block'>
+                                <span role='alert'>{formik.errors.image}</span>
+                              </div>
+                            </div>
+                          )}
+                        </div>
+                        <div>
+                          {file && (
+                            <img className='w-100 rounded-2' src={file && file} alt='UploadImage' />
+                          )}
+                        </div>
+                      </div>
+                    </Col>
+                  </Row>
+
+                  <Row>
+                    <Col>
+                      <div className='fv-row mb-4'>
+
+
+                        <Field
+                          name="bio"
+
+                          row={70}
+                          validate={serviceSchema}
+                          type="textarea"
+                          label="Description"
+                          placeholder="Enter description"
+                          component={FieldInputTextarea}
+                        />
+                      </div>
+                    </Col>
+                  </Row>
+                  <Row>
+                    <Col sm={6}>
+                      <div className='fv-row mb-4'>
+
+                        <Field
+                          name="cost"
+                          validate={serviceSchema}
+                          type="number"
+                          label="Cost"
+                          component={FieldInputText}
+                        />
+                      </div>
+                    </Col>
+                    <Col sm={6}>
+                      <div className='fv-row mb-4'>
+
+                        <Field
+                          name="time"
+                          validate={serviceSchema}
+                          type="text"
+                          label="Time"
+                          component={FieldInputText}
+                        />
+                      </div>
+                    </Col>
+                  </Row>
+                </div>
+              </Modal.Body>
+              <Modal.Footer>
+
+                <div className='d-grid mb-10'>
+                  {/* <Button className='blackBtn btn-sm' onClick={cancelButton}>
                 Cancel
               </Button> */}
-                <button
-                  className='blackBtn btn-sm'
-                  type='submit'
-                  id='kt_sign_in_submit'
-                // disabled={formik.isSubmitting || !formik.isValid}
-                >
-                  {!loading && <span className='indicator-label'>Add</span>}
-                  {loading && (
-                    <span className='indicator-progress' style={{ display: 'block' }}>
-                      Please wait...
-                      <span className='spinner-border spinner-border-sm align-middle ms-2'></span>
-                    </span>
-                  )}
-                </button>
-              </div>
-            </Modal.Footer>
-          </form>
+                  <button
+                    className='blackBtn btn-sm'
+                    type='submit'
+                    id='kt_sign_in_submit'
+                  // disabled={formik.isSubmitting || !formik.isValid}
+                  >
+                    {!loading && <span className='indicator-label'>Add</span>}
+                    {loading && (
+                      <span className='indicator-progress' style={{ display: 'block' }}>
+                        Please wait...
+                        <span className='spinner-border spinner-border-sm align-middle ms-2'></span>
+                      </span>
+                    )}
+                  </button>
+                </div>
+              </Modal.Footer>
+            </form>
+          </FormikProvider>
         </Modal>
       </>
     </>
