@@ -45,7 +45,7 @@ const ServiceWrapper = () => {
   const state: any = useSelector((state) => state);
 
   const categoriesState: [] = useSelector((state: any) => state.category.categoryList)
-  debugger
+  
   const subCategriesState: [] = useSelector((state: any) => state.subcategory.subCategoryList)
   const serviceState: [] = useSelector((state: any) => state.service.serviceList);
   const [selectedTab, setSelectedTab] = useState(state.service.selectedTab);
@@ -58,25 +58,6 @@ const ServiceWrapper = () => {
 
 
   const { isOpen } = useSelector((state: any) => state.modal);
-
-  const [isSubCategoryDisabled, setIsSubCategoryDisabled] = useState(true);
-
-const handleCategoryChange = (e: any) => {
-  const selectedCategoryId = e.target.value;
-  formik.setFieldValue('category', selectedCategoryId);
-  setSelectedCategory(selectedCategoryId);
-  setSelectedSubCategory('');
-  formik.setFieldValue('subcategory', '');
-
-  if (selectedCategoryId) {
-    setIsSubCategoryDisabled(false); // Enable subcategory dropdown
-    const result = subCategriesState.filter((item) => item['categoryId']['_id'] === selectedCategoryId);
-    setSubcategories([...result]);
-  } else {
-    setIsSubCategoryDisabled(true); // Disable subcategory dropdown
-    setSubcategories([]); // Clear subcategories
-  }
-}
 
 
   useEffect(() => {
@@ -170,16 +151,16 @@ const handleCategoryChange = (e: any) => {
     }
   }
 
-  // const handleCategoryChange = (e: any) => {
-  //   formik.setFieldValue('category', e.target.value)
-  //   setSelectedCategory(e.target.value)
-  //   setSelectedSubCategory('')
-  //   formik.setFieldValue('subcategory', '')
-  //   const result = subCategriesState.filter((item) => item['categoryId']['_id'] === e.target.value)
-  //   setSubcategories([...result])
-  // }
+  const handleCategoryChange = (e: any) => {
+    formik.setFieldValue('category', e.target.value)
+    setSelectedCategory(e.target.value)
+    setSelectedSubCategory('')
+    formik.setFieldValue('subcategory', '')
+    const result = subCategriesState.filter((item) => item['categoryId']['_id'] === e.target.value)
+    setSubcategories([...result])
+  }
 
-
+  
   
   const handleSubCategoryChange = (e: any) => {
     formik.setFieldValue('subcategory', e.target.value)
@@ -425,7 +406,6 @@ const handleCategoryChange = (e: any) => {
                           options={categoriesState}
                           component={FieldSelectInput}
                           placeholder="Select Category"
-                          
                         />
                         {/* <label className='form-label'>Category</label>
                       <select
@@ -503,7 +483,6 @@ const handleCategoryChange = (e: any) => {
                           </div>
                         </div>
                       )} */}
-
                         <Field
                           as="select"
                           name="subcategory"
@@ -513,7 +492,7 @@ const handleCategoryChange = (e: any) => {
                           component={FieldSelectInput}
                           placeholder="Select Sub-Category"
                           onChange={handleSubCategoryChange}
-
+                           disabled={!formik.values.category}
                         />
                       </div>
                     </Col>
