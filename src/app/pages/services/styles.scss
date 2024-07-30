@@ -2,3 +2,66 @@
     resize: none;
     overflow: hidden;
 }
+
+.addServicesModal {
+    .modal-title.h4 {
+        font-size: 27px;
+        font-weight: 500;
+        line-height: 40.5px;
+        text-align: left;
+    }
+    input.form-control, select.form-control {
+        border: 1px solid #B4B4B4 !important;
+        border-radius: 8px !important;
+    }
+}
+.w-250 {
+    width: 250px;
+}
+button.borderBtn {
+    border: 1px solid #000000 !important;
+    background: transparent;
+    color: #131C1B;
+    font-size: 16px;
+    font-weight: 800;
+    line-height: 24px;
+    text-align: center;
+    font-size: 1.231rem !important;
+    padding: 1.2rem !important;
+    border-radius: 0.8rem !important;
+}
+.uploadBtn {
+    position: relative;
+    .uploadIconText {
+        display: flex;
+        width: 100%;
+        justify-content: space-between;
+        align-items: center;
+        p {
+            margin-bottom: 0px;
+            color: #797878;
+        }
+    }
+    input.form-control.bg-transparent {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        opacity: 0;
+    }
+}
+.uploadImage {
+    img {
+        border-radius: 8px;
+        width: 100%;
+        height: auto;
+    }
+}
+
+@media (min-width: 1024px) {
+    .addServicesModal {
+        .modal-dialog {
+            max-width: 770px;
+        }
+    }
+}
