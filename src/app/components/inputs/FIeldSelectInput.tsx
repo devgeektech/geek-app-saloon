@@ -1,5 +1,6 @@
 import { Form } from "react-bootstrap";
 import { getIn } from "formik";
+import { LableWrapper } from "../../utils/LabelWrapper";
 
 const FieldSelectInput = ({ field, form, ...props }: any) => {
   const error = getIn(form.errors, field.name);
@@ -8,13 +9,15 @@ const FieldSelectInput = ({ field, form, ...props }: any) => {
   return (
     <div>
       <Form.Group className="mb-3" controlId={field.name}>
-        <Form.Label>
-          {props.label}
-          <span>*</span>
-        </Form.Label>
-        <Form.Select {...field} {...props} name={props.name}>
+        <LableWrapper label={props.label} required={props.required} />
+
+        <Form.Select
+          name={props.name}
+          onChange={props.handleCategoryChange}
+          disabled={props.disabled}
+        >
           <option value="">{props["label"]}</option>
-          {typeof props.options == "object" && props.options.length != 0 ? (
+          {props.options.length != 0 ? (
             props.options.map((e: any, i: number) => {
               return (
                 <option key={i} value={e.value ? e.value : e._id}>
@@ -23,7 +26,9 @@ const FieldSelectInput = ({ field, form, ...props }: any) => {
               );
             })
           ) : (
-            <option value="">{props.options}</option>
+            <option disabled value="">
+              No result found.
+            </option>
           )}
         </Form.Select>
         {touch && error ? (

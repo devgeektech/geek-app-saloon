@@ -1,5 +1,6 @@
 import { Form } from "react-bootstrap";
 import { getIn } from "formik";
+import { LableWrapper } from "../../utils/LabelWrapper";
 
 const FieldTextArea = ({ field, form, ...props }: any) => {
   const error = getIn(form.errors, field.name);
@@ -7,10 +8,8 @@ const FieldTextArea = ({ field, form, ...props }: any) => {
   return (
     <div>
       <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
-        <Form.Label>
-          {props.label}
-          <span>*</span>
-        </Form.Label>
+      <LableWrapper label={props.label} required={props.required} />
+
         <Form.Control
           name={props.name}
           as="textarea" 

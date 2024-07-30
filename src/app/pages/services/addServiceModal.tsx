@@ -7,6 +7,7 @@ import clsx from "clsx";
 import placeholderImg from "../../../_metronic/assets/images/placeholderImg.jpg";
 import FieldCheckBox from "../../components/inputs/FieldCheckBox";
 import FieldTextArea from "../../components/inputs/FieldTextArea";
+import { useState } from "react";
 
 export const AddServiceModal = (props) => {
   const {
@@ -14,12 +15,43 @@ export const AddServiceModal = (props) => {
     show,
     schema,
     categories,
-    subCategories,
     handleFileChange,
     genders,
     cancelButton,
     file,
   } = props;
+
+  const [subCategories, setSubcategories] = useState([]);
+  const [disablesubCategory, setdisablesubCategory] = useState(true);
+
+  const handleCategoryChange = (e) => {
+    formik.setFieldValue(e.target.id, e.target.value);
+    if (e.target.id === "subcategory") {
+      return formik.setFieldValue(e.target.id, e.target.value);
+    }
+    let index = categories.findIndex(
+      (item: any) => e.target.value === item._id
+    );
+    if (index === -1) {
+      setSubcategories([]);
+      setdisablesubCategory(true);
+    } else {
+      setSubcategories(categories[index].subCategory);
+      setdisablesubCategory(false);
+    }
+  };
+
+  const handleChange = (e) => {
+    const { checked, id } = e.target;
+    if (checked) {
+      formik.setFieldValue("gender", [...formik.values.gender, id]);
+    } else {
+      formik.setFieldValue(
+        "gender",
+        formik.values.gender.filter((v) => v !== id)
+      );
+    }
+  };
 
   return (
     <Modal className="addServicesModal" show={show}>
@@ -38,6 +70,7 @@ export const AddServiceModal = (props) => {
                       validate={schema}
                       type="text"
                       label="Name"
+                      required={true}
                       component={FieldInputText}
                     />
                   </div>
@@ -47,17 +80,21 @@ export const AddServiceModal = (props) => {
                       name="category"
                       validate={schema}
                       label="Category"
+                      required={true}
                       options={categories}
+                      handleCategoryChange={handleCategoryChange}
                       component={FieldSelectInput}
                     />
                   </div>
                   <div className="fv-row mb-4">
                     <Field
                       as="select"
-                      name="subCategories"
+                      name="subcategory"
                       validate={schema}
                       label="Sub Category"
+                      disabled={disablesubCategory}
                       options={subCategories}
+                      handleCategoryChange={handleCategoryChange}
                       component={FieldSelectInput}
                     />
                   </div>
@@ -123,8 +160,10 @@ export const AddServiceModal = (props) => {
                     <Field
                       name="gender"
                       validate={schema}
+                      required={true}
                       label="Select Gender"
                       options={genders}
+                      handleChange={handleChange}
                       component={FieldCheckBox}
                     />
                   </div>
@@ -136,6 +175,7 @@ export const AddServiceModal = (props) => {
                     <Field
                       name="description"
                       validate={schema}
+                      required={true}
                       label="Description"
                       options={subCategories}
                       component={FieldTextArea}
@@ -149,6 +189,7 @@ export const AddServiceModal = (props) => {
                     <Field
                       name="cost"
                       validate={schema}
+                      required={true}
                       type="number"
                       label="Cost"
                       component={FieldInputText}
@@ -170,7 +211,7 @@ export const AddServiceModal = (props) => {
                 <Col sm={3}>
                   <div className="fv-row mb-2">
                     <Field
-                      name="min"
+                      name="minutes"
                       validate={schema}
                       type="number"
                       label="Minutes"
@@ -191,7 +232,7 @@ export const AddServiceModal = (props) => {
                 className="blackBtn btn-sm w-250"
                 type="submit"
                 id="kt_sign_in_submit"
-                // disabled={formik.isSubmitting || !formik.isValid}
+                disabled={formik.isSubmitting || !formik.isValid}
               >
                 {<span className="indicator-label">Add</span>}
                 {/* {loading && (
