@@ -1,6 +1,7 @@
 import { Form } from "react-bootstrap";
 import { getIn } from "formik";
 import { LableWrapper } from "../../utils/LabelWrapper";
+import { ErrorWrapper } from "../../utils/ErrorWapper";
 
 const FieldSelectInput = ({ field, form, ...props }: any) => {
   const error = getIn(form.errors, field.name);
@@ -31,14 +32,7 @@ const FieldSelectInput = ({ field, form, ...props }: any) => {
             </option>
           )}
         </Form.Select>
-        {touch && error ? (
-          <span
-            style={{ color: "#ff8080", marginTop: "5px", fontSize: "13px" }}
-            className="error"
-          >
-            {error}
-          </span>
-        ) : null}
+        {touch && error ? <ErrorWrapper error={error} /> : null}
       </Form.Group>
     </div>
   );

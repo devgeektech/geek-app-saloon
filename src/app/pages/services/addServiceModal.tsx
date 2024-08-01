@@ -8,6 +8,7 @@ import placeholderImg from "../../../_metronic/assets/images/placeholderImg.jpg"
 import FieldCheckBox from "../../components/inputs/FieldCheckBox";
 import FieldTextArea from "../../components/inputs/FieldTextArea";
 import { useState } from "react";
+import { useSelector } from "react-redux";
 
 export const AddServiceModal = (props) => {
   const {
@@ -23,6 +24,7 @@ export const AddServiceModal = (props) => {
 
   const [subCategories, setSubcategories] = useState([]);
   const [disablesubCategory, setdisablesubCategory] = useState(true);
+  const serviceState: any = useSelector((state: any) => state.service);
 
   const handleCategoryChange = (e) => {
     formik.setFieldValue(e.target.id, e.target.value);
@@ -131,9 +133,9 @@ export const AddServiceModal = (props) => {
                           }}
                         />
                       </div>
-                      <div className="uploadImage">
+                      {/* <div className="uploadImage">
                         <img src={placeholderImg} alt="placeholderImg" />
-                      </div>
+                      </div> */}
                       {formik.touched.image && formik.errors.image && (
                         <div className="fv-plugins-message-container">
                           <div className="fv-help-block">
@@ -225,17 +227,23 @@ export const AddServiceModal = (props) => {
           </Modal.Body>
           <Modal.Footer>
             <div className="d-flex align-items-center gap-5">
-              <Button className="borderBtn btn-sm w-250" onClick={cancelButton}>
+              <Button
+                type="button"
+                className="borderBtn btn-sm w-250"
+                onClick={cancelButton}
+              >
                 Cancel
               </Button>
               <button
                 className="blackBtn btn-sm w-250"
                 type="submit"
-                id="kt_sign_in_submit"
-                disabled={formik.isSubmitting || !formik.isValid}
+
+                // disabled={formik.isSubmitting || !formik.isValid}
               >
-                {<span className="indicator-label">Add</span>}
-                {/* {loading && (
+                {!serviceState.loading && (
+                  <span className="indicator-label">Save</span>
+                )}
+                {serviceState.loading && (
                   <span
                     className="indicator-progress"
                     style={{ display: "block" }}
@@ -243,7 +251,7 @@ export const AddServiceModal = (props) => {
                     Please wait...
                     <span className="spinner-border spinner-border-sm align-middle ms-2"></span>
                   </span>
-                )} */}
+                )}
               </button>
             </div>
           </Modal.Footer>

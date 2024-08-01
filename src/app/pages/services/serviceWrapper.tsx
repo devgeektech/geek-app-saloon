@@ -116,9 +116,9 @@ const ServiceWrapper = () => {
     validationSchema: serviceSchema,
     onSubmit: async (values, { setStatus, setSubmitting }) => {
       dispatch(serviceRequest({ ...values }));
-      dispatch(closeModalRequest({}));
+      // dispatch(closeModalRequest({}));
       // clearForm
-      clearFormData();
+      // clearFormData();
     },
   });
 
@@ -355,7 +355,6 @@ const ServiceWrapper = () => {
             genders={tags}
           ></AddServiceModal>
         )}
-     
       </>
     </>
   );

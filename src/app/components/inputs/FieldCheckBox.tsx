@@ -1,13 +1,14 @@
 import { Form } from "react-bootstrap";
 import { getIn } from "formik";
 import { LableWrapper } from "../../utils/LabelWrapper";
+import { ErrorWrapper } from "../../utils/ErrorWapper";
 
 const FieldCheckBox = ({ field, form, ...props }: any) => {
   const error = getIn(form.errors, field.name);
   const touch = getIn(form.touched, field.name);
   return (
     <div>
-      <Form.Group className="mb-3" >
+      <Form.Group className="mb-3">
         <LableWrapper label={props.label} required={props.required} />
         {props.options.map((tag: any) => (
           <div key={tag}>
@@ -24,15 +25,7 @@ const FieldCheckBox = ({ field, form, ...props }: any) => {
             />
           </div>
         ))}
-
-        {touch && error ? (
-          <span
-            style={{ color: "#ff8080", marginTop: "5px", fontSize: "13px" }}
-            className="error"
-          >
-            {error}
-          </span>
-        ) : null}
+        {touch && error ? <ErrorWrapper error={error} /> : null}
       </Form.Group>
     </div>
   );
