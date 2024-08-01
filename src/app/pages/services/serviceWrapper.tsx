@@ -145,9 +145,7 @@ const ServiceWrapper = () => {
   const modalClose = () => {
     dispatch(closeModalRequest({}));
   };
-  const modalShow = () => {
-    dispatch(openModalRequest({}));
-  };
+
 
   const onChangeTab = (key) => {
     setSelectedTab(key); // Updating local state
@@ -191,7 +189,7 @@ const ServiceWrapper = () => {
             </h2>
             {/* <p>Facilitate seamless control over services offered by you</p> */}
           </div>
-          <button onClick={modalShow} className="yellowBtn">
+          <button onClick={() => dispatch(openModalRequest())} className="yellowBtn">
             Add
           </button>
         </div>

@@ -11,8 +11,9 @@ const modalSlice = createSlice({
   name: "modal",
   initialState,
   reducers: {
-    openModalRequest: (state, action) => {
-      return { ...state, loading: true, error: null };
+    openModalRequest: (state) => {
+      state.isOpen = true;
+      return;
     },
     openModalSuccess: (state, action) => {
       return {

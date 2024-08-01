@@ -18,8 +18,8 @@ const FieldSelectInput = ({ field, form, ...props }: any) => {
           disabled={props.disabled}
         >
           <option value="">{props["label"]}</option>
-          {props.options.length != 0 ? (
-            props.options.map((e: any, i: number) => {
+          {props?.options?.length != 0 ? (
+            props?.options?.map((e: any, i: number) => {
               return (
                 <option key={i} value={e.value ? e.value : e._id}>
                   {e.label ? e.label : e.name}

@@ -19,7 +19,7 @@ export default function Servicetable(props: any) {
   }, [serviceList])
 
   const editService = (serviceObj: any) => {
-    dispatch(openModalRequest({}))
+    dispatch(openModalRequest())
     dispatch(editServiceRequestData({ ...serviceObj }))
   }
 

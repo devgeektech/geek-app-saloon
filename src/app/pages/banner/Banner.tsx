@@ -18,11 +18,17 @@ import "./styles.scss"
 import ModalInner from "../../modals/deleteModal";
 import { toast } from "react-toastify";
 import NoDataFound from "../../components/common/NoDataFound";
+import BannerModal from "./addBannerModal";
+import { closeModalRequest  ,openModalRequest,
+} from "../../redux/reducer/modalSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { getServiceRequest, serviceRequest } from "../../redux/reducer/serviceSlice";
 
 const BannerWrapper = () => {
+  const dispatch = useDispatch();
   const [banners, setBanners] = useState([]);
   const [file, setFile] = useState<any>(null);
-  const [show, setShow] = useState(false)
+  const [show, setShow] = useState(true)
   const [modalShow, setModalShow] = useState(false);
   const intl = useIntl();
   const [deleteUserId, setDeleteUserId] = useState("");
@@ -52,17 +58,19 @@ const BannerWrapper = () => {
     onSubmit: async (values, { setStatus, setSubmitting }) => {
       addBanner(values).then((res: any) => {
         closeBannerModal();
-        getBannersList()
+        getBannersList();
         formik.resetForm();
         setTimeout(() => {
-          setFile(null)
+          setFile(null);
         }, 1000);
       }).catch((error) => {
-        toast.error(error.response.data.responseMessage)
-      })
-
+        toast.error(error.response.data.responseMessage);
+      });
     },
-  })
+  });
+
+
+
 
   const getBannersList = async () => {
     await getBanners(search, skip, limit).then((res: any) => {
@@ -82,6 +90,14 @@ const BannerWrapper = () => {
       })
     }
   }
+
+  const tags = ["TOP", "MIDDLE",'BOTTOM'];
+  const cancelButton = () => {
+    setShow(false); 
+    setModalShow(false)
+  };
+
+
 
   const editBanner = async (id: any) => {
     await getBanner(id).then((res) => {
@@ -127,9 +143,10 @@ const BannerWrapper = () => {
     setModalShow(false);
   };
 
-  // Add and edit modal
   const addBannerModal = () => {
-    setShow(true);
+    setShow(true); 
+    setModalShow(true)
+  
   };
 
   const closeBannerModal = () => {
@@ -153,7 +170,7 @@ const BannerWrapper = () => {
               Banners
             </h2>
           </div>
-          <button onClick={() => { addBannerModal() }} className="yellowBtn">
+          <button onClick={addBannerModal} className="yellowBtn">
             Add
           </button>
         </div>
@@ -261,155 +278,28 @@ const BannerWrapper = () => {
         </div>
       </div>
 
-      <Modal show={show} onHide={closeBannerModal}>
-        <form onSubmit={formik.handleSubmit}>
-          <Modal.Header>
-            <Modal.Title>Add</Modal.Title>
-          </Modal.Header>
-          <Modal.Body>
-            <Container>
-              <form onSubmit={formik.handleSubmit}>
-                <Row>
-                  <Col sm={12}>
-                    <label htmlFor='name'>Caption</label>
-                    <input
-                      type='text'
-                      autoComplete='off'
-                      placeholder='Image caption'
-                      {...formik.getFieldProps('name')}
-                      className={clsx(
-                        'form-control bg-transparent',
-                        {
-                          'is-invalid': formik.touched.name && formik.errors.name,
-                        },
-                        {
-                          'is-valid': formik.touched.name && !formik.errors.name,
-                        }
-                      )}
-                    />
-                    {formik.touched.name && formik.errors.name && (
-                      <div className='fv-plugins-message-container'>
-                        <div className='fv-help-block'>
-                          <span role='alert'>{formik.errors.name}</span>
-                        </div>
-                      </div>
-                    )}
-                  </Col>
-                  <Col sm={12} className='mt-4'>
-                    <Form.Select  {...formik.getFieldProps('type')} aria-label='Default select example' name='type'>
-                      <option>Select</option>
-                      <option value='TOP'>Top</option>
-                      <option value='MIDDLE'>Middle</option>
-                      <option value='BOTTOM'>Bottom</option>
-                    </Form.Select>
-                    {formik.touched.type && formik.errors.type && (
-                      <div className='fv-plugins-message-container'>
-                        <div className='fv-help-block'>
-                          <span role='alert'>{formik.errors.type}</span>
-                        </div>
-                      </div>
-                    )}
-                  </Col>
-                </Row>
-                <Row>
-                  <Col sm={12}>
-                    {/* <div
-                      className="dropzone my-5"
-                    // onDragOver={handleDragOver}
-                    // onDrop={handleDrop}
-                    >
-                      <h1> <img src={searchIcon} alt="" /> </h1>
-                      <h6>Drag your file(s) to start uploading</h6>
-                      <h1>Or</h1>
-                      <input
-                        type="file"
-                        multiple
-                        // onChange={handleFileSelection}
-                        hidden
-                        accept="image/png, image/jpeg"
-                        ref={inputRef}
-                      />
-                      <button type="button" onClick={() => inputRef.current.click()}>
-                        Browse Files
-                      </button>
-                    </div> */}
-                    <div className="mt-5">
-                      <label className='form-label'>
-                        <small>Upload Picture</small>
-                      </label>
-                      <div className='fv-row mb-4'>
-                        <input
-                          type='file'
-                          placeholder='Image'
-                          // {...formik.getFieldProps('image')}
-                          className={clsx(
-                            'form-control bg-transparent',
-                            {
-                              'is-invalid': formik.touched.image && formik.errors.image,
-                            },
-                            {
-                              'is-valid': formik.touched.image && !formik.errors.image,
-                            }
-                          )}
-                          // value={formik.values.image}
-                          onChange={(e: any) => {
-                            handleFileChange(e)
-                          }}
-                        />
-                        {formik.touched.image && formik.errors.image && (
-                          <div className='fv-plugins-message-container'>
-                            <div className='fv-help-block'>
-                              <span role='alert'>{formik.errors.image}</span>
-                            </div>
-                          </div>
-                        )}
-                      </div>
-                    </div>
-                  </Col>
-                  {file && <Col sm={6} className='mt-4'>
-                    <div>
-                      <img className='w-100 rounded-2' src={file} alt='UploadImage' />
-                    </div>
-                  </Col>}
-                </Row>
-              </form>
-            </Container>
-          </Modal.Body>
-          <Modal.Footer>
-            <div className="d-grid d-flex mb-10">
-              <button
-                onClick={closeBannerModal}
-                className="blackBtn btn-sm mx-2"
-                type="button"
-              >
-                <span className="indicator-label1">Cancel</span>
-              </button>
-              <button className="blackBtn btn-sm" type="submit" id="kt_sign_in_submit"              >
-                <span className="indicator-label">Add</span>
-                {/* } */}
-                {/* {loading && (
-                  <span
-                    className="indicator-progress"
-                    style={{ display: "block" }}
-                  >
-                    Please wait...
-                    <span className="spinner-border spinner-border-sm align-middle ms-2"></span>
-                  </span>
-                )} */}
-              </button>
-            </div>
-          </Modal.Footer>
-        </form>
-      </Modal>
-
-
+{/* 
       <ModalInner
         deleteUserClbk={(e: any) => {
           deleteUser(e);
         }}
         openModal={modalShow}
         closeModal={deleteCloseModal}
-      />
+      /> */}
+
+<>
+        {modalShow && (
+          <BannerModal
+            show={modalShow}
+            schema={serviceSchema}
+            file={file}
+            formik={formik}
+            cancelButton={cancelButton}
+            handleFileChange={handleFileChange}
+            type={tags}
+          ></BannerModal>
+        )}
+</>
     </>
   );
 };
