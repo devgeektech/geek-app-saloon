@@ -10,6 +10,9 @@ import clsx from 'clsx'
 import {commonFileUpload} from '../../services/_requests'
 import {addCategoryRequest, getCategoryRequest} from '../../redux/reducer/categorySlice'
 import {useDispatch, useSelector} from 'react-redux'
+import { renderMessageToaster } from '../../utils/common'
+import { FILE_SIZE, INVALID_IMAGE, UNABLE, UNKNOWN } from '../../utils/ErrorMessages'
+import { fileTypeMap } from '../../utils/const'
 
 export default function CategoryTabs() {
   const [file, setFile] = useState('')
@@ -39,25 +42,50 @@ export default function CategoryTabs() {
     },
   })
 
-  const handleFileChange = async (e) => {
+
+  const handleFileChange = async (e: any) => {
     if (e.target?.files && e.target?.files.length > 0) {
-      setFile(URL.createObjectURL(e.target.files[0]))
-      const formData = new FormData()
-      formData.append('image', e.target?.files[0])
-      await commonFileUpload(formData).then((res: any) => {
-        if (res.data.responseCode === 200) {
-          formik.setFieldValue('image', res.data.data.url)
+      const file = e.target.files[0];
+      const fileSize = file.size / 1024 / 1024; 
+  
+      if (fileSize > 2) {
+        renderMessageToaster(FILE_SIZE,'error');
+        return;
+      }
+  
+      const fileReader = new FileReader();
+      fileReader.onloadend = function () {
+        const result = fileReader.result;
+        if (result && typeof result !== 'string') {
+          const arr = new Uint8Array(result).subarray(0, 4);
+          const header = arr.reduce((acc, byte) => acc + byte.toString(16).padStart(2, '0'), "");
+  
+       
+          const fileType = fileTypeMap[header] || UNKNOWN;
+
+          if (fileType === UNKNOWN) return renderMessageToaster(INVALID_IMAGE,'error');
+ 
+          setFile(URL.createObjectURL(file)); 
+          const formData = new FormData();
+          formData.append('image', file);
+          commonFileUpload(formData).then((res) => {
+            if (res.data.responseCode === 200) {
+              formik.setFieldValue('image', res.data.data.url);
+            }
+          });
+        } else {
+          renderMessageToaster(UNABLE,'error');
         }
-      })
+      };
+  
+      fileReader.readAsArrayBuffer(file);
     }
-  }
+  };
+  
 
   const getCategoryList = () => {
     dispatch(getCategoryRequest({}))
   }
-
-
-
 
   return (
     <form onSubmit={formik.handleSubmit}>
@@ -77,7 +105,7 @@ export default function CategoryTabs() {
                 <input
                   type='text'
                   autoComplete='off'
-                  placeholder='Service Name'
+                  placeholder='Enter Category Name'
                   {...formik.getFieldProps('name')}
                   className={clsx(
                     'form-control bg-transparent',
@@ -120,11 +148,12 @@ export default function CategoryTabs() {
                   />
                 </svg>
                 <div className='fv-row mb-4'>
-                  <label className='form-label'>Name</label>
+                  
                   <input
                     type='file'
                     placeholder='Image'
                     // {...formik.getFieldProps('image')}
+                    accept="image/*" 
                     className={clsx(
                       'form-control bg-transparent',
                       {
@@ -150,7 +179,7 @@ export default function CategoryTabs() {
             </div>
             <div className='spacing-left'>
               <div className='upload-img pl-5'>
-                <img src={file ? file : Dropzone} alt='UploadImage' />
+                <img src={file ? file : Dropzone} alt='UploadImage'/>
               </div>
             </div>
           </Col>
