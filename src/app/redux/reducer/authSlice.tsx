@@ -19,6 +19,7 @@ const authSlice = createSlice({
     },
     loginSuccess: (state, action) => {
       const { _id, name, accessToken } = action.payload.data;
+      localStorage.setItem('token',accessToken);
       toast.success(`Welcome ${name}`);
       return {
         ...state,
