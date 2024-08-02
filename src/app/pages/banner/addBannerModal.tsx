@@ -87,23 +87,34 @@ const BannerModal = (props:any) => {
             </div>
           </Modal.Body>
           <Modal.Footer>
-            <Button variant="secondary" onClick={cancelButton}>
-              Cancel
-            </Button>
-            <Button
-              type="submit"
-              variant="primary"
-              disabled={serviceState.loading || !formik.isValid}
-            >
-              {serviceState.loading ? (
-                <>
-                  <span className="indicator-progress">Please wait...</span>
-                  <span className="spinner-border spinner-border-sm align-middle ms-2"></span>
-                </>
-              ) : (
-                'Save'
-              )}
-            </Button>
+          <div className="d-flex align-items-center gap-5">
+              <Button
+                type="button"
+                className="borderBtn btn-sm w-250"
+                onClick={cancelButton}
+              >
+                Cancel
+              </Button>
+              <button
+                className="blackBtn btn-sm w-250"
+                type="submit"
+
+                // disabled={formik.isSubmitting || !formik.isValid}
+              >
+                {!serviceState.loading && (
+                  <span className="indicator-label">Save</span>
+                )}
+                {serviceState.loading && (
+                  <span
+                    className="indicator-progress"
+                    style={{ display: "block" }}
+                  >
+                    Please wait...
+                    <span className="spinner-border spinner-border-sm align-middle ms-2"></span>
+                  </span>
+                )}
+              </button>
+            </div>
           </Modal.Footer>
         </form>
       </FormikProvider>
