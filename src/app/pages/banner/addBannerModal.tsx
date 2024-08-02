@@ -90,13 +90,13 @@ const BannerModal = (props:any) => {
           <div className="d-flex align-items-center gap-5">
               <Button
                 type="button"
-                className="borderBtn btn-sm w-250"
+                className="borderBtn btn-sm w-200"
                 onClick={cancelButton}
               >
                 Cancel
               </Button>
               <button
-                className="blackBtn btn-sm w-250"
+                className="blackBtn btn-sm w-150"
                 type="submit"
 
                 // disabled={formik.isSubmitting || !formik.isValid}
