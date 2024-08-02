@@ -28,6 +28,8 @@ const BannerModal = (props:any) => {
     ? formik.errors.image 
     : '';
 
+ 
+
   return (
     <Modal show={show}>
       <FormikProvider value={formik}>
@@ -54,7 +56,8 @@ const BannerModal = (props:any) => {
                     validate={schema}
                     label="Type"
                     component={FieldSelectInput}
-                    options={type}
+                    options={type.map(t => ({ label: t, value: t }))}
+
                   />
                 </Col>
                 <Col sm={12} className="mt-4">
