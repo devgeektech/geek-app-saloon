@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Field, FormikProvider, useFormik } from 'formik';
+import { Field, FormikProvider, useFormik, useFormikContext } from 'formik';
 import { Button, Col, Container, Modal, Row } from 'react-bootstrap';
 import * as Yup from 'yup';
 import clsx from 'clsx';
@@ -28,6 +28,7 @@ const BannerModal = (props:any) => {
     ? formik.errors.image 
     : '';
 
+    
  
 
   return (
@@ -57,6 +58,8 @@ const BannerModal = (props:any) => {
                     label="Type"
                     component={FieldSelectInput}
                     options={type.map(t => ({ label: t, value: t }))}
+                    onChange={formik.handleChange}
+                    value={formik.values.type}
 
                   />
                 </Col>

@@ -7,6 +7,7 @@ const FieldSelectInput = ({ field, form, ...props }: any) => {
   const error = getIn(form.errors, field.name);
   const touch = getIn(form.touched, field.name);
 
+
   return (
     <div>
       <Form.Group className="mb-3" controlId={field.name}>
@@ -14,13 +15,15 @@ const FieldSelectInput = ({ field, form, ...props }: any) => {
 
         <Form.Select
           name={props.name}
-          onChange={props.handleCategoryChange}
+          onChange={props.handleCategoryChange ? props.handleCategoryChange  : field.onChange}
           disabled={props.disabled}
+          value={field.value}
         >
           <option value="">{props["label"]}</option>
           {props?.options?.length != 0 ? (
             props?.options?.map((e: any, i: number) => {
               return (
+              
                 <option key={i} value={e.value ? e.value : e._id}>
                   {e.label ? e.label : e.name}
                 </option>
