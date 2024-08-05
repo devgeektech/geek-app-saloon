@@ -5,8 +5,10 @@ import {
   addCateogryFailure,
   getCategoryListSuccess,
   getCategoryListFailure,
+  deleteCategorySuccess,
+  deleteCategoryFailure,
 } from '../reducer/categorySlice'
-import { createCategory, getCategory } from '../../services/_requests' // Your API functions
+import { createCategory, deleteCategory, getCategory } from '../../services/_requests'
 
 const call: any = Effects.call
 
@@ -23,7 +25,6 @@ function* addcategorySaga(action) {
 function* getCategorySaga(action) {
   try {
     const { search, skip, limit } = action.payload;
-
     const createCategoryRes = yield call(getCategory, search, skip, limit)
     yield put(getCategoryListSuccess(createCategoryRes.data))
   } catch (error: any) {
@@ -31,4 +32,15 @@ function* getCategorySaga(action) {
   }
 }
 
-export { addcategorySaga, getCategorySaga }
+function* deleteCategorySaga(action) {
+  console.log("actionactionaction", action);
+  try {
+    const { id } = action.payload;
+    const response = yield call(deleteCategory, id)
+    yield put(deleteCategorySuccess(response.data))
+  } catch (error: any) {
+    yield put(deleteCategoryFailure(error.response))
+  }
+}
+
+export { addcategorySaga, getCategorySaga, deleteCategorySaga}

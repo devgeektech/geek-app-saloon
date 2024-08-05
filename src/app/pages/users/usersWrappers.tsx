@@ -2,20 +2,18 @@ import { useIntl } from "react-intl";
 import React, { useEffect, useState } from "react";
 import { PageTitle } from "../../../_metronic/layout/core";
 import UserIcon from "../../../_metronic/images/UserIcon.svg";
-import pencilEditIcon from "../../../_metronic/images/pencilEditIcon.svg";
 import deleteIcon from "../../../_metronic/images/deleteIcon.svg";
 import searchIcon from "../../../_metronic/images/searchIcon.svg";
-import Jhondeo from "../../../_metronic/images/jhonDeo.svg";
 import ModalInner from "../../modals/deleteModal";
-
 import "./userStyle.scss";
-import { Dropdown, Tab, Table, Tabs } from "react-bootstrap";
+import {  Table } from "react-bootstrap";
 import { deleteUserApi, getUsersList } from "../../services/_requests";
 import { useNavigate } from "react-router-dom";
-import { ToastContainer, toast } from "react-toastify";
+import {  toast } from "react-toastify";
 import Pagination from "../../components/pagenation/index";
 import NoDataFound from "../../components/common/NoDataFound";
 import dummyImg from '../../../_metronic/images/dummy.webp'
+import { useDebounce } from "../../../_metronic/helpers";
 
 
 const UsersWrapper = () => {
@@ -28,12 +26,13 @@ const UsersWrapper = () => {
   const [totalRecord, setTotalRecord] = useState(0);
   const [limit, setLimit] = useState(10)
   const [skip, setSkip] = useState(0)
+  const [debounceVal, setDebounceVal] = useState("");
 
   const navigate = useNavigate();
 
   useEffect(() => {
     getUserList();
-  }, [searchUser, skip]);
+  }, [debounceVal, skip]);
 
   const getUserList = () => {
     getUsersList(searchUser, skip, limit).then((res: any) => {
@@ -45,12 +44,10 @@ const UsersWrapper = () => {
     });
   };
 
-
   const paginitionClbk = (val?: any) => {
     let skip1 = (val - 1) * limit
     setSkip(skip1)
   }
-
 
   const deleteOpenModal = (id: string) => {
     setModalShow(true);
@@ -86,6 +83,12 @@ const UsersWrapper = () => {
       getUserList();
     }
   };
+  
+  const debounceValue = useDebounce(searchUser, 1000);
+
+  useEffect(() => {
+    setDebounceVal(searchUser);
+  }, [debounceValue]);
 
   return (
     <>
@@ -169,12 +172,7 @@ const UsersWrapper = () => {
                           singleUserDetails(user);
                         }}
                       >
-                        {/* <td>
-                              <input type="checkbox" />
-                            </td> */}
-                        {/* <td>{index + 1}</td> */}
-                        {/* <td>545151511451</td> */}
-                        <td>{user?.name}</td>
+                        <td>{user?.name ? user?.name : "N/A"}</td>
                         <td>
                           <img
                             src={user.profilePicture

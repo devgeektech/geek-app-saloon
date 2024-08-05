@@ -1,21 +1,32 @@
-import React, {useState} from 'react'
+import React, {useMemo, useState} from 'react'
 import './Pagenation.scss'
 
-export default function Pagination(props: any) {
+const Pagination = (props: any)  => {
   const [pageNumber, setPageNumber] = useState(1)
   const [sliceState, setSliceState] = useState(2)
-
+  const pageCount = Math.ceil(props.totalRecord / 10);
+  console.log("pageCount", pageCount)
 
   const paginationPage = (page?: any) => {
+    console.log("page", page);
     setPageNumber(page)
-    props.paginitionClbk(page)
+    props.paginitionClbk(page);
   }
 
+  const previousButton = () => {
+    if(pageNumber > 0) {
+      setPageNumber(pageNumber - 1);
+      props.paginitionClbk(pageNumber - 1)
+    }
+  }
 
-  const previousButton = () => {}
-  const forwardButton = () => {}
+  const forwardButton = () => {
+    setPageNumber(pageNumber + 1);
+    props.paginitionClbk(pageNumber + 1)
+  }
 
-  let total = props.totalRecord ? props.totalRecord : 10
+  let total = props.totalRecord ? props.totalRecord : 10;
+  console.log("total", total)
   let limitValue = props.limit ? props.limit : 1
 
   return (
@@ -27,6 +38,7 @@ export default function Pagination(props: any) {
               onClick={() => {
                 previousButton()
               }}
+              disabled={pageNumber === 1}
             >
               <svg
                 xmlns='http://www.w3.org/2000/svg'
@@ -47,9 +59,9 @@ export default function Pagination(props: any) {
                 />
               </svg>
             </button>
-            {Array(Math.ceil(10))
+
+            {Array.from({length: pageCount})
               .fill('')
-              .slice(0, sliceState)
               .map((item: any, index: any) => {
                 return (
                   <span
@@ -68,6 +80,7 @@ export default function Pagination(props: any) {
               onClick={() => {
                 forwardButton()
               }}
+              disabled={pageNumber === pageCount}
             >
               <svg
                 xmlns='http://www.w3.org/2000/svg'
@@ -94,3 +107,5 @@ export default function Pagination(props: any) {
     </>
   )
 }
+
+export default React.memo(Pagination);

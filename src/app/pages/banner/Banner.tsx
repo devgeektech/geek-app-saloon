@@ -2,46 +2,41 @@ import { useIntl } from "react-intl";
 import { PageTitle } from "../../../_metronic/layout/core";
 import coupon from "../../../_metronic/images/coupon.svg";
 import searchIcon from "../../../_metronic/images/searchIcon.svg";
-import { Col, Container, Form, Modal, Row, Table } from "react-bootstrap";
+import { Table } from "react-bootstrap";
 import Pagination from "../../components/pagenation";
-import { useEffect, useState } from "react";
-import { deleteBanner, getBanner, getBanners } from "../../services/_requests";
+import { useCallback, useEffect, useState } from "react";
+import { deleteBanner, deleteVender, getBanner, getBanners } from "../../services/_requests";
 import pencilEditIcon from "../../../_metronic/images/pencilEditIcon.svg";
 import deleteIcon from "../../../_metronic/images/deleteIcon.svg";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-// import { toAbsoluteUrl } from "../../../_metronic/helpers";
-import clsx from "clsx";
 import { addBanner, commonFileUpload } from "../../services/_requests";
 import "./styles.scss"
-// import dummyImage from "../../../_metronic/images/dummy.webp"
-import ModalInner from "../../modals/deleteModal";
 import { toast } from "react-toastify";
 import NoDataFound from "../../components/common/NoDataFound";
 import BannerModal from "./addBannerModal";
-import { closeModalRequest  ,openModalRequest,
-} from "../../redux/reducer/modalSlice";
-import { useDispatch, useSelector } from "react-redux";
-import { getServiceRequest, serviceRequest } from "../../redux/reducer/serviceSlice";
-import { renderMessageToaster } from "../../utils/common";
-import { FILE_SIZE, INVALID_IMAGE, UNABLE, UNKNOWN } from "../../utils/ErrorMessages";
-import { fileTypeMap } from "../../utils/const";
+import moment from "moment";
+import dummyImg from "../../../_metronic/images/dummy.webp";
+import { useDebounce } from "../../../_metronic/helpers";
+import ModalInner from "../../modals/deleteModal";
 
 const BannerWrapper = () => {
-  const dispatch = useDispatch();
   const [banners, setBanners] = useState([]);
   const [file, setFile] = useState<any>(null);
-  const [show, setShow] = useState(true)
   const [modalShow, setModalShow] = useState(false);
   const intl = useIntl();
-  const [deleteUserId, setDeleteUserId] = useState("");
-  const [search, setSearch] = useState("");
+  const [id, setId] = useState("");
   const [limit, setLimit] = useState(10)
   const [skip, setSkip] = useState(0);
+  const { REACT_APP_IMAGE_URL } = process.env;
+  const [searchValue, setSearchValue] = useState("");
+  const [debounceValue, setDebounceValue] = useState("");
+  const [totalRecord, setTotalRecord] = useState(0);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
 
   useEffect(() => {
     getBannersList();
-  }, []);
+  }, [debounceValue, skip]);
 
   const initialValues = {
     name: '',
@@ -51,7 +46,7 @@ const BannerWrapper = () => {
 
   const serviceSchema = Yup.object().shape({
     name: Yup.string().required('Required'),
-    image: Yup.string().required('Required'),
+    // image: Yup.string().required('Required'),
     type: Yup.string().required('Required'),
   })
 
@@ -59,74 +54,95 @@ const BannerWrapper = () => {
     initialValues,
     validationSchema: serviceSchema,
     onSubmit: async (values, { setStatus, setSubmitting }) => {
-      addBanner(values).then((res: any) => {
+      try {
+        console.log("values", values);
+        const imageUrl = await upload(file);
+        console.log("imageUrl", imageUrl);
+        const data = { ...values, image: imageUrl };
+        console.log("data", data);
+        await addBanner(data);
         closeBannerModal();
         getBannersList();
-        formik.resetForm();
-        setTimeout(() => {
-          setFile(null);
-        }, 1000);
-      }).catch((error) => {
-        toast.error(error.response.data.responseMessage);
-      });
+      } catch (error:any) {
+        console.error(error);
+        toast.error(error.message || 'An error occurred');
+      } finally {
+        setSubmitting(false);
+      }
     },
   });
 
-
-
-
   const getBannersList = async () => {
-    await getBanners(search, skip, limit).then((res: any) => {
-      setBanners(res.data?.data);
-    });
+    try {
+      await getBanners(searchValue, skip, limit).then((res: any) => {
+        setBanners(res?.data?.data);
+        setTotalRecord(res.data?.totalRecord)
+      });
+    }
+    catch (error) {
+      console.log(error)
+    }
   }
 
-  const handleFileChange = async (e: any) => {
-    if (e.target?.files && e.target?.files.length > 0) {
-      const file = e.target.files[0];
-      const fileSize = file.size / 1024 / 1024; 
-  
-      if (fileSize > 2) {
-        renderMessageToaster(FILE_SIZE,'error');
-        return;
-      }
-  
-      const fileReader = new FileReader();
-      fileReader.onloadend = function () {
-        const result = fileReader.result;
-        if (result && typeof result !== 'string') {
-          const arr = new Uint8Array(result).subarray(0, 4);
-          const header = arr.reduce((acc, byte) => acc + byte.toString(16).padStart(2, '0'), "");
-  
-       
-          const fileType = fileTypeMap[header] || UNKNOWN;
+  const handleFileChange = async (file: any) => {
+    console.log("filefilefilefile", file);
+    setFile(file);
 
-          if (fileType === UNKNOWN) return renderMessageToaster(INVALID_IMAGE,'error');
- 
-          setFile(URL.createObjectURL(file)); 
-          const formData = new FormData();
-          formData.append('image', file);
-          commonFileUpload(formData).then((res) => {
-            if (res.data.responseCode === 200) {
-              formik.setFieldValue('image', res.data.data.url);
-            }
-          });
-        } else {
-          renderMessageToaster(UNABLE,'error');
-        }
-      };
-  
-      fileReader.readAsArrayBuffer(file);
+    // if (e.target?.files && e.target?.files.length > 0) {
+    //   const file = e.target.files[0];
+    //   const fileSize = file.size / 1024 / 1024;
+
+    //   if (fileSize > 2) {
+    //     renderMessageToaster(FILE_SIZE, 'error');
+    //     return;
+    //   }
+
+    //   const fileReader = new FileReader();
+    //   fileReader.onloadend = function () {
+    //     const result = fileReader.result;
+    //     if (result && typeof result !== 'string') {
+    //       const arr = new Uint8Array(result).subarray(0, 4);
+    //       const header = arr.reduce((acc, byte) => acc + byte.toString(16).padStart(2, '0'), "");
+
+    //       const fileType = fileTypeMap[header] || UNKNOWN;
+
+    //       if (fileType === UNKNOWN) return renderMessageToaster(INVALID_IMAGE, 'error');
+
+    //       setFile(URL.createObjectURL(file));
+    //       const formData = new FormData();
+    //       formData.append('image', file);
+    //       commonFileUpload(formData).then((res) => {
+    //         if (res.data.responseCode === 200) {
+    //           formik.setFieldValue('image', res.data.data.url);
+    //         }
+    //       });
+    //     } else {
+    //       renderMessageToaster(UNABLE, 'error');
+    //     }
+    //   };
+
+    //   fileReader.readAsArrayBuffer(file);
+    // }
+  };
+
+  const upload = async (file: File): Promise<string> => {
+    try {
+      const formData = new FormData();
+      formData.append('image', file);
+      const response = await commonFileUpload(formData);
+      if (response.data.responseCode === 200) {
+        return response.data.data.url;
+      } else {
+        throw new Error('Failed to upload image');
+      }
+    } catch (error) {
+      console.error(error);
+      throw new Error('Failed to upload image');
     }
   };
+  
 
-  const tags = ["TOP", "MIDDLE",'BOTTOM'];
-  const cancelButton = () => {
-    setShow(false); 
-    setModalShow(false)
-  };
-
-
+  const tags = ["TOP", "MIDDLE", 'BOTTOM'];
 
   const editBanner = async (id: any) => {
     await getBanner(id).then((res) => {
@@ -135,56 +151,58 @@ const BannerWrapper = () => {
       setFile(`${process.env.REACT_APP_IMAGE_URL}${image}`)
       addBannerModal()
     }).catch((error) => { console.log(error) })
-
   }
 
-  const getImageUrl = (imageUrl) => {
-    const baseUploadPath = process.env.REACT_APP_IMAGE_URL;
+  const deleteUser: any = async (event: any) => {
+    if (event) {
+      await deleteBanner(id).then((res: any) => {
+        if (res.data.responseCode === 200) {
+          toast.success("Banner Deleted Successfully");
+          setShowDeleteModal(false);
+          getBannersList();
+        }
+      });
+      setShowDeleteModal(false);
+      getBannersList();
+    }
+  };
+
+  const getImageUrl = (imageUrl: string) => {
     if (imageUrl.startsWith('upload')) {
-      return baseUploadPath + imageUrl;
+      return REACT_APP_IMAGE_URL + imageUrl;
     } else {
       return imageUrl;
     }
   }
 
-  const deleteUser: any = async (event: any) => {
-    if (event === true) {
-      await deleteBanner(deleteUserId)
-        .then((res: any) => {
-          getBanners(search, skip, limit)
-          toast.success("Banner Deleted Successfully");
-          setModalShow(false);
-          getBannersList();
-        }).catch((err) => {
-          console.log(err)
-        })
-    }
-  };
-
-  // Delete modal dialog
   const deleteOpenModal = (id: string) => {
-    setModalShow(true);
-    setDeleteUserId(id);
-    setFile(null)
-  };
-
-  const deleteCloseModal = () => {
-    setModalShow(false);
+    setShowDeleteModal(true);
+    setId(id);
   };
 
   const addBannerModal = () => {
-    setShow(true); 
     setModalShow(true)
-  
   };
 
   const closeBannerModal = () => {
-    setShow(false);
+    setModalShow(false)
     formik.resetForm();
-    setTimeout(() => {
-      setFile(null)
-    }, 500);
   };
+
+  const closeDeleteModal = () => {
+    setShowDeleteModal(false);
+    setId('');
+  }
+
+  const debounceVal = useDebounce(searchValue, 1000);
+
+  useEffect(() => {
+    setDebounceValue(searchValue);
+  }, [debounceVal]);
+
+  const paginitionClbk = useCallback((val: number) => {
+    setSkip((val - 1) * limit);
+  }, [limit]);
 
   return (
     <>
@@ -210,125 +228,84 @@ const BannerWrapper = () => {
                 type="text"
                 className="form-control"
                 placeholder="Search..."
+                onChange={(e) => setSearchValue(e.target.value)}
               />
               <button>
                 <img src={searchIcon} alt="searchIcon" />
               </button>
             </div>
-            {/* <div className='filterWrapper'>
-              <Dropdown>
-                <Dropdown.Toggle
-                  className='filterDropdown'
-                  variant='success'
-                  id='dropdown-basic'
-                >
-                  Fillter
-                </Dropdown.Toggle>
-                <Dropdown.Menu>
-                  <Dropdown.Item href='#/action-1'>Action</Dropdown.Item>
-                  <Dropdown.Item href='#/action-2'>Another action</Dropdown.Item>
-                  <Dropdown.Item href='#/action-3'>Something else</Dropdown.Item>
-                </Dropdown.Menu>
-              </Dropdown>
-            </div> */}
           </div>
-          <div className="tableWrapper mb-5">
-            <>
-              <Table responsive className="table table-bordered coupons">
-                <thead>
-                  <tr>
-                    {/* <th>
-              <input type='checkbox' />
-            </th> */}
-                    {/* <th>Sr no</th> */}
-                    <th>Title</th>
-                    <th>Image</th>
-
-                    <th>Created At</th>
-                    <th>Type</th>
-                    <th>Action</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {banners &&
-                    banners.length > 0 &&
-                    banners.map((item: any, index) => (
-                      <tr key={`test${index}`}>
-                        {/* <td>
-                  <input type='checkbox' />
-                </td> */}
-                        {/* <td>{`${index + 1}`}</td> */}
-                        <td>{item.name}</td>
-                        <td>
-                          <img
-                            className="profileImg"
-                            src={getImageUrl(item.image)}
-                            alt=""
-                          />
-                        </td>
-
-                        <td>{item.createdAt}</td>
-                        <td>{item.type}</td>
-                        {/* <td className="active">
-                          <label className="switch">
-                            <input type="checkbox" />
-                            <span className="slider round"></span>
-                          </label>
-                        </td> */}
-                        <td>
-                          <div className="d-flex">
-                            <button onClick={() => { editBanner(item._id) }} className="editBtn">
-                              <img src={pencilEditIcon} alt="pencilEditIcon" />
-                            </button>
-                            <button onClick={() => { deleteOpenModal(item._id) }} className="deleteBtn">
-                              <img src={deleteIcon} alt="deleteIcon" />
-                            </button>
-                          </div>
-                        </td>
-                      </tr>
-                    ))}
-                </tbody>
-              </Table>
-              {banners.length === 0 && <>
-                <NoDataFound />
-              </>}
-              {banners.length > 10 && (
-                <div className="mt-5">
-                  <Pagination />
-                </div>
-              )}
-            </>
-            <div className="select-all mt-4 d-flex align-items-center">
-              {/* <label className='d-flex align-items-center gap-2'>
-                <input type='checkbox'></input>select-all
-              </label> */}
-            </div>
+          <div className="tableWrapper my-5">
+            <Table responsive className="table table-bordered coupons">
+              <thead>
+                <tr>
+                  <th>Sr no</th>
+                  <th>Title</th>
+                  <th>Image</th>
+                  <th>Type</th>
+                  <th>Created At</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                {banners &&
+                  banners.length > 0 &&
+                  banners.map((item: any, index) => (
+                    <tr key={item?._id}>
+                      <td>{`${index + 1}`}</td>
+                      <td>{item?.name ? item.name : 'N/A'}</td>
+                      <td>
+                        <img
+                          className="profileImg"
+                          src={item.image ? getImageUrl(item.image) : dummyImg}
+                          alt=""
+                        />
+                      </td>
+                      <td>{item.type}</td>
+                      <td>{moment(item.createdAt).format("dddd, MMM DD, h:mm a")}</td>
+                      <td>
+                        <div className="d-flex">
+                          {/* <button onClick={() => { editBanner(item._id) }} className="editBtn">
+                            <img src={pencilEditIcon} alt="pencilEditIcon" />
+                          </button> */}
+                          <button onClick={() => { deleteOpenModal(item._id) }} className="deleteBtn">
+                            <img src={deleteIcon} alt="deleteIcon" />
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+              </tbody>
+            </Table>
+            {banners.length === 0 && <>
+              <NoDataFound />
+            </>}
           </div>
+
+          {totalRecord > 10 && <Pagination
+            limit={limit}
+            totalRecord={totalRecord}
+            paginitionClbk={paginitionClbk}
+          />}
+
         </div>
       </div>
-
-{/* 
+      {modalShow && (
+        <BannerModal
+          show={modalShow}
+          schema={serviceSchema}
+          file={file}
+          formik={formik}
+          cancelButton={closeBannerModal}
+          handleFileChange={handleFileChange}
+          type={tags}
+        ></BannerModal>
+      )}
       <ModalInner
-        deleteUserClbk={(e: any) => {
-          deleteUser(e);
-        }}
-        openModal={modalShow}
-        closeModal={deleteCloseModal}
-      /> */}
-
-<>
-        {modalShow && (
-          <BannerModal
-            show={modalShow}
-            schema={serviceSchema}
-            file={file}
-            formik={formik}
-            cancelButton={cancelButton}
-            handleFileChange={handleFileChange}
-            type={tags}
-          ></BannerModal>
-        )}
-</>
+        deleteUserClbk={deleteUser}
+        openModal={showDeleteModal}
+        closeModal={closeDeleteModal}
+      />
     </>
   );
 };

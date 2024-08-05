@@ -1,15 +1,13 @@
-import React, {useEffect, useState} from 'react'
-import {Row, Col, Table, Tabs} from 'react-bootstrap'
+import React, { useState} from 'react'
+import {Row, Col} from 'react-bootstrap'
 import Dropzone from '../../../_metronic/images/Dropzone.png'
 import './style.scss'
-import ModalInner from '../../modals/deleteModal'
-import {toast} from 'react-toastify'
 import {useFormik} from 'formik'
 import * as Yup from 'yup'
 import clsx from 'clsx'
 import {commonFileUpload} from '../../services/_requests'
 import {addCategoryRequest, getCategoryRequest} from '../../redux/reducer/categorySlice'
-import {useDispatch, useSelector} from 'react-redux'
+import {useDispatch} from 'react-redux'
 import { renderMessageToaster } from '../../utils/common'
 import { FILE_SIZE, INVALID_IMAGE, UNABLE, UNKNOWN } from '../../utils/ErrorMessages'
 import { fileTypeMap } from '../../utils/const'
@@ -37,8 +35,10 @@ export default function CategoryTabs() {
     initialValues,
     validationSchema: categorySchema,
     onSubmit: async (values, {setStatus, setSubmitting}) => {
-      dispatch(addCategoryRequest(values))
-      getCategoryList()
+      dispatch(addCategoryRequest(values));
+      getCategoryList();
+      formik.resetForm();
+      setFile("");
     },
   })
 
@@ -59,7 +59,6 @@ export default function CategoryTabs() {
         if (result && typeof result !== 'string') {
           const arr = new Uint8Array(result).subarray(0, 4);
           const header = arr.reduce((acc, byte) => acc + byte.toString(16).padStart(2, '0'), "");
-  
        
           const fileType = fileTypeMap[header] || UNKNOWN;
 

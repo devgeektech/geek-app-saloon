@@ -1,6 +1,4 @@
-import Button from 'react-bootstrap/Button'
 import Modal from 'react-bootstrap/Modal'
-import React, {useState} from 'react'
 import DeleteIcon from '../../../_metronic/images/delete_Icon.svg'
 import './style.scss'
 
@@ -60,9 +58,10 @@ function MyVerticallyCenteredModal(props) {
 }
 
 export default function ModalInner({openModal, closeModal, deleteUserClbk}) {
+  console.log("closeModal", closeModal);
   return (
     <>
-      <MyVerticallyCenteredModal  show={openModal} onHide={closeModal} clbk={deleteUserClbk} />
+      <MyVerticallyCenteredModal show={openModal} onHide={closeModal} clbk={deleteUserClbk} />
     </>
   )
 }

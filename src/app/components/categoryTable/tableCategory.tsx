@@ -5,33 +5,18 @@ import { Table } from 'react-bootstrap'
 import ModalInner from '../../modals/deleteModal'
 import './style.scss'
 import { useDispatch, useSelector } from 'react-redux'
-import { getCategoryRequest } from '../../redux/reducer/categorySlice'
+import { closeDeleteModal, deleteCategoryRequest, getCategoryRequest, setDeleteModal, setSelectedCategoryId } from '../../redux/reducer/categorySlice'
 import dummyImg from '../../../_metronic/images/dummy.webp'
 
 export default function TableCategory() {
   const dispatch = useDispatch()
-  const [modalShow, setModalShow] = useState(false)
-  const [categories, setCategories] = useState([])
-  const { categoryList } = useSelector((state: any) => state.category);
+  const { categoryList, selectedCategoryId, showDeleteModal } = useSelector((state: any) => state.category);
 
-
-  useEffect(() => {
-    setCategories(categoryList)
-  }, [categoryList])
-
-
-  const deleteOpenModal = () => {
-
-    setModalShow(true)
+  const deleteUser = (event: any) => {
+    if(event){
+      dispatch(deleteCategoryRequest({id: selectedCategoryId}))
+    }
   }
-
-  const deleteCloseModal = () => {
-
-    setModalShow(false)
-  }
-
-  const deleteUser = (event: any) => { }
-
 
   function getImageUrl(imageUrl) {
     const baseUploadPath = process.env.REACT_APP_IMAGE_URL;
@@ -54,9 +39,9 @@ export default function TableCategory() {
           </tr>
         </thead>
         <tbody>
-          {categories &&
-            categories.length > 0 &&
-            categories.map((listValue: any, index: number) => {
+          {categoryList &&
+            categoryList.length > 0 &&
+            categoryList.map((listValue: any, index: number) => {
               return (
                 <tr key={`cat${index}`}>
                   <td>{listValue?.name}</td>
@@ -79,7 +64,10 @@ export default function TableCategory() {
                       <button className='editBtn'>
                         <img src={pencilEditIcon} alt='pencilEditIcon' />
                       </button>
-                      <button className='deleteBtn' onClick={() => deleteOpenModal()}>
+                      <button className='deleteBtn' onClick={() => {
+                        dispatch(setDeleteModal())
+                        dispatch(setSelectedCategoryId(listValue?._id))
+                      }}>
                         <img src={deleteIcon} alt='deleteIcon' />
                       </button>
                       <button className='deleteBtn'>
@@ -106,11 +94,9 @@ export default function TableCategory() {
         </tbody>
       </Table>
       <ModalInner
-        deleteUserClbk={(e: any) => {
-          deleteUser(e)
-        }}
-        openModal={modalShow}
-        closeModal={deleteCloseModal}
+        deleteUserClbk={deleteUser}
+        openModal={showDeleteModal}
+        closeModal={() => dispatch(closeDeleteModal())}
       />
     </>
   )

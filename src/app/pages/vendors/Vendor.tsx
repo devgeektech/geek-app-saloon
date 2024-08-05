@@ -21,6 +21,7 @@ import * as Yup from 'yup'
 import clsx from 'clsx'
 import { commonFileUpload } from '../../services/_requests'
 import NoDataFound from '../../components/common/NoDataFound'
+import { useDebounce } from '../../../_metronic/helpers'
 
 const ShopWrapper = () => {
   const intl = useIntl()
@@ -34,10 +35,11 @@ const ShopWrapper = () => {
   const [deleteUserId, setDeleteUserId] = useState("");
   const [searchUser, setSearchUser] = useState("");
   const [show, setShow] = useState(false)
+  const [debounceVal, setDebounceVal] = useState("");
 
   useEffect(() => {
     vendorsList()
-  }, [skip, searchUser])
+  }, [skip, debounceVal])
 
   const initialValues = {
     name: '',
@@ -68,8 +70,13 @@ const ShopWrapper = () => {
     initialValues,
     validationSchema: serviceSchema,
     onSubmit: async (values, { setStatus, setSubmitting }) => {
-
-    },
+      try {
+        
+      }
+      catch (error) {
+        console.log(error);
+      }
+    },  
   })
 
   const vendorsList = () => {
@@ -77,8 +84,6 @@ const ShopWrapper = () => {
       if (res.status === 200) {
         setVendors(res.data?.data)
         setTotalRecord(res.data?.totalRecord)
-      } else {
-
       }
     })
   }
@@ -129,6 +134,11 @@ const ShopWrapper = () => {
     setShow(false);
   };
 
+  const debounceValue = useDebounce(searchUser, 1000);
+
+  useEffect(() => {
+    setDebounceVal(searchUser);
+  }, [debounceValue]);
 
   return (
     <>
@@ -228,7 +238,6 @@ const ShopWrapper = () => {
                       </td>
                     </tr>
                   ))}
-
               </tbody>
 
             </Table>
@@ -258,7 +267,6 @@ const ShopWrapper = () => {
         openModal={modalShow}
         closeModal={deleteCloseModal}
       />
-
 
       <>
         <Modal show={show} onHide={closeBannerModal}>

@@ -10,6 +10,7 @@ export const REQUEST_PASSWORD_URL = `${API_URL}/auth/forgotPassword`
 export const ADMIN_LOGIN_URL = `${API_URL}/auth/admin/login`
 export const CREATE_CATEGORY = `${API_URL}/category`
 export const GET_CATEGORY = `${API_URL}/category`
+export const DELETE_CATEGORY = `${API_URL}/category`
 export const CREATE_SUB_CATEGORY = `${API_URL}/subcategory`
 export const GET_SUB_CATEGORY = `${API_URL}/subcategory`
 
@@ -84,6 +85,10 @@ export function getCategory(search: string, skip: number, limit: number) {
   return axios.get(GET_CATEGORY + `?search=${search}&skip=${skip}&limit=${limit}`, {})
 }
 
+export function deleteCategory(id: string) {
+  return axios.delete(DELETE_CATEGORY + `/${id}`, {})
+}
+
 export function createSubCategory(id: string, name: string, image: string) {
   return axios.post(CREATE_SUB_CATEGORY, { id, name, image, })
 }
@@ -123,7 +128,7 @@ export function deleteUserApi(id: string) {
 }
 
 export function addBanner(body: any) {
-  return axios.post(BANNER, { body })
+  return axios.post(BANNER, body)
 }
 export function getBanners(search: string, skip: number, limit: number) {
   return axios.get(BANNER + `?search=${search}&skip=${skip}&limit=${limit}`, {})
@@ -134,7 +139,6 @@ export function getBanner(id) {
 export function deleteBanner(id) {
   return axios.delete(BANNER + `/${id}`)
 }
-
 
 
 export function commonFileUpload(file: any) {
@@ -208,6 +212,8 @@ export function getAllServices(search: string, skip: number, limit: number) {
 export function deleteVender(id: string) {
   return axios.delete(DELETE_VENDOR + `/${id}`, {})
 }
+
+
 
 // export function addBanner(body: any) {
 //   return axios.post(ADD_BANNER, { body })
