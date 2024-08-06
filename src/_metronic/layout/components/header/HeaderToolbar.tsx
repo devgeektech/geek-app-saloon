@@ -60,8 +60,8 @@ const HeaderToolbar = () => {
           </Dropdown.Toggle>
 
           <Dropdown.Menu>
-            <Dropdown.Item onClick={logOut}>Logout</Dropdown.Item>
             <Dropdown.Item >Profile</Dropdown.Item>
+            <Dropdown.Item onClick={logOut}>Log out</Dropdown.Item>
           </Dropdown.Menu>
         </Dropdown>
       </div>

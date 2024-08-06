@@ -1,17 +1,8 @@
 import { toast } from "react-toastify";
 
-const toastOptions: any = {
-  position: "top-right",
-  autoClose: 2000,
-  hideProgressBar: false,
-  closeOnClick: true,
-  pauseOnHover: true,
-  draggable: false,
-};
-
 export const renderMessageToaster = (message: string, messageType: string) => {
-  if (messageType === "error") return toast.error(message, toastOptions);
-  else return toast.success(message, toastOptions);
+  if (messageType === "error") return toast.error(message);
+  else return toast.success(message);
 };
 
 export function getCroppedImg(image: any, crop: any, fileName: string) {
@@ -54,4 +45,17 @@ export function getCroppedImg(image: any, crop: any, fileName: string) {
       1
     );
   });
+}
+
+export const getImageUrl = (imageUrl: string) => {
+  const { REACT_APP_IMAGE_URL } = process.env;
+  if (imageUrl.startsWith('upload')) {
+    return REACT_APP_IMAGE_URL + imageUrl;
+  } else {
+    return imageUrl;
+  }
+}
+
+export const capitalizeFirstLetter = (string) => {
+  return string?.charAt(0)?.toUpperCase() + string?.slice(1);
 }

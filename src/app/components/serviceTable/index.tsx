@@ -7,6 +7,7 @@ import ModalInner from '../../modals/deleteModal'
 import { useDispatch, useSelector } from 'react-redux'
 import { closeModalRequest, openModalRequest } from '../../redux/reducer/modalSlice'
 import { editServiceRequestData } from '../../redux/reducer/serviceSlice'
+import { getImageUrl } from '../../utils/common'
 
 export default function Servicetable(props: any) {
   const dispatch = useDispatch()
@@ -26,15 +27,6 @@ export default function Servicetable(props: any) {
   const deleteOpenModal = () => {
 
     // setModalShow(true)
-  }
-
-  const getImageUrl = (imageUrl) => {
-    const baseUploadPath = process.env.REACT_APP_IMAGE_URL;
-    if (imageUrl.startsWith('upload')) {
-      return baseUploadPath + imageUrl;
-    } else {
-      return imageUrl;
-    }
   }
 
   return (

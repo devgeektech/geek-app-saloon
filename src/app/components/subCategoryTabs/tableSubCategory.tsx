@@ -10,6 +10,7 @@ import { Dropdown, Tab, Table, Tabs } from 'react-bootstrap'
 import ModalInner from '../../modals/deleteModal'
 import { useDispatch, useSelector } from 'react-redux'
 import dummyImg from '../../../_metronic/images/dummy.webp'
+import { getImageUrl } from '../../utils/common'
 
 export default function TableSubCategory() {
   const dispatch = useDispatch()
@@ -29,14 +30,6 @@ export default function TableSubCategory() {
     setModalShow(true)
   }
 
-  function getImageUrl(imageUrl) {
-    const baseUploadPath = process.env.REACT_APP_IMAGE_URL;
-    if (imageUrl.startsWith('upload')) {
-      return baseUploadPath + imageUrl;
-    } else {
-      return imageUrl;
-    }
-  }
 
   return (
     <div>

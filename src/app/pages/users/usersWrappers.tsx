@@ -10,8 +10,8 @@ import {  Table } from "react-bootstrap";
 import { deleteUserApi, getUsersList } from "../../services/_requests";
 import { useNavigate } from "react-router-dom";
 import {  toast } from "react-toastify";
-import Pagination from "../../components/pagenation/index";
-import NoDataFound from "../../components/common/NoDataFound";
+import Pagination from "../../components/common/pagination/index";
+import NoDataFound from "../../components/common/noDataFound/NoDataFound";
 import dummyImg from '../../../_metronic/images/dummy.webp'
 import { useDebounce } from "../../../_metronic/helpers";
 
@@ -126,23 +126,6 @@ const UsersWrapper = () => {
                 <img src={searchIcon} alt="searchIcon" />
               </button>
             </div>
-            {/* <div className='filterWrapper'>
-                  <Dropdown>
-                    <Dropdown.Toggle
-                      className='filterDropdown'
-                      variant='success'
-                      id='dropdown-basic'
-                    >
-                      Fillter
-                    </Dropdown.Toggle>
-
-                    <Dropdown.Menu>
-                      <Dropdown.Item href='#/action-1'>Action</Dropdown.Item>
-                      <Dropdown.Item href='#/action-2'>Another action</Dropdown.Item>
-                      <Dropdown.Item href='#/action-3'>Something else</Dropdown.Item>
-                    </Dropdown.Menu>
-                  </Dropdown>
-                </div> */}
           </div>
           <div className="tableWrapper my-5">
             <Table responsive className="table table-bordered">

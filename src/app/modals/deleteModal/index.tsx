@@ -42,11 +42,6 @@ function MyVerticallyCenteredModal(props) {
           </button>
           <button
            onClick={props.onHide}
-            // onClick={() => {
-            //   // eslint-disable-next-line @typescript-eslint/no-unused-expressions
-            //   props.onHide
-            //   props.clbk(false)
-            // }}
             className='yellowBtn'
           >
             Cancel
@@ -58,7 +53,6 @@ function MyVerticallyCenteredModal(props) {
 }
 
 export default function ModalInner({openModal, closeModal, deleteUserClbk}) {
-  console.log("closeModal", closeModal);
   return (
     <>
       <MyVerticallyCenteredModal show={openModal} onHide={closeModal} clbk={deleteUserClbk} />

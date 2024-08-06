@@ -2,7 +2,7 @@ import { useIntl } from "react-intl";
 import { PageTitle } from "../../../_metronic/layout/core";
 import searchIcon from "../../../_metronic/images/searchIcon.svg";
 import settingIcon from "../../../_metronic/images/setting.svg";
-import Pagination from "../../components/pagenation/index";
+import Pagination from "../../components/common/pagination/index";
 import "./styles.scss";
 import "../appointment/style.scss";
 import { Tab, Tabs } from "react-bootstrap";
@@ -28,25 +28,17 @@ import { getSubCategoryRequest } from "../../redux/reducer/subCategorySlice";
 import Servicetable from "../../components/serviceTable/index";
 import { REQUIRED_FIELD } from "../../utils/ErrorMessages";
 import { AddServiceModal } from "./addServiceModal";
+import { useDebounce } from "../../../_metronic/helpers";
 
 const ServiceWrapper = () => {
   const dispatch = useDispatch();
   const intl = useIntl();
-  const [loading, setLoading] = useState(false);
   const [show, setShow] = useState(false);
   const [file, setFile] = useState("");
-  const [subCategories, setSubcategories] = useState([]);
-  const [selectedCategory, setSelectedCategory] = useState("");
-  const [selectedSubCategory, setSelectedSubCategory] = useState("");
-
+  const [searchValue, setSearchValue] = useState('');
   const state: any = useSelector((state) => state);
-
-  const categoriesState: [] = useSelector(
-    (state: any) => state.category.categoryList
-  );
-  const subCategriesState: [] = useSelector(
-    (state: any) => state.subcategory.subCategoryList
-  );
+  const categoriesState: [] = useSelector((state: any) => state.category.categoryList);
+  const subCategriesState: [] = useSelector((state: any) => state.subcategory.subCategoryList);
   const serviceState: [] = useSelector(
     (state: any) => state.service.serviceList
   );
@@ -58,6 +50,7 @@ const ServiceWrapper = () => {
   const [search, setSearch] = useState("");
 
   const { isOpen } = useSelector((state: any) => state.modal);
+  const debounceVal = useDebounce(searchValue, 1000);
 
   useEffect(() => {
     if (selectedTab === "service") {
@@ -67,9 +60,9 @@ const ServiceWrapper = () => {
 
   useEffect(() => {
     if (selectedTab === "category") {
-      dispatch(getCategoryRequest({ search, skip, limit }));
+      dispatch(getCategoryRequest({ search: searchValue, skip, limit }));
     }
-  }, [dispatch, search, skip, limit]);
+  }, [dispatch, debounceVal, skip, limit]);
 
   useEffect(() => {
     if (selectedTab === "subcategory") {
@@ -119,7 +112,6 @@ const ServiceWrapper = () => {
     onSubmit: async (values, { setStatus, setSubmitting }) => {
       dispatch(serviceRequest({ ...values }));
       dispatch(closeModalRequest({}));
-      // clearForm
       clearFormData();
     },
   });
@@ -136,6 +128,7 @@ const ServiceWrapper = () => {
       });
     }
   };
+
   const tags = ["Male", "Female"];
 
   const cancelButton = () => {
@@ -146,11 +139,9 @@ const ServiceWrapper = () => {
     dispatch(closeModalRequest({}));
   };
 
-
   const onChangeTab = (key) => {
-    setSelectedTab(key); // Updating local state
-    dispatch(selectTab(key)); // Dispatching to Redux
-    // Re-fetch data based on selected tab
+    setSelectedTab(key);
+    dispatch(selectTab(key));
     switch (key) {
       case "service":
         dispatch(getServiceRequest({ search, skip, limit }));
@@ -168,12 +159,11 @@ const ServiceWrapper = () => {
 
   const clearFormData = () => {
     formik.resetForm();
-    setSelectedCategory("");
-    setSelectedSubCategory("");
     setTimeout(() => {
       setFile("");
     }, 500);
   };
+
 
   return (
     <>
@@ -213,23 +203,6 @@ const ServiceWrapper = () => {
                     <img src={searchIcon} alt="searchIcon" />
                   </button>
                 </div>
-                {/* <div className='filterWrapper'>
-                  <Dropdown>
-                    <Dropdown.Toggle
-                      className='filterDropdown'
-                      variant='success'
-                      id='dropdown-basic'
-                    >
-                      Fillter
-                    </Dropdown.Toggle>
-
-                    <Dropdown.Menu>
-                      <Dropdown.Item href='#/action-1'>Action</Dropdown.Item>
-                      <Dropdown.Item href='#/action-2'>Another action</Dropdown.Item>
-                      <Dropdown.Item href='#/action-3'>Something else</Dropdown.Item>
-                    </Dropdown.Menu>
-                  </Dropdown>
-                </div> */}
               </div>
               <div className="tableWrapper my-5">
                 <Servicetable />
@@ -259,6 +232,7 @@ const ServiceWrapper = () => {
                     type="text"
                     className="form-control"
                     placeholder="Search..."
+                    onChange={(e) => setSearchValue(e.target.value)}
                   />
                   <button>
                     <img src={searchIcon} alt="searchIcon" />
@@ -268,12 +242,6 @@ const ServiceWrapper = () => {
               <div className="tableWrapper my-5">
                 <TableCategory />
               </div>
-              {/* <div className='select-all mt-4 d-flex align-items-center'>
-                <label className='d-flex align-items-center gap-2'>
-                  <input type='checkbox'></input>select-all
-                </label>
-              </div> */}
-              {/* <Pagination /> */}
               {totalRecord > 10 && (
                 <Pagination
                   data={categoriesState}
@@ -300,34 +268,10 @@ const ServiceWrapper = () => {
                     <img src={searchIcon} alt="searchIcon" />
                   </button>
                 </div>
-                {/* <div className='filterWrapper'>Invalid Token
-￼
-
-                  <Dropdown>
-                    <Dropdown.Toggle
-                      className='filterDropdown'
-                      variant='success'
-                      id='dropdown-basic'
-                    >
-                      Fillter
-                    </Dropdown.Toggle>
-
-                    <Dropdown.Menu>
-                      <Dropdown.Item href='#/action-1'>Action</Dropdown.Item>
-                      <Dropdown.Item href='#/action-2'>Another action</Dropdown.Item>
-                      <Dropdown.Item href='#/action-3'>Something else</Dropdown.Item>
-                    </Dropdown.Menu>
-                  </Dropdown>
-                </div> */}
               </div>
               <div className="tableWrapper my-5">
                 <TableSubCategory />
               </div>
-              {/* <div className='select-all mt-4 d-flex align-items-center'>
-                <label className='d-flex align-items-center gap-2'>
-                  <input type='checkbox'></input>select-all
-                </label>
-              </div> */}
               {totalRecord > 10 && (
                 <Pagination
                   data={subCategriesState}

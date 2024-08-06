@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react'
-import { Row, Col, Table, Tabs } from 'react-bootstrap'
+import  { useEffect, useState } from 'react'
+import { Row, Col } from 'react-bootstrap'
 import Dropzone from '../../../_metronic/images/Dropzone.png'
 import { useDispatch, useSelector } from 'react-redux'
 import { getCategoryRequest } from '../../redux/reducer/categorySlice'
@@ -8,7 +8,6 @@ import clsx from 'clsx'
 import { commonFileUpload } from '../../services/_requests'
 import { useFormik } from 'formik'
 import { addSubCategoryRequest, getSubCategoryRequest } from '../../redux/reducer/subCategorySlice'
-import { toast } from 'react-toastify'
 import { renderMessageToaster } from '../../utils/common'
 import { FILE_SIZE, INVALID_IMAGE, UNABLE, UNKNOWN } from '../../utils/ErrorMessages'
 import { fileTypeMap } from '../../utils/const'
@@ -69,7 +68,6 @@ export default function SubCategoryTabs() {
           const arr = new Uint8Array(result).subarray(0, 4);
           const header = arr.reduce((acc, byte) => acc + byte.toString(16).padStart(2, '0'), "");
   
-       
           const fileType = fileTypeMap[header] || UNKNOWN;
 
           if (fileType === UNKNOWN) return renderMessageToaster(INVALID_IMAGE,'error');
@@ -113,7 +111,7 @@ export default function SubCategoryTabs() {
           <Row>
             <Col md={12}>
               <div className='add-category'>
-                <h2 className='page_title'>Add Category</h2>
+                <h2 className='page_title'>Add Sub Category</h2>
               </div>
             </Col>
             <Col md={4}>

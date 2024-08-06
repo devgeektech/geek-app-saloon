@@ -5,7 +5,6 @@ const Pagination = (props: any)  => {
   const [pageNumber, setPageNumber] = useState(1)
   const [sliceState, setSliceState] = useState(2)
   const pageCount = Math.ceil(props.totalRecord / 10);
-  console.log("pageCount", pageCount)
 
   const paginationPage = (page?: any) => {
     console.log("page", page);
@@ -26,7 +25,6 @@ const Pagination = (props: any)  => {
   }
 
   let total = props.totalRecord ? props.totalRecord : 10;
-  console.log("total", total)
   let limitValue = props.limit ? props.limit : 1
 
   return (

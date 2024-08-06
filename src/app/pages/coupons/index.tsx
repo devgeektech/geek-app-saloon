@@ -25,7 +25,7 @@ import {
 import {Dropdown, Tab, Table, Tabs} from 'react-bootstrap'
 import ActiveTable from '../../components/couponTable'
 import InActiveTable from '../../components/couponTable/inActive'
-import Pagenation from '../../components/pagenation'
+import Pagenation from '../../components/common/pagination'
 
 const AppointmentPage = () => (
   <>

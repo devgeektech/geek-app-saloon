@@ -1,30 +1,27 @@
-import React, { useEffect, useState } from 'react'
 import pencilEditIcon from '../../../_metronic/images/pencilEditIcon.svg'
 import deleteIcon from '../../../_metronic/images/deleteIcon.svg'
 import { Table } from 'react-bootstrap'
 import ModalInner from '../../modals/deleteModal'
 import './style.scss'
 import { useDispatch, useSelector } from 'react-redux'
-import { closeDeleteModal, deleteCategoryRequest, getCategoryRequest, setDeleteModal, setSelectedCategoryId } from '../../redux/reducer/categorySlice'
+import { closeDeleteModal, deleteCategoryRequest, resetCategoryForm, setCategoryForm, setDeleteModal, setSelectedCategoryId } from '../../redux/reducer/categorySlice'
 import dummyImg from '../../../_metronic/images/dummy.webp'
+import { getImageUrl } from '../../utils/common'
 
 export default function TableCategory() {
   const dispatch = useDispatch()
   const { categoryList, selectedCategoryId, showDeleteModal } = useSelector((state: any) => state.category);
 
-  const deleteUser = (event: any) => {
-    if(event){
-      dispatch(deleteCategoryRequest({id: selectedCategoryId}))
+  const deleteItem = (event: any) => {
+    console.log('Selected category ID:', selectedCategoryId);
+    if (event && selectedCategoryId !== "") {
+      dispatch(deleteCategoryRequest({ id: selectedCategoryId }));
+      dispatch(resetCategoryForm());
     }
   }
 
-  function getImageUrl(imageUrl) {
-    const baseUploadPath = process.env.REACT_APP_IMAGE_URL;
-    if (imageUrl.startsWith('upload')) {
-      return baseUploadPath + imageUrl;
-    } else {
-      return imageUrl;
-    }
+  const handleEdit = (data: any) => {
+    dispatch(setCategoryForm({ id: data._id, name: data.name, image: data.photo }));
   }
 
   return (
@@ -54,14 +51,10 @@ export default function TableCategory() {
                   </td>
                   <td className='active'>
                     Active
-                    {/* <label className='switch'>
-                      <input type='checkbox' />
-                      <span className='slider round'></span>
-                    </label> */}
                   </td>
                   <td>
                     <div className='d-flex'>
-                      <button className='editBtn'>
+                      <button className='editBtn' onClick={() => handleEdit(listValue)}>
                         <img src={pencilEditIcon} alt='pencilEditIcon' />
                       </button>
                       <button className='deleteBtn' onClick={() => {
@@ -94,10 +87,18 @@ export default function TableCategory() {
         </tbody>
       </Table>
       <ModalInner
-        deleteUserClbk={deleteUser}
+        deleteUserClbk={deleteItem}
         openModal={showDeleteModal}
         closeModal={() => dispatch(closeDeleteModal())}
       />
+      {/*  <KTCard>
+        <PartnersListHeader />
+      <CommonTable data={data} columns={categoryColumns} /> */}
+      {/* {sharedActions.categoryModal && <CategoryModal />}
+        {totalRecord > 10 && (
+          <Pagination totalRecord={totalRecord} handleClick={handleClick} />
+        )} 
+      </KTCard>*/}
     </>
   )
 }

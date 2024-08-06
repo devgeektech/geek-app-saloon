@@ -1,24 +1,24 @@
-import React, { useState} from 'react'
-import {Row, Col} from 'react-bootstrap'
+import React, { useEffect } from 'react'
+import { Row, Col } from 'react-bootstrap'
 import Dropzone from '../../../_metronic/images/Dropzone.png'
 import './style.scss'
-import {useFormik} from 'formik'
+import { useFormik } from 'formik'
 import * as Yup from 'yup'
 import clsx from 'clsx'
-import {commonFileUpload} from '../../services/_requests'
-import {addCategoryRequest, getCategoryRequest} from '../../redux/reducer/categorySlice'
-import {useDispatch} from 'react-redux'
-import { renderMessageToaster } from '../../utils/common'
+import { commonFileUpload } from '../../services/_requests'
+import { addCategoryRequest, getCategoryRequest, resetCategoryForm, updateCategoryRequest } from '../../redux/reducer/categorySlice'
+import { useDispatch, useSelector } from 'react-redux'
+import { getImageUrl, renderMessageToaster } from '../../utils/common'
 import { FILE_SIZE, INVALID_IMAGE, UNABLE, UNKNOWN } from '../../utils/ErrorMessages'
 import { fileTypeMap } from '../../utils/const'
 
 export default function CategoryTabs() {
-  const [file, setFile] = useState('')
+  const dispatch = useDispatch()
+  const { initialValues } = useSelector((state: any) => state.category);
+  // const [file, setFile] = useState('');
   const loading = false
 
-  const dispatch = useDispatch()
-
-  const categorySchema = Yup.object().shape({
+  const categorySchema: any = Yup.object().shape({
     name: Yup.string()
       .min(3, 'Minimum 3 symbols')
       .max(50, 'Maximum 50 symbols')
@@ -26,45 +26,47 @@ export default function CategoryTabs() {
     image: Yup.string().required('Photo is required'),
   })
 
-  const initialValues = {
-    name: '',
-    image: '',
-  }
-
-  const formik = useFormik({
+  const formik: any = useFormik({
     initialValues,
     validationSchema: categorySchema,
-    onSubmit: async (values, {setStatus, setSubmitting}) => {
-      dispatch(addCategoryRequest(values));
+    enableReinitialize: true,
+    onSubmit: async (values, { setStatus, setSubmitting }) => {
+      console.log("valuesvaluesvaluesvaluesvalues", values);
+      if (values.id) {
+        dispatch(updateCategoryRequest({ id: values.id, ...values }));
+      } else {
+        dispatch(addCategoryRequest(values));
+      }
       getCategoryList();
       formik.resetForm();
-      setFile("");
     },
   })
 
+  console.log("formik", formik.values)
 
   const handleFileChange = async (e: any) => {
     if (e.target?.files && e.target?.files.length > 0) {
       const file = e.target.files[0];
-      const fileSize = file.size / 1024 / 1024; 
-  
+      const fileSize = file.size / 1024 / 1024;
+
       if (fileSize > 2) {
-        renderMessageToaster(FILE_SIZE,'error');
+        renderMessageToaster(FILE_SIZE, 'error');
         return;
       }
-  
+
       const fileReader = new FileReader();
       fileReader.onloadend = function () {
         const result = fileReader.result;
         if (result && typeof result !== 'string') {
           const arr = new Uint8Array(result).subarray(0, 4);
           const header = arr.reduce((acc, byte) => acc + byte.toString(16).padStart(2, '0'), "");
-       
+
           const fileType = fileTypeMap[header] || UNKNOWN;
 
-          if (fileType === UNKNOWN) return renderMessageToaster(INVALID_IMAGE,'error');
- 
-          setFile(URL.createObjectURL(file)); 
+          if (fileType === UNKNOWN) return renderMessageToaster(INVALID_IMAGE, 'error');
+
+          // setFile(URL.createObjectURL(file));
+          formik.setFieldValue("image", URL.createObjectURL(file))
           const formData = new FormData();
           formData.append('image', file);
           commonFileUpload(formData).then((res) => {
@@ -72,19 +74,30 @@ export default function CategoryTabs() {
               formik.setFieldValue('image', res.data.data.url);
             }
           });
+
         } else {
-          renderMessageToaster(UNABLE,'error');
+          renderMessageToaster(UNABLE, 'error');
         }
       };
-  
+
       fileReader.readAsArrayBuffer(file);
     }
   };
-  
 
   const getCategoryList = () => {
     dispatch(getCategoryRequest({}))
   }
+
+  const resetForm = () => {
+    dispatch(resetCategoryForm());
+    formik.resetForm();
+  }
+
+  useEffect(() => {
+    resetForm();
+  }, []);
+
+  console.log("formik.isSubmitting || !formik.isValid", formik.isSubmitting, formik.isValid)
 
   return (
     <form onSubmit={formik.handleSubmit}>
@@ -92,13 +105,11 @@ export default function CategoryTabs() {
         <Row>
           <Col md={12}>
             <div className='add-category'>
-              <h2 className='page_title'>Add Category</h2>
+              <h2 className='page_title'>{formik.values.id ? 'Update Category': "Add Category"} </h2>
             </div>
           </Col>
           <Col md={4}>
             <div className='inr-add-category'>
-              {/* <label>Enter Category Name</label>
-              <input type='text' name='email' placeholder='Enter Category Name'></input> */}
               <div className='fv-row mb-4'>
                 <label className='form-label'>Name</label>
                 <input
@@ -147,12 +158,12 @@ export default function CategoryTabs() {
                   />
                 </svg>
                 <div className='fv-row mb-4'>
-                  
+
                   <input
                     type='file'
                     placeholder='Image'
                     // {...formik.getFieldProps('image')}
-                    accept="image/*" 
+                    accept="image/*"
                     className={clsx(
                       'form-control bg-transparent',
                       {
@@ -178,7 +189,7 @@ export default function CategoryTabs() {
             </div>
             <div className='spacing-left'>
               <div className='upload-img pl-5'>
-                <img src={file ? file : Dropzone} alt='UploadImage'/>
+                <img src={formik.values.image ? getImageUrl(formik.values.image) : Dropzone} alt='UploadImage' />
               </div>
             </div>
           </Col>
@@ -186,16 +197,16 @@ export default function CategoryTabs() {
         <Row>
           <Col md={12}>
             <div className='text-end d-flex align-items-center justify-content-end gap-5'>
-              <button className='whitebtn'>Cancel</button>
+              <button type='button' onClick={() => resetForm()} className='whitebtn'>Cancel</button>
               <button
                 className='blackBtn btn-sm'
                 type='submit'
                 id='kt_sign_in_submit'
-                disabled={formik.isSubmitting || !formik.isValid}
+                disabled={!(formik.values.name && formik.values.image && formik.isValid)}
               >
                 {!loading && <span className='indicator-label'>Save</span>}
                 {loading && (
-                  <span className='indicator-progress' style={{display: 'block'}}>
+                  <span className='indicator-progress' style={{ display: 'block' }}>
                     Please wait...
                     <span className='spinner-border spinner-border-sm align-middle ms-2'></span>
                   </span>

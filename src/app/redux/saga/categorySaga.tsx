@@ -7,8 +7,10 @@ import {
   getCategoryListFailure,
   deleteCategorySuccess,
   deleteCategoryFailure,
+  updateCategoryFailure,
+  updateCategorySuccess,
 } from '../reducer/categorySlice'
-import { createCategory, deleteCategory, getCategory } from '../../services/_requests'
+import { createCategory, deleteCategory, getCategory, updateCategory } from '../../services/_requests'
 
 const call: any = Effects.call
 
@@ -33,14 +35,25 @@ function* getCategorySaga(action) {
 }
 
 function* deleteCategorySaga(action) {
-  console.log("actionactionaction", action);
+  console.log('deleteCategorySaga action payload:', action.payload);
   try {
     const { id } = action.payload;
-    const response = yield call(deleteCategory, id)
-    yield put(deleteCategorySuccess(response.data))
+    const response = yield call(deleteCategory, id);
+    yield put(deleteCategorySuccess(response.data));
   } catch (error: any) {
-    yield put(deleteCategoryFailure(error.response))
+    yield put(deleteCategoryFailure(error.response));
   }
 }
 
-export { addcategorySaga, getCategorySaga, deleteCategorySaga}
+function* updateCategorySaga(action) {
+  try {
+    const { id, name, image } = action.payload;
+    const response = yield call(updateCategory, id, name, image);
+    yield put(updateCategorySuccess(response.data));
+    yield put(getCategoryListSuccess(response.data.categoryList)); // Ensure this is what you need
+  } catch (error: any) {
+    console.log("error.response", error.response)
+    yield put(updateCategoryFailure(error.response));
+  }
+}
+export { addcategorySaga, getCategorySaga, deleteCategorySaga, updateCategorySaga }

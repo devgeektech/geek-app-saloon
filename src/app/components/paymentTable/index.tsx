@@ -1,6 +1,6 @@
 import React from 'react'
 import Stripe from '../../../_metronic/images/stripe.svg'
-import Pagenation from '../pagenation'
+import Pagenation from '../common/pagination'
 
 export default function PaymentTable() {
   return (

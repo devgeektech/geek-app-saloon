@@ -8,9 +8,9 @@ export const LOGIN_URL = `${API_URL}/login`
 export const REGISTER_URL = `${API_URL}/register`
 export const REQUEST_PASSWORD_URL = `${API_URL}/auth/forgotPassword`
 export const ADMIN_LOGIN_URL = `${API_URL}/auth/admin/login`
-export const CREATE_CATEGORY = `${API_URL}/category`
-export const GET_CATEGORY = `${API_URL}/category`
-export const DELETE_CATEGORY = `${API_URL}/category`
+export const CATEGORY_URL = `${API_URL}/category`
+// export const GET_CATEGORY = `${API_URL}/category`
+// export const DELETE_CATEGORY = `${API_URL}/category`
 export const CREATE_SUB_CATEGORY = `${API_URL}/subcategory`
 export const GET_SUB_CATEGORY = `${API_URL}/subcategory`
 
@@ -75,19 +75,27 @@ export function adminLogin(email: any, password: any) {
 
 // *************************CATEGORY API LIST ************************
 export function createCategory(name: string, photo: string) {
-  return axios.post(CREATE_CATEGORY, {
+  return axios.post(CATEGORY_URL, {
     name,
     photo,
   })
 }
 
 export function getCategory(search: string, skip: number, limit: number) {
-  return axios.get(GET_CATEGORY + `?search=${search}&skip=${skip}&limit=${limit}`, {})
+  return axios.get(CATEGORY_URL + `?search=${search || ""}&skip=${skip || 0}&limit=${limit || 10}`, {})
 }
 
 export function deleteCategory(id: string) {
-  return axios.delete(DELETE_CATEGORY + `/${id}`, {})
+  return axios.delete(CATEGORY_URL + `/${id}`, {})
 }
+
+export function updateCategory(id: string, name: string, photo: string) {
+  return axios.put(CATEGORY_URL + `/${id}`, {
+    name,
+    photo,
+  })
+}
+
 
 export function createSubCategory(id: string, name: string, image: string) {
   return axios.post(CREATE_SUB_CATEGORY, { id, name, image, })
@@ -108,7 +116,6 @@ export function editService(body: any) {
 export function editServiceData(body: any) {
   return body
 }
-
 
 // *************************Modal API ************************
 export function modalStatus(value) {

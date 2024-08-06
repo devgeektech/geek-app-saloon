@@ -4,7 +4,7 @@ import coupon from '../../../_metronic/images/coupon.svg'
 import searchIcon from '../../../_metronic/images/searchIcon.svg'
 import dummyImg from '../../../_metronic/images/dummy.webp'
 import { deleteVender, getVendors } from '../../services/_requests'
-import Pagination from '../../components/pagenation'
+import Pagination from '../../components/common/pagination'
 import React, { useEffect, useState } from 'react'
 import pencilEditIcon from '../../../_metronic/images/pencilEditIcon.svg'
 import deleteIcon from '../../../_metronic/images/deleteIcon.svg'
@@ -20,8 +20,9 @@ import { useFormik } from 'formik'
 import * as Yup from 'yup'
 import clsx from 'clsx'
 import { commonFileUpload } from '../../services/_requests'
-import NoDataFound from '../../components/common/NoDataFound'
+import NoDataFound from '../../components/common/noDataFound/NoDataFound'
 import { useDebounce } from '../../../_metronic/helpers'
+import { getImageUrl } from '../../utils/common'
 
 const ShopWrapper = () => {
   const intl = useIntl()
@@ -86,15 +87,6 @@ const ShopWrapper = () => {
         setTotalRecord(res.data?.totalRecord)
       }
     })
-  }
-
-  const getImageUrl = (imageUrl) => {
-    const baseUploadPath = process.env.REACT_APP_IMAGE_URL;
-    if (imageUrl.startsWith('upload')) {
-      return baseUploadPath + imageUrl;
-    } else {
-      return imageUrl;
-    }
   }
 
   const deleteOpenModal = (id: string) => {

@@ -1,12 +1,12 @@
-import { ToastContainer } from "react-toastify";
+import { Slide, ToastContainer } from "react-toastify";
 
 export default function Toster() {
   return (
     <>
       <ToastContainer
-        position="top-right"
+        position="top-center"
         autoClose={1000}
-        hideProgressBar={false}
+        hideProgressBar={true}
         newestOnTop={true}
         closeOnClick
         rtl={false}
@@ -14,6 +14,7 @@ export default function Toster() {
         draggable
         pauseOnHover
         theme="light"
+        transition={Slide}
       />
     </>
   );

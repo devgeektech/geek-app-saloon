@@ -3,7 +3,7 @@ import { PageTitle } from "../../../_metronic/layout/core";
 import coupon from "../../../_metronic/images/coupon.svg";
 import searchIcon from "../../../_metronic/images/searchIcon.svg";
 import { Table } from "react-bootstrap";
-import Pagination from "../../components/pagenation";
+import Pagination from "../../components/common/pagination";
 import { useCallback, useEffect, useState } from "react";
 import { deleteBanner, deleteVender, getBanner, getBanners } from "../../services/_requests";
 import pencilEditIcon from "../../../_metronic/images/pencilEditIcon.svg";
@@ -13,12 +13,13 @@ import * as Yup from "yup";
 import { addBanner, commonFileUpload } from "../../services/_requests";
 import "./styles.scss"
 import { toast } from "react-toastify";
-import NoDataFound from "../../components/common/NoDataFound";
+import NoDataFound from "../../components/common/noDataFound/NoDataFound";
 import BannerModal from "./addBannerModal";
 import moment from "moment";
 import dummyImg from "../../../_metronic/images/dummy.webp";
 import { useDebounce } from "../../../_metronic/helpers";
 import ModalInner from "../../modals/deleteModal";
+import { getImageUrl } from "../../utils/common";
 
 const BannerWrapper = () => {
   const [banners, setBanners] = useState([]);
@@ -166,14 +167,6 @@ const BannerWrapper = () => {
       getBannersList();
     }
   };
-
-  const getImageUrl = (imageUrl: string) => {
-    if (imageUrl.startsWith('upload')) {
-      return REACT_APP_IMAGE_URL + imageUrl;
-    } else {
-      return imageUrl;
-    }
-  }
 
   const deleteOpenModal = (id: string) => {
     setShowDeleteModal(true);

@@ -1,20 +1,24 @@
 import {takeLatest} from 'redux-saga/effects'
 import {loginSaga} from './authSaga'
 import {fetchUserListSaga} from './usersSaga'
-import {addcategorySaga, deleteCategorySaga, getCategorySaga} from './categorySaga'
+import {addcategorySaga, deleteCategorySaga, getCategorySaga, updateCategorySaga} from './categorySaga'
 import {addSubCategorySaga, getSubCategorySaga} from './subCategorySaga'
 import {addServiceSaga, editServiceDataSaga, editServiceSaga, getServiceSaga, selectedTabSaga} from './serviceSaga'
 import {closeModalSaga, openModalSaga} from './modalSaga'
 
 function* rootSaga() {
   yield takeLatest('auth/loginRequest', loginSaga)
+
+  // category request 
   yield takeLatest('category/addCategoryRequest', addcategorySaga)
   yield takeLatest('category/getCategoryRequest', getCategorySaga)
-  yield takeLatest('category/deleteCategoryRequest', deleteCategorySaga)
-
-  //Category request
+  yield takeLatest('category/deleteCategoryRequest', deleteCategorySaga);
+  yield takeLatest('category/updateCategoryRequest', updateCategorySaga);
+  
+  //sub category request
   yield takeLatest('subcategory/addSubCategoryRequest', addSubCategorySaga)
   yield takeLatest('subcategory/getSubCategoryRequest', getSubCategorySaga)
+
   // Services Request
   yield takeLatest('service/setSelectedTab', selectedTabSaga)
   yield takeLatest('service/serviceRequest', addServiceSaga)
