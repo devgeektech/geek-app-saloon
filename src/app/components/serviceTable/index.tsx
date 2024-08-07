@@ -3,30 +3,31 @@ import pencilEditIcon from '../../../_metronic/images/pencilEditIcon.svg'
 import deleteIcon from '../../../_metronic/images/deleteIcon.svg'
 import dummyImg from '../../../_metronic/images/dummy.webp'
 import { Dropdown, Tab, Table, Tabs } from 'react-bootstrap'
-import ModalInner from '../../modals/deleteModal'
+import DeleteModal from '../common/modal/deleteModal'
 import { useDispatch, useSelector } from 'react-redux'
 import { closeModalRequest, openModalRequest } from '../../redux/reducer/modalSlice'
 import { editServiceRequestData } from '../../redux/reducer/serviceSlice'
 import { getImageUrl } from '../../utils/common'
 
 export default function Servicetable(props: any) {
-  const dispatch = useDispatch()
-  const [services, setServices] = useState([])
-  // const [modalShow, setModalShow] = useState(false)
-  const { serviceList } = useSelector((state: any) => state.service)
 
-  useEffect(() => {
-    setServices(serviceList)
-  }, [serviceList])
+  const dispatch = useDispatch()
+  const { serviceList } = useSelector((state: any) => state.service)
+  const [id, setId] = useState<string>('')
+  const [modalShow, setModalShow] = useState<Boolean>(false);
 
   const editService = (serviceObj: any) => {
     dispatch(openModalRequest())
     dispatch(editServiceRequestData({ ...serviceObj }))
   }
 
-  const deleteOpenModal = () => {
+  const openModal = (id: string) => {
+    setModalShow(true);
+    setId(id);
+  }
 
-    // setModalShow(true)
+  const deleteItem = (event: Boolean) => {
+      // dispatch(deleteser)
   }
 
   return (
@@ -45,15 +46,11 @@ export default function Servicetable(props: any) {
           </tr>
         </thead>
         <tbody>
-          {services &&
-            services.length > 0 &&
-            services.map((service: any, index: number) => (
+          {serviceList &&
+            serviceList.length > 0 &&
+            serviceList.map((service: any, index: number) => (
               <tr key={service._id}>
-                {/* <td>
-                  <input type='checkbox' />
-                </td> */}
-                {/* <td>{index + 1}</td> */}
-                <td>12</td>
+                <td>{service._id}</td>
                 <td>{service?.name ? service.name : ''}</td>
                 <td>
                   <img
@@ -77,7 +74,7 @@ export default function Servicetable(props: any) {
                     >
                       <img src={pencilEditIcon} alt='pencilEditIcon' />
                     </button>
-                    <button className='deleteBtn' onClick={() => deleteOpenModal()}>
+                    <button className='deleteBtn' onClick={() => openModal(service._id)}>
                       <img src={deleteIcon} alt='deleteIcon' />
                     </button>
                     <button className='deleteBtn'>
@@ -102,10 +99,13 @@ export default function Servicetable(props: any) {
             ))}
         </tbody>
       </Table>
-      {/* <ModalInner
-      openModal={modalShow}
-      closeModal={deleteCloseModal}
-      /> */}
+
+      <DeleteModal
+        deleteUserClbk={deleteItem}
+        openModal={modalShow}
+        closeModal={() => setModalShow(false)}
+      />
+
     </>
   )
 }

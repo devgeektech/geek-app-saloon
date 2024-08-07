@@ -77,6 +77,20 @@ const serviceSlice = createSlice({
         error: action.payload,
       }
     },
+    deleteServiceRequest: (state, action) => {
+      return { ...state, loading: true, error: null }
+    },
+    deleteServiceSuccess: (state: any, action: any) => {
+      const { data } = action.payload;
+      toast.success(action.payload.responseMessage);
+      state.showDeleteModal = false;
+      state.serviceList = state.serviceList.filter(
+        (el: any) => el._id !== data?._id
+      );
+    },
+    deleteServiceFailure: (state, action) => {
+      state.error = action.payload;
+    },
   },
 })
 
@@ -90,7 +104,10 @@ export const {
   editServiceRequest,
   editServiceSuccess,
   editServiceFailure,
-  setSelectedTab
+  setSelectedTab,
+  deleteServiceFailure,
+  deleteServiceRequest,
+  deleteServiceSuccess
 } = serviceSlice.actions
 
 export const serviceReducer = serviceSlice.reducer

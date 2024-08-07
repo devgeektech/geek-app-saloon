@@ -1,35 +1,57 @@
 import React, { useEffect, useState } from 'react'
-import Massage from '../../../_metronic/images/massage.png'
-import FullBeard from '../../../_metronic/images/full_beard.png'
-import Hairbath from '../../../_metronic/images/hair-bath.png'
-import Jhonson from '../../../_metronic/images/jhonDeo.svg'
-import HairColor from '../../../_metronic/images/hair-color.png'
 import pencilEditIcon from '../../../_metronic/images/pencilEditIcon.svg'
 import deleteIcon from '../../../_metronic/images/deleteIcon.svg'
 import { Dropdown, Tab, Table, Tabs } from 'react-bootstrap'
-import ModalInner from '../../modals/deleteModal'
+import DeleteModal from '../common/modal/deleteModal'
 import { useDispatch, useSelector } from 'react-redux'
 import dummyImg from '../../../_metronic/images/dummy.webp'
 import { getImageUrl } from '../../utils/common'
+import { closeDeleteModal, deleteSubCategoryRequest, resetSubCategoryForm, setDeleteModal, setSelectedId, setSubCategoryForm } from '../../redux/reducer/subCategorySlice';
+import DeleteIcon from '../common/Icons/DeleteIcon'
+
+// Interface for Category
+interface SubCategory {
+  _id: string;
+  name: string;
+  image: string;
+  categoryId: Category;
+  categoryType: 'SUB' | 'MAIN';
+  createdAt: string;
+  createdBy: string;
+  isActive: boolean;
+  isDeleted: boolean;
+}
+interface Category {
+  _id: string;
+  name: string;
+  photo: string;
+}
+
 
 export default function TableSubCategory() {
-  const dispatch = useDispatch()
-  const [modalShow, setModalShow] = React.useState(false)
+  const dispatch = useDispatch();
   const [subCategories, setSubCategories] = useState([])
-  const { subCategoryList } = useSelector((state: any) => state.subcategory);
-
-
-
+  const { subCategoryList, showDeleteModal, selectedId} = useSelector((state: any) => state.subcategory);
 
   useEffect(() => {
     setSubCategories(subCategoryList)
-  }, [subCategoryList])
+  }, [subCategoryList]);
 
-  const deleteOpenModal = () => {
-
-    setModalShow(true)
+  const deleteItem = (event: Boolean) => {
+    if (event && selectedId !== "") {
+      dispatch(deleteSubCategoryRequest({ id: selectedId }));
+      dispatch(resetSubCategoryForm());
+    }
   }
 
+  const editItem = (data: SubCategory) => {
+    dispatch(setSubCategoryForm({
+      id: data._id,
+      categoryId: data.categoryId?._id,
+      name: data.name,
+      image: data.image
+    }));
+  }
 
   return (
     <div>
@@ -58,11 +80,14 @@ export default function TableSubCategory() {
                 <td>{subCat?.categoryId?.name}</td>
                 <td>
                   <div className='d-flex'>
-                    <button className='editBtn'>
+                    <button className='editBtn' onClick={() => editItem(subCat)}>
                       <img src={pencilEditIcon} alt='pencilEditIcon' />
                     </button>
-                    <button className='deleteBtn' onClick={() => deleteOpenModal()}>
-                      <img src={deleteIcon} alt='deleteIcon' />
+                    <button className='deleteBtn' onClick={() => {
+                      dispatch(setDeleteModal());
+                      dispatch(setSelectedId(subCat?._id));
+                    }}>
+                      <DeleteIcon />
                     </button>
                     <button className='deleteBtn'>
                       <svg
@@ -87,10 +112,12 @@ export default function TableSubCategory() {
         </tbody>
       </Table>
 
-      {/* <ModalInner
-      openModal={modalShow}
-      closeModal={deleteCloseModal}
-      /> */}
+      <DeleteModal
+        deleteUserClbk={deleteItem}
+        openModal={showDeleteModal}
+        closeModal={() => dispatch(closeDeleteModal())}
+      />
+
     </div>
   )
 }

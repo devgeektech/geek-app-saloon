@@ -37,7 +37,7 @@ const BannerModal = (props: any) => {
           unit: '%',
           width: 90,
         },
-        1.82 / 1,
+        16/9,
         width,
         height
       ),
@@ -118,7 +118,7 @@ const BannerModal = (props: any) => {
                     onChange={handleFile}
                   />
 
-                  <ReactCrop crop={crop} onChange={c => setCrop(c)} onComplete={(crop) => handleCropComplete(crop)} aspect={1.82 / 1} keepSelection={true} minWidth={375}
+                  <ReactCrop crop={crop} onChange={c => setCrop(c)} onComplete={(crop) => handleCropComplete(crop)} aspect={16/9} keepSelection={true} minWidth={375}
                     minHeight={206}>
                     <img ref={imgRef} src={previewUrl} onLoad={onImageLoad} alt='' />
                   </ReactCrop>

@@ -1,13 +1,18 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { toast } from "react-toastify";
 
+const subCategoryForm = { name: "", image: "", categoryId: "" }
+
 const initialState = {
+  initialValues: subCategoryForm,
   subCategoryList: [],
   error: null,
   loading: false,
-  skip: 0, // initial value for skip
-  limit: 10, // initial value for limit
-  search:''
+  skip: 0,
+  limit: 10,
+  search: '',
+  showDeleteModal: false,
+  selectedId: null
 };
 
 const subCategorySlice = createSlice({
@@ -30,6 +35,17 @@ const subCategorySlice = createSlice({
       toast.error(action.payload.data.responseMessage);
       state.error = action.payload;
     },
+    updateSubCategoryRequest: (state, action) => {
+      return { ...state, loading: true, error: null };
+    },
+    updateSubCategorySuccess: (state, action) => {
+      toast.success('Subcategory Updated Successfully');
+      state.initialValues = subCategoryForm;
+    },
+    updateSubCategoryFailure: (state, action) => {
+      toast.error(action.payload.data.responseMessage);
+      state.error = action.payload;
+    },
     editSubCategorySuccess: (state, action) => {
       return {
         ...state,
@@ -40,7 +56,17 @@ const subCategorySlice = createSlice({
     editSubCategoryFailure: (state, action) => {
       state.error = action.payload;
     },
-    deleteSubCategorySuccess: (state, action) => {},
+    deleteSubCategoryRequest: (state, action) => {
+      return { ...state, loading: true, error: null }
+    },
+    deleteSubCategorySuccess: (state: any, action: any) => {
+      const { data } = action.payload;
+      toast.success(action.payload.responseMessage);
+      state.showDeleteModal = false;
+      state.subCategoryList = state.subCategoryList.filter(
+        (el: any) => el._id !== data?._id
+      );
+    },
     deleteSubCategoryFailure: (state, action) => {
       state.error = action.payload;
     },
@@ -59,6 +85,25 @@ const subCategorySlice = createSlice({
       toast.error(action.payload.data.responseMessage);
       state.error = action.payload;
     },
+    setSubCategoryForm: (state, { payload }) => {
+      state.initialValues = payload;
+      return;
+    },
+    resetSubCategoryForm: (state) => {
+      state.initialValues = subCategoryForm;
+      state.selectedId = null;
+      return;
+    },
+    setDeleteModal: (state) => {
+      state.showDeleteModal = true;
+    },
+    closeDeleteModal: (state) => {
+      state.showDeleteModal = false;
+    },
+    setSelectedId: (state, action) => {
+      console.log(action.payload, 'action.payload')
+      state.selectedId = action.payload;
+    },
   },
 });
 
@@ -68,11 +113,21 @@ export const {
   addSubCateogryFailure,
   editSubCategorySuccess,
   editSubCategoryFailure,
-  deleteSubCategorySuccess,
-  deleteSubCategoryFailure,
   getSubCategoryRequest,
   getSubCategoryListSuccess,
   getSubCategoryListFailure,
+  updateSubCategoryFailure,
+  updateSubCategoryRequest,
+  updateSubCategorySuccess,
+  deleteSubCategoryRequest,
+  deleteSubCategorySuccess,
+  deleteSubCategoryFailure,
+  resetSubCategoryForm,
+  setSubCategoryForm,
+  setDeleteModal,
+  closeDeleteModal,
+  setSelectedId,
+  
 } = subCategorySlice.actions;
 
 export default subCategorySlice.reducer;

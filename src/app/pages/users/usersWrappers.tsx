@@ -4,7 +4,7 @@ import { PageTitle } from "../../../_metronic/layout/core";
 import UserIcon from "../../../_metronic/images/UserIcon.svg";
 import deleteIcon from "../../../_metronic/images/deleteIcon.svg";
 import searchIcon from "../../../_metronic/images/searchIcon.svg";
-import ModalInner from "../../modals/deleteModal";
+import DeleteModal from "../../components/common/modal/deleteModal";
 import "./userStyle.scss";
 import {  Table } from "react-bootstrap";
 import { deleteUserApi, getUsersList } from "../../services/_requests";
@@ -231,7 +231,7 @@ const UsersWrapper = () => {
           />}
         </div>
       </div>
-      <ModalInner
+      <DeleteModal
         deleteUserClbk={(e: any) => {
           deleteUser(e);
         }}

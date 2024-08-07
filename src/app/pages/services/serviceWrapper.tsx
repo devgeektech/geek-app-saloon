@@ -23,8 +23,8 @@ import {
   closeModalRequest,
   openModalRequest,
 } from "../../redux/reducer/modalSlice";
-import { getCategoryRequest } from "../../redux/reducer/categorySlice";
-import { getSubCategoryRequest } from "../../redux/reducer/subCategorySlice";
+import { getCategoryRequest, resetCategoryForm } from "../../redux/reducer/categorySlice";
+import { getSubCategoryRequest, resetSubCategoryForm } from "../../redux/reducer/subCategorySlice";
 import Servicetable from "../../components/serviceTable/index";
 import { REQUIRED_FIELD } from "../../utils/ErrorMessages";
 import { AddServiceModal } from "./addServiceModal";
@@ -148,9 +148,11 @@ const ServiceWrapper = () => {
         break;
       case "category":
         dispatch(getCategoryRequest({ search, skip, limit }));
+        dispatch(resetCategoryForm());
         break;
       case "subcategory":
         dispatch(getSubCategoryRequest({ search, skip, limit }));
+        dispatch(resetSubCategoryForm());
         break;
       default:
         break;

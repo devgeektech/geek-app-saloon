@@ -49,8 +49,8 @@ function* updateCategorySaga(action) {
   try {
     const { id, name, image } = action.payload;
     const response = yield call(updateCategory, id, name, image);
+    console.log("response", response);
     yield put(updateCategorySuccess(response.data));
-    yield put(getCategoryListSuccess(response.data.categoryList)); // Ensure this is what you need
   } catch (error: any) {
     console.log("error.response", error.response)
     yield put(updateCategoryFailure(error.response));

@@ -4,7 +4,6 @@ import FieldInputText from "../../components/inputs/FieldInputText";
 import FieldSelectInput from "../../components/inputs/FIeldSelectInput";
 import attach from "../../../_metronic/assets/images/attach.svg";
 import clsx from "clsx";
-import placeholderImg from "../../../_metronic/assets/images/placeholderImg.jpg";
 import FieldCheckBox from "../../components/inputs/FieldCheckBox";
 import FieldTextArea from "../../components/inputs/FieldTextArea";
 import { useState } from "react";

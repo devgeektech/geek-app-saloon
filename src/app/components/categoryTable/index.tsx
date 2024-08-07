@@ -31,7 +31,6 @@ export default function CategoryTabs() {
     validationSchema: categorySchema,
     enableReinitialize: true,
     onSubmit: async (values, { setStatus, setSubmitting }) => {
-      console.log("valuesvaluesvaluesvaluesvalues", values);
       if (values.id) {
         dispatch(updateCategoryRequest({ id: values.id, ...values }));
       } else {
@@ -41,8 +40,6 @@ export default function CategoryTabs() {
       formik.resetForm();
     },
   })
-
-  console.log("formik", formik.values)
 
   const handleFileChange = async (e: any) => {
     if (e.target?.files && e.target?.files.length > 0) {
@@ -96,8 +93,6 @@ export default function CategoryTabs() {
   useEffect(() => {
     resetForm();
   }, []);
-
-  console.log("formik.isSubmitting || !formik.isValid", formik.isSubmitting, formik.isValid)
 
   return (
     <form onSubmit={formik.handleSubmit}>

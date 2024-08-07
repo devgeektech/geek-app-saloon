@@ -27,8 +27,6 @@ function* selectedTabSaga(action) {
   setSelectedTab(res)
 }
 
-
-
 function* addServiceSaga(action) {
   try {
     const createCategoryRes = yield call(addService, action.payload)
@@ -68,5 +66,14 @@ function* editServiceDataSaga(action) {
   }
 }
 
+function* deleteServiceSaga(action) {
+  // try {
+  //   const { id } = action.payload;
+  //   const response = yield call(deleteSubCategory, id);
+  //   yield put(deleteSubCategorySuccess(response.data));
+  // } catch (error: any) {
+  //   yield put(deleteSubCategoryFailure(error.response));
+  // }
+}
 
-export { selectedTabSaga, addServiceSaga, getServiceSaga, editServiceSaga, editServiceDataSaga }
+export { selectedTabSaga, addServiceSaga, getServiceSaga, editServiceSaga, editServiceDataSaga, deleteServiceSaga }

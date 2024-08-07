@@ -18,7 +18,7 @@ import BannerModal from "./addBannerModal";
 import moment from "moment";
 import dummyImg from "../../../_metronic/images/dummy.webp";
 import { useDebounce } from "../../../_metronic/helpers";
-import ModalInner from "../../modals/deleteModal";
+import DeleteModal from "../../components/common/modal/deleteModal";
 import { getImageUrl } from "../../utils/common";
 
 const BannerWrapper = () => {
@@ -56,17 +56,14 @@ const BannerWrapper = () => {
     validationSchema: serviceSchema,
     onSubmit: async (values, { setStatus, setSubmitting }) => {
       try {
-        console.log("values", values);
         const imageUrl = await upload(file);
-        console.log("imageUrl", imageUrl);
         const data = { ...values, image: imageUrl };
-        console.log("data", data);
         await addBanner(data);
         closeBannerModal();
         getBannersList();
       } catch (error:any) {
         console.error(error);
-        toast.error(error.message || 'An error occurred');
+        toast.error(error.responseMessage || 'An error occurred');
       } finally {
         setSubmitting(false);
       }
@@ -143,7 +140,7 @@ const BannerWrapper = () => {
   };
   
 
-  const tags = ["TOP", "MIDDLE", 'BOTTOM'];
+  const tags = ["TOP", "MIDDLE"];
 
   const editBanner = async (id: any) => {
     await getBanner(id).then((res) => {
@@ -294,7 +291,7 @@ const BannerWrapper = () => {
           type={tags}
         ></BannerModal>
       )}
-      <ModalInner
+      <DeleteModal
         deleteUserClbk={deleteUser}
         openModal={showDeleteModal}
         closeModal={closeDeleteModal}

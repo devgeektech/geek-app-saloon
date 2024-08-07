@@ -7,7 +7,6 @@ const FieldSelectInput = ({ field, form, ...props }: any) => {
   const error = getIn(form.errors, field.name);
   const touch = getIn(form.touched, field.name);
 
-
   return (
     <div>
       <Form.Group className="mb-3" controlId={field.name}>

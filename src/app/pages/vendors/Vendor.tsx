@@ -9,7 +9,7 @@ import React, { useEffect, useState } from 'react'
 import pencilEditIcon from '../../../_metronic/images/pencilEditIcon.svg'
 import deleteIcon from '../../../_metronic/images/deleteIcon.svg'
 import './style.scss'
-import ModalInner from '../../modals/deleteModal'
+import DeleteModal from '../../components/common/modal/deleteModal'
 import './style.scss'
 import Form from 'react-bootstrap/Form'
 import '../appointment/style.scss'
@@ -252,7 +252,7 @@ const ShopWrapper = () => {
           </div>
         </div>
       </div>
-      <ModalInner
+      <DeleteModal
         deleteUserClbk={(e: any) => {
           deleteUser(e);
         }}

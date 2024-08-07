@@ -1,6 +1,7 @@
 import Modal from 'react-bootstrap/Modal'
-import DeleteIcon from '../../../_metronic/images/delete_Icon.svg'
 import './style.scss'
+import DeleteIcon from '../../Icons/TrashIcon'
+import TrashIcon from '../../Icons/TrashIcon'
 
 function MyVerticallyCenteredModal(props) {
   return (
@@ -25,7 +26,7 @@ function MyVerticallyCenteredModal(props) {
           </button>
         </Modal.Header>
         <Modal.Body>
-          <img src={DeleteIcon} alt=''/>
+          <TrashIcon/>
           <h4>Are you sure you want to delete ?</h4>
           <p>If you delete you can't recover it.</p>
         </Modal.Body>
@@ -52,7 +53,7 @@ function MyVerticallyCenteredModal(props) {
   )
 }
 
-export default function ModalInner({openModal, closeModal, deleteUserClbk}) {
+export default function DeleteModal({openModal, closeModal, deleteUserClbk}) {
   return (
     <>
       <MyVerticallyCenteredModal show={openModal} onHide={closeModal} clbk={deleteUserClbk} />

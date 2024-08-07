@@ -1,7 +1,7 @@
 import pencilEditIcon from '../../../_metronic/images/pencilEditIcon.svg'
 import deleteIcon from '../../../_metronic/images/deleteIcon.svg'
 import { Table } from 'react-bootstrap'
-import ModalInner from '../../modals/deleteModal'
+import DeleteModal from '../common/modal/deleteModal'
 import './style.scss'
 import { useDispatch, useSelector } from 'react-redux'
 import { closeDeleteModal, deleteCategoryRequest, resetCategoryForm, setCategoryForm, setDeleteModal, setSelectedCategoryId } from '../../redux/reducer/categorySlice'
@@ -13,7 +13,6 @@ export default function TableCategory() {
   const { categoryList, selectedCategoryId, showDeleteModal } = useSelector((state: any) => state.category);
 
   const deleteItem = (event: any) => {
-    console.log('Selected category ID:', selectedCategoryId);
     if (event && selectedCategoryId !== "") {
       dispatch(deleteCategoryRequest({ id: selectedCategoryId }));
       dispatch(resetCategoryForm());
@@ -86,7 +85,7 @@ export default function TableCategory() {
             })}
         </tbody>
       </Table>
-      <ModalInner
+      <DeleteModal
         deleteUserClbk={deleteItem}
         openModal={showDeleteModal}
         closeModal={() => dispatch(closeDeleteModal())}

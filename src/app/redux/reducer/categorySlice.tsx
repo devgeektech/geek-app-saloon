@@ -84,16 +84,8 @@ const categorySlice = createSlice({
       state.error = null;
       state.initialValues = categoryForm;
       console.log("update category data", action.payload.data);
-      // state.categoryList
-      // return {
-      //   ...state,
-      //   loading: false,
-      //   error: null,
-      //   categoryList: action.payload.data,
-      // };
     },
     updateCategoryFailure: (state, action) => {
-      console.log("action.payload", action.payload)
       toast.error(action.payload.data.responseMessage);
       state.error = action.payload;
     },
