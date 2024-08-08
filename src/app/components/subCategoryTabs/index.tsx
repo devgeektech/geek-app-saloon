@@ -189,6 +189,7 @@ export default function SubCategoryTabs() {
                     <input
                       type='file'
                       placeholder='Image'
+                      accept="image/*"
                       // {...formik.getFieldProps('image')}
                       className={clsx(
                         'form-control bg-transparent',

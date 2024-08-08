@@ -30,12 +30,8 @@ interface Category {
 
 export default function TableSubCategory() {
   const dispatch = useDispatch();
-  const [subCategories, setSubCategories] = useState([])
   const { subCategoryList, showDeleteModal, selectedId} = useSelector((state: any) => state.subcategory);
 
-  useEffect(() => {
-    setSubCategories(subCategoryList)
-  }, [subCategoryList]);
 
   const deleteItem = (event: Boolean) => {
     if (event && selectedId !== "") {
@@ -65,9 +61,9 @@ export default function TableSubCategory() {
           </tr>
         </thead>
         <tbody>
-          {subCategories &&
-            subCategories.length > 0 &&
-            subCategories.map((subCat: any, index: number) => (
+          {subCategoryList &&
+            subCategoryList.length > 0 &&
+            subCategoryList.map((subCat: any, index: number) => (
               <tr key={`subCat${index}`}>
                 <td>{subCat?.name}</td>
                 <td>

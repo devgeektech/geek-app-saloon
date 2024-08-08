@@ -1,6 +1,5 @@
 import { useIntl } from "react-intl";
 import { PageTitle } from "../../../_metronic/layout/core";
-import searchIcon from "../../../_metronic/images/searchIcon.svg";
 import settingIcon from "../../../_metronic/images/setting.svg";
 import Pagination from "../../components/common/pagination/index";
 import "./styles.scss";
@@ -18,6 +17,8 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   serviceRequest,
   getServiceRequest,
+  resetServiceForm,
+  editServiceRequest,
 } from "../../redux/reducer/serviceSlice";
 import {
   closeModalRequest,
@@ -38,15 +39,18 @@ const ServiceWrapper = () => {
   const [searchValue, setSearchValue] = useState('');
   const state: any = useSelector((state) => state);
   const categoriesState: [] = useSelector((state: any) => state.category.categoryList);
+  const totalCategory = useSelector((state: any) => state.category.totalRecord);
+  const totalSubCategory = useSelector((state: any) => state.subcategory.totalRecord);
   const subCategriesState: [] = useSelector((state: any) => state.subcategory.subCategoryList);
   const serviceState: [] = useSelector(
     (state: any) => state.service.serviceList
   );
+  const { initialValues, totalRecord } = useSelector((state: any) => state.service)
   const [selectedTab, setSelectedTab] = useState(state.service.selectedTab);
 
   const [limit, setLimit] = useState(10);
   const [skip, setSkip] = useState(0);
-  const [totalRecord, setTotalRecord] = useState(state?.category?.totalRecord);
+  // const [totalRecord, setTotalRecord] = useState(state?.category?.totalRecord);
   const [search, setSearch] = useState("");
 
   const { isOpen } = useSelector((state: any) => state.modal);
@@ -79,18 +83,6 @@ const ServiceWrapper = () => {
     setShow(isOpen);
   }, [isOpen]);
 
-  const initialValues = {
-    name: "",
-    image: "",
-    category: "",
-    subcategory: "",
-    gender: [],
-    description: "",
-    cost: "",
-    hours: 0,
-    minutes: 0,
-  };
-
   const serviceSchema = Yup.object().shape({
     name: Yup.string().required(REQUIRED_FIELD),
     image: Yup.string().required(REQUIRED_FIELD),
@@ -104,15 +96,40 @@ const ServiceWrapper = () => {
     cost: Yup.string().required(REQUIRED_FIELD),
   });
 
-  const formik = useFormik({
+  const formik: any = useFormik({
     initialValues,
+    enableReinitialize: true,
     validationSchema: serviceSchema,
     validateOnChange: false,
     validateOnBlur: false,
     onSubmit: async (values, { setStatus, setSubmitting }) => {
-      dispatch(serviceRequest({ ...values }));
-      dispatch(closeModalRequest({}));
-      clearFormData();
+      try {
+        const serviceForm = {
+          name: values.name,
+          image: values.image,
+          category: values.category,
+          subcategory: values.subcategory,
+          gender: values.gender,
+          description: values.description,
+          cost: values.cost,
+          hours: values.hours,
+          minutes: values.minutes,
+        };
+        if (values._id) {
+          dispatch(editServiceRequest({ ...serviceForm, _id: values._id }));
+          dispatch(closeModalRequest({}));
+        } else {
+          dispatch(serviceRequest({ ...serviceForm }));
+          dispatch(closeModalRequest({}));
+        }
+
+      }
+      catch (error) {
+        console.error(error)
+      }
+      finally {
+        setSubmitting(false);
+      }
     },
   });
 
@@ -133,6 +150,8 @@ const ServiceWrapper = () => {
 
   const cancelButton = () => {
     dispatch(closeModalRequest({}));
+    dispatch(resetServiceForm());
+    setFile('');
   };
 
   const modalClose = () => {
@@ -161,11 +180,11 @@ const ServiceWrapper = () => {
 
   const clearFormData = () => {
     formik.resetForm();
+    dispatch(resetServiceForm())
     setTimeout(() => {
       setFile("");
     }, 500);
   };
-
 
   return (
     <>
@@ -181,7 +200,11 @@ const ServiceWrapper = () => {
             </h2>
             {/* <p>Facilitate seamless control over services offered by you</p> */}
           </div>
-          <button onClick={() => dispatch(openModalRequest())} className="yellowBtn">
+          <button onClick={() => {
+            dispatch(openModalRequest());
+            dispatch(resetServiceForm());
+            setFile('');
+          }} className="yellowBtn">
             Add
           </button>
         </div>
@@ -194,18 +217,19 @@ const ServiceWrapper = () => {
             id="uncontrolled-tab-example"
           >
             <Tab eventKey="service" title="Services">
-              <div className="searchbar_filter d-flex justify-content-end">
+              {/* <div className="searchbar_filter d-flex justify-content-end">
                 <div className="searchbar">
                   <input
                     type="text"
                     className="form-control"
                     placeholder="Search..."
+                    onChange={(e) => setSearchValue }
                   />
                   <button>
                     <img src={searchIcon} alt="searchIcon" />
                   </button>
                 </div>
-              </div>
+              </div> */}
               <div className="tableWrapper my-5">
                 <Servicetable />
               </div>
@@ -224,11 +248,12 @@ const ServiceWrapper = () => {
                   }}
                 />
               )}
+              
             </Tab>
             {/* Category Tab Started */}
             <Tab eventKey="category" title="Category">
               <CategoryTabs />
-              <div className="searchbar_filter d-flex justify-content-end">
+              {/* <div className="searchbar_filter d-flex justify-content-end">
                 <div className="searchbar">
                   <input
                     type="text"
@@ -240,15 +265,15 @@ const ServiceWrapper = () => {
                     <img src={searchIcon} alt="searchIcon" />
                   </button>
                 </div>
-              </div>
+              </div> */}
               <div className="tableWrapper my-5">
                 <TableCategory />
               </div>
-              {totalRecord > 10 && (
+              {totalCategory > 10 && (
                 <Pagination
                   data={categoriesState}
                   limit={limit}
-                  totalRecord={totalRecord}
+                  totalRecord={totalCategory}
                   paginitionClbk={(e: any) => {
                     paginitionClbk(e);
                   }}
@@ -259,7 +284,7 @@ const ServiceWrapper = () => {
             {/*Sub Category Tab Started */}
             <Tab eventKey="subcategory" title="Subcategory">
               <SubCategoryTabs />
-              <div className="searchbar_filter d-flex justify-content-end">
+              {/* <div className="searchbar_filter d-flex justify-content-end">
                 <div className="searchbar">
                   <input
                     type="text"
@@ -270,15 +295,15 @@ const ServiceWrapper = () => {
                     <img src={searchIcon} alt="searchIcon" />
                   </button>
                 </div>
-              </div>
+              </div> */}
               <div className="tableWrapper my-5">
                 <TableSubCategory />
               </div>
-              {totalRecord > 10 && (
+              {totalSubCategory > 10 && (
                 <Pagination
                   data={subCategriesState}
                   limit={limit}
-                  totalRecord={totalRecord}
+                  totalRecord={totalSubCategory}
                   paginitionClbk={(e: any) => {
                     paginitionClbk(e);
                   }}

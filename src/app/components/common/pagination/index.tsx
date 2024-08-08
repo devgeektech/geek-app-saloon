@@ -3,11 +3,11 @@ import './Pagenation.scss'
 
 const Pagination = (props: any)  => {
   const [pageNumber, setPageNumber] = useState(1)
-  const [sliceState, setSliceState] = useState(2)
   const pageCount = Math.ceil(props.totalRecord / 10);
 
+  console.log("props.totalRecord>>>>>>>>>>>>>>", props.totalRecord);
+
   const paginationPage = (page?: any) => {
-    console.log("page", page);
     setPageNumber(page)
     props.paginitionClbk(page);
   }

@@ -6,7 +6,7 @@ import { Dropdown, Tab, Table, Tabs } from 'react-bootstrap'
 import DeleteModal from '../common/modal/deleteModal'
 import { useDispatch, useSelector } from 'react-redux'
 import { closeModalRequest, openModalRequest } from '../../redux/reducer/modalSlice'
-import { editServiceRequestData } from '../../redux/reducer/serviceSlice'
+import { deleteServiceRequest, editServiceRequestData, setServiceForm } from '../../redux/reducer/serviceSlice'
 import { getImageUrl } from '../../utils/common'
 
 export default function Servicetable(props: any) {
@@ -18,7 +18,12 @@ export default function Servicetable(props: any) {
 
   const editService = (serviceObj: any) => {
     dispatch(openModalRequest())
-    dispatch(editServiceRequestData({ ...serviceObj }))
+    dispatch(setServiceForm({
+      ...serviceObj,
+      category: serviceObj?.category?._id,
+      subcategory: serviceObj?.subcategory?._id,
+    }));
+    // dispatch(editServiceRequestData({ ...serviceObj }))
   }
 
   const openModal = (id: string) => {
@@ -27,7 +32,10 @@ export default function Servicetable(props: any) {
   }
 
   const deleteItem = (event: Boolean) => {
-      // dispatch(deleteser)
+    if(event && id !== '')
+      dispatch(deleteServiceRequest({ id: id }));
+      setId('');
+      setModalShow(false);
   }
 
   return (
@@ -51,7 +59,7 @@ export default function Servicetable(props: any) {
             serviceList.map((service: any, index: number) => (
               <tr key={service._id}>
                 <td>{service._id}</td>
-                <td>{service?.name ? service.name : ''}</td>
+                <td>{service?.name ? service.name : 'N/A'}</td>
                 <td>
                   <img
                     src={service.image ? getImageUrl(service.image) : dummyImg}
@@ -60,8 +68,8 @@ export default function Servicetable(props: any) {
                     alt='noimg'
                   />
                 </td>
-                <td>{service.category?.name && service.category.name}</td>
-                <td>{service.subcategory?.name && service.subcategory.name}</td>
+                <td>{service.category?.name ? service.category.name: 'N/A'}</td>
+                <td>{service.subcategory?.name ?service.subcategory.name : 'N/A'}</td>
                 <td>${service?.cost ? service.cost : 0}</td>
                 <td>{service?.time ? service.time : 0} mins</td>
                 <td>

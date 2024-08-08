@@ -8,6 +8,7 @@ import FieldCheckBox from "../../components/inputs/FieldCheckBox";
 import FieldTextArea from "../../components/inputs/FieldTextArea";
 import { useState } from "react";
 import { useSelector } from "react-redux";
+import { getImageUrl } from "../../utils/common";
 
 export const AddServiceModal = (props) => {
   const {
@@ -55,11 +56,11 @@ export const AddServiceModal = (props) => {
   };
 
   return (
-    <Modal className="addServicesModal" show={show}>
+    <Modal className="addServicesModal" show={show} onHide={cancelButton}>
       <FormikProvider value={formik}>
         <form onSubmit={formik.handleSubmit}>
           <Modal.Header>
-            <Modal.Title>Create A Service</Modal.Title>
+            <Modal.Title>{formik.values._id ? 'Update Service' : 'Create Service'} </Modal.Title>
           </Modal.Header>
           <Modal.Body>
             <div>
@@ -114,6 +115,7 @@ export const AddServiceModal = (props) => {
                         <input
                           type="file"
                           placeholder="Image"
+                          accept="image/*"
                           // {...formik.getFieldProps('image')}
                           className={clsx(
                             "form-control bg-transparent",
@@ -144,10 +146,10 @@ export const AddServiceModal = (props) => {
                       )}
                     </div>
                     <div>
-                      {file && (
+                      {(file || formik.values.image) && (
                         <img
                           className="w-100 rounded-2"
-                          src={file && file}
+                          src={formik.values.image ? getImageUrl(formik.values.image): file}
                           alt="UploadImage"
                         />
                       )}
@@ -236,7 +238,6 @@ export const AddServiceModal = (props) => {
               <button
                 className="blackBtn btn-sm w-250"
                 type="submit"
-
                 // disabled={formik.isSubmitting || !formik.isValid}
               >
                 {!serviceState.loading && (

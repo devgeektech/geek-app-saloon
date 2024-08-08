@@ -6,6 +6,7 @@ import { ErrorWrapper } from "../../utils/ErrorWapper";
 const FieldCheckBox = ({ field, form, ...props }: any) => {
   const error = getIn(form.errors, field.name);
   const touch = getIn(form.touched, field.name);
+  console.log("form", form)
   return (
     <div>
       <Form.Group className="mb-3">
@@ -18,9 +19,9 @@ const FieldCheckBox = ({ field, form, ...props }: any) => {
               name={props.name}
               type="checkbox"
               id={tag}
-              // checked={formik.values.gender.includes(
-              //   tag as never
-              // )}
+              checked={form.values.gender.includes(
+                tag as never
+              )}
               onChange={(e) => props.handleChange(e)}
             />
           </div>

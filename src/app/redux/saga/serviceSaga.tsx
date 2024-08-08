@@ -3,21 +3,24 @@ import * as Effects from 'redux-saga/effects'
 import {
   addService,
   createSubCategory,
-  editService,
+  deleteServiceApi,
   editServiceData,
   getAllServices,
   getSubCreateCategory,
   selectTab,
+  updateService,
 } from '../../services/_requests' // Your API functions
 import {
   addServiceFailure,
   addServiceSuccess,
+  deleteServiceSuccess,
   editServiceRequestDataSuccess,
   editServiceSuccess,
   getServiceFailure,
   getServiceSuccess,
   setSelectedTab,
 } from '../reducer/serviceSlice'
+import { deleteSubCategoryFailure } from '../reducer/subCategorySlice'
 
 const call: any = Effects.call
 
@@ -32,7 +35,8 @@ function* addServiceSaga(action) {
     const createCategoryRes = yield call(addService, action.payload)
     yield put(addServiceSuccess(createCategoryRes.data))
   } catch (error: any) {
-    yield put(addServiceFailure(error.response))
+    console.log("errrrr", error);
+    yield put(addServiceFailure(error))
   }
 }
 
@@ -48,12 +52,12 @@ function* getServiceSaga(action) {
 
 function* editServiceSaga(action) {
   const { payload } = action
-
+  console.log("payload", payload);
   try {
-    const res = yield call(editService, { ...payload })
-    // yield put(editServiceSuccess(res.data))
+    const res = yield call(updateService, payload?._id, { ...payload })
+    yield put(editServiceSuccess(res.data))
   } catch (error: any) {
-    // yield put(getServiceFailure(error.response))
+    yield put(getServiceFailure(error.response))
   }
 }
 
@@ -67,13 +71,14 @@ function* editServiceDataSaga(action) {
 }
 
 function* deleteServiceSaga(action) {
-  // try {
-  //   const { id } = action.payload;
-  //   const response = yield call(deleteSubCategory, id);
-  //   yield put(deleteSubCategorySuccess(response.data));
-  // } catch (error: any) {
-  //   yield put(deleteSubCategoryFailure(error.response));
-  // }
+  try {
+    const { id } = action.payload;
+    console.log("id", id)
+    const response = yield call(deleteServiceApi, id);
+    yield put(deleteServiceSuccess(response.data));
+  } catch (error: any) {
+    yield put(deleteSubCategoryFailure(error.response));
+  }
 }
 
 export { selectedTabSaga, addServiceSaga, getServiceSaga, editServiceSaga, editServiceDataSaga, deleteServiceSaga }

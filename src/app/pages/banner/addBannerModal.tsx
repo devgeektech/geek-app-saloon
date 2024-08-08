@@ -110,6 +110,7 @@ const BannerModal = (props: any) => {
                   </label>
                   <input
                     type="file"
+                    accept="image/*"
                     className={clsx(
                       'form-control bg-transparent mb-3',
                       { 'is-invalid': formik.touched.image && formik.errors.image },
@@ -154,7 +155,8 @@ const BannerModal = (props: any) => {
 
               // disabled={formik.isSubmitting || !formik.isValid}
               >
-                {!serviceState.loading && (
+                <span className="indicator-label">Save</span>
+                {/* {!serviceState.loading && (
                   <span className="indicator-label">Save</span>
                 )}
                 {serviceState.loading && (
@@ -165,7 +167,7 @@ const BannerModal = (props: any) => {
                     Please wait...
                     <span className="spinner-border spinner-border-sm align-middle ms-2"></span>
                   </span>
-                )}
+                )} */}
               </button>
             </div>
           </Modal.Footer>

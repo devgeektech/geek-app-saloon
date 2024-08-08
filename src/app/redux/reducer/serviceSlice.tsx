@@ -1,11 +1,23 @@
 import {createSlice} from '@reduxjs/toolkit'
 import {toast} from 'react-toastify'
 
-// 1
+const serviceForm = {
+  name: "",
+  image: "",
+  category: "",
+  subcategory: "",
+  gender: [],
+  description: "",
+  cost: "",
+  hours: 0,
+  minutes: 0,
+};
+
 // @ADD SERVICE ACTION CREATED
 const serviceSlice = createSlice({
   name: 'service',
   initialState: {
+    initialValues: serviceForm,
     serviceList: [],
     loading: false,
     error: null,
@@ -13,7 +25,9 @@ const serviceSlice = createSlice({
     selectedTab: 'service', // default tab
     skip: 0, // initial value for skip
     limit: 10, // initial value for limit
-    search:''
+    search:'',
+    totalRecord : 0
+
   },
   reducers: {
     setSelectedTab: (state:any, action) => {
@@ -32,10 +46,12 @@ const serviceSlice = createSlice({
       }
     },
     addServiceFailure: (state, action) => {
-      toast.error(action.payload.data.responseMessage)
+      console.log("action.payloa11111111111111d", action.payload)
+      toast.error(action.payload.responseMessage)
       return {
         ...state,
         error: action.payload,
+        loading: false
       }
     },
     getServiceRequest: (state, action) => {
@@ -75,6 +91,7 @@ const serviceSlice = createSlice({
       return {
         ...state,
         error: action.payload,
+        loading: false
       }
     },
     deleteServiceRequest: (state, action) => {
@@ -87,9 +104,18 @@ const serviceSlice = createSlice({
       state.serviceList = state.serviceList.filter(
         (el: any) => el._id !== data?._id
       );
+      state.totalRecord =  state.totalRecord - 1
     },
     deleteServiceFailure: (state, action) => {
       state.error = action.payload;
+    },
+    setServiceForm: (state, { payload }) => {
+      state.initialValues = payload;
+      return;
+    },
+    resetServiceForm: (state) => {
+      state.initialValues = serviceForm;
+      return;
     },
   },
 })
@@ -107,7 +133,9 @@ export const {
   setSelectedTab,
   deleteServiceFailure,
   deleteServiceRequest,
-  deleteServiceSuccess
+  deleteServiceSuccess,
+  setServiceForm,
+  resetServiceForm
 } = serviceSlice.actions
 
 export const serviceReducer = serviceSlice.reducer

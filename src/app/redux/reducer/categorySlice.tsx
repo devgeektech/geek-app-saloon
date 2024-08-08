@@ -12,7 +12,8 @@ const initialState = {
   loading: false,
   skip: 0,
   limit: 10,
-  search: ''
+  search: '',
+  totalRecord: 0
 };
 
 const categorySlice = createSlice({
@@ -55,6 +56,7 @@ const categorySlice = createSlice({
       state.categoryList = state.categoryList.filter(
         (category: any) => category._id !== data?._id
       );
+      state.totalRecord =  state.totalRecord - 1
     },
     deleteCategoryFailure: (state, action) => {
       state.error = action.payload;
