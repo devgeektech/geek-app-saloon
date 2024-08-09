@@ -71,11 +71,8 @@ export function adminLogin(email: any, password: any) {
 }
 
 // *************************CATEGORY API LIST ************************
-export function createCategory(name: string, photo: string) {
-  return axios.post(CATEGORY_URL, {
-    name,
-    photo,
-  })
+export function createCategory(values: any) {
+  return axios.post(CATEGORY_URL, values)
 }
 
 export function getCategory(search: string, skip: number, limit: number) {
@@ -86,15 +83,12 @@ export function deleteCategory(id: string) {
   return axios.delete(CATEGORY_URL + `/${id}`, {})
 }
 
-export function updateCategory(id: string, name: string, photo: string) {
-  return axios.put(CATEGORY_URL + `/${id}`, {
-    name,
-    photo,
-  })
+export function updateCategory(id: string, payload) {
+  return axios.put(CATEGORY_URL + `/${id}`, payload)
 }
 
-export function createSubCategory(id: string, name: string, image: string) {
-  return axios.post(SUB_CATEGORY_URL, { id, name, image, })
+export function createSubCategory(id: string, name: string, image: string, description: string) {
+  return axios.post(SUB_CATEGORY_URL, { id, name, image, description })
 }
 
 export function getSubCreateCategory(search: string, skip: number, limit: number) {

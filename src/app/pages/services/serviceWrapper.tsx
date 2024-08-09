@@ -6,9 +6,9 @@ import "./styles.scss";
 import "../appointment/style.scss";
 import { Tab, Tabs } from "react-bootstrap";
 import CategoryTabs from "../../components/categoryTabs/index";
-import TableCategory from "../../components/categoryTabs/tableCategory";
+import TableCategory from "../../components/categoryTabs/table";
 import SubCategoryTabs from "../../components/subCategoryTabs/index";
-import TableSubCategory from "../../components/subCategoryTabs/tableSubCategory";
+import TableSubCategory from "../../components/subCategoryTabs/table";
 import { useEffect, useState } from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
@@ -73,10 +73,6 @@ const ServiceWrapper = () => {
       dispatch(getSubCategoryRequest({ search, skip, limit }));
     }
   }, [dispatch, search, skip, limit]);
-
-  const paginitionClbk = (val?: any) => {
-    setPageNumber(val);
-  };
 
   useEffect(() => {
     setShow(isOpen);

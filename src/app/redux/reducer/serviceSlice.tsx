@@ -88,7 +88,8 @@ const serviceSlice = createSlice({
       }
     },
     editServiceFailure: (state, action) => {
-      toast.error(action.payload.data.responseMessage)
+      console.log("action.payload.data", action.payload);
+      toast.error(action.payload.responseMessage)
       return {
         ...state,
         error: action.payload,

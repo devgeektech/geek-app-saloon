@@ -44,9 +44,10 @@ export default function Servicetable(props: any) {
     }
   }
 
-  const handlePageChange = (pageNumber: Number) => {
+  const handlePageChange = (pageNumber: any) => {
     setPageNumber(pageNumber);
-    dispatch(getServiceRequest({ skip: pageNumber, limit }));
+    const skip = (pageNumber - 1) * limit;
+    dispatch(getServiceRequest({ skip, limit }));
   }
 
   return (

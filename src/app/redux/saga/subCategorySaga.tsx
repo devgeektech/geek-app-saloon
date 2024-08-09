@@ -15,9 +15,9 @@ import {
 const call: any = Effects.call
 
 function* addSubCategorySaga(action) {
-  const { categoryId, name, image } = action.payload
+  const { categoryId, name, image, description } = action.payload
   try {
-    const createCategoryRes = yield call(createSubCategory, categoryId, name, image)
+    const createCategoryRes = yield call(createSubCategory, categoryId, name, image, description)
     yield put(addSubCategorySuccess(createCategoryRes.data))
   } catch (error: any) {
     yield put(addSubCateogryFailure(error.response))
@@ -25,9 +25,9 @@ function* addSubCategorySaga(action) {
 }
 
 function* updateSubCategorySaga(action) {
-  const { id, categoryId, name, image } = action.payload;
+  const { id, categoryId, name, image , description} = action.payload;
   try {
-    const response = yield call(updateSubCategory, id, { id: categoryId, name, image });
+    const response = yield call(updateSubCategory, id, { id: categoryId, name, image, description });
     yield put(updateSubCategorySuccess(response.data));
   } catch (error: any) {
     yield put(updateSubCategoryFailure(error.response));

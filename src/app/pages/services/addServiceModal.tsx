@@ -21,7 +21,6 @@ export const AddServiceModal = (props) => {
     cancelButton,
     file,
   } = props;
-
   const [subCategories, setSubcategories] = useState([]);
   const [disablesubCategory, setdisablesubCategory] = useState(true);
   const serviceState: any = useSelector((state: any) => state.service);
@@ -163,8 +162,8 @@ export const AddServiceModal = (props) => {
                     <div>
                       {(file || formik.values.image) && (
                         <img
-                          className="w-100 rounded-2"
-                          src={formik.values.image ? getImageUrl(formik.values.image): file}
+                          className="w-100 h-100 rounded-2"
+                          src={file ? file: getImageUrl(formik.values.image)}
                           alt="UploadImage"
                         />
                       )}

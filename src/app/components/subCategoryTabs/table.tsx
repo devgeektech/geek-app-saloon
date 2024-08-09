@@ -16,6 +16,7 @@ interface SubCategory {
   _id: string;
   name: string;
   image: string;
+  description: string;
   categoryId: Category;
   categoryType: 'SUB' | 'MAIN';
   createdAt: string;
@@ -51,7 +52,8 @@ export default function TableSubCategory() {
       id: data._id,
       categoryId: data.categoryId?._id,
       name: data.name,
-      image: data.image
+      image: data.image,
+      description: data.description
     }));
   }
 

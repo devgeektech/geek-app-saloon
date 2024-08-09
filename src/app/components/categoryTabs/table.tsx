@@ -27,12 +27,18 @@ export default function TableCategory() {
   }
 
   const handleEdit = (data: any) => {
-    dispatch(setCategoryForm({ id: data._id, name: data.name, image: data.photo }));
+    dispatch(setCategoryForm({
+      id: data._id,
+      name: data.name,
+      photo: data.photo,
+      description: data.description
+    }));
   }
 
   const handlePageChange = (pageNumber: number) => {
     setPageNumber(pageNumber);
-    dispatch(getCategoryRequest({ skip: pageNumber, limit }))
+    const skip = (pageNumber - 1) * limit;
+    dispatch(getCategoryRequest({ skip, limit }))
   };
 
   return (
@@ -75,7 +81,7 @@ export default function TableCategory() {
                         <img src={deleteIcon} alt='deleteIcon' />
                       </button>
                       <button className='deleteBtn'>
-                        <ArrowRightIcon/>
+                        <ArrowRightIcon />
                       </button>
                     </div>
                   </td>
