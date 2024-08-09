@@ -3,18 +3,21 @@ import pencilEditIcon from '../../../_metronic/images/pencilEditIcon.svg'
 import deleteIcon from '../../../_metronic/images/deleteIcon.svg'
 import dummyImg from '../../../_metronic/images/dummy.webp'
 import { Dropdown, Tab, Table, Tabs } from 'react-bootstrap'
-import DeleteModal from '../common/modal/deleteModal'
+import DeleteModal from '../common/modal/DeleteModal'
 import { useDispatch, useSelector } from 'react-redux'
 import { closeModalRequest, openModalRequest } from '../../redux/reducer/modalSlice'
-import { deleteServiceRequest, editServiceRequestData, setServiceForm } from '../../redux/reducer/serviceSlice'
+import { deleteServiceRequest, editServiceRequestData, getServiceRequest, setServiceForm } from '../../redux/reducer/serviceSlice'
 import { getImageUrl } from '../../utils/common'
+import Pagination from '../common/pagination'
 
 export default function Servicetable(props: any) {
 
   const dispatch = useDispatch()
-  const { serviceList } = useSelector((state: any) => state.service)
+  const { serviceList, totalRecord } = useSelector((state: any) => state.service)
   const [id, setId] = useState<string>('')
   const [modalShow, setModalShow] = useState<Boolean>(false);
+  const [pageNumber, setPageNumber] = useState<Number>(1);
+  const limit = 10;
 
   const editService = (serviceObj: any) => {
     dispatch(openModalRequest())
@@ -32,15 +35,23 @@ export default function Servicetable(props: any) {
   }
 
   const deleteItem = (event: Boolean) => {
-    if(event && id !== '')
+    if (event && id !== '') {
       dispatch(deleteServiceRequest({ id: id }));
       setId('');
       setModalShow(false);
+      setPageNumber(1);
+      dispatch(getServiceRequest({ skip: 0, limit }))
+    }
+  }
+
+  const handlePageChange = (pageNumber: Number) => {
+    setPageNumber(pageNumber);
+    dispatch(getServiceRequest({ skip: pageNumber, limit }));
   }
 
   return (
     <>
-      <Table responsive className='table table-bordered'>
+      <Table responsive className='table table-bordered mb-5'>
         <thead>
           <tr>
             <th>Service ID</th>
@@ -68,8 +79,8 @@ export default function Servicetable(props: any) {
                     alt='noimg'
                   />
                 </td>
-                <td>{service.category?.name ? service.category.name: 'N/A'}</td>
-                <td>{service.subcategory?.name ?service.subcategory.name : 'N/A'}</td>
+                <td>{service.category?.name ? service.category.name : 'N/A'}</td>
+                <td>{service.subcategory?.name ? service.subcategory.name : 'N/A'}</td>
                 <td>${service?.cost ? service.cost : 0}</td>
                 <td>{service?.time ? service.time : 0} mins</td>
                 <td>
@@ -107,7 +118,14 @@ export default function Servicetable(props: any) {
             ))}
         </tbody>
       </Table>
-
+      {totalRecord > 10 && (
+        <Pagination
+          limit={limit}
+          totalRecord={totalRecord}
+          paginitionClbk={handlePageChange}
+          currentPage={pageNumber}
+        />
+      )}
       <DeleteModal
         deleteUserClbk={deleteItem}
         openModal={modalShow}

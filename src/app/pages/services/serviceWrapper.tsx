@@ -5,8 +5,8 @@ import Pagination from "../../components/common/pagination/index";
 import "./styles.scss";
 import "../appointment/style.scss";
 import { Tab, Tabs } from "react-bootstrap";
-import CategoryTabs from "../../components/categoryTable/index";
-import TableCategory from "../../components/categoryTable/tableCategory";
+import CategoryTabs from "../../components/categoryTabs/index";
+import TableCategory from "../../components/categoryTabs/tableCategory";
 import SubCategoryTabs from "../../components/subCategoryTabs/index";
 import TableSubCategory from "../../components/subCategoryTabs/tableSubCategory";
 import { useEffect, useState } from "react";
@@ -47,11 +47,11 @@ const ServiceWrapper = () => {
   );
   const { initialValues, totalRecord } = useSelector((state: any) => state.service)
   const [selectedTab, setSelectedTab] = useState(state.service.selectedTab);
+  const [pageNumber, setPageNumber] = useState<number>(1);
 
-  const [limit, setLimit] = useState(10);
-  const [skip, setSkip] = useState(0);
-  // const [totalRecord, setTotalRecord] = useState(state?.category?.totalRecord);
   const [search, setSearch] = useState("");
+  const limit = 10;
+  const skip = (pageNumber - 1) * limit;
 
   const { isOpen } = useSelector((state: any) => state.modal);
   const debounceVal = useDebounce(searchValue, 1000);
@@ -75,8 +75,7 @@ const ServiceWrapper = () => {
   }, [dispatch, search, skip, limit]);
 
   const paginitionClbk = (val?: any) => {
-    let skip = (val - 1) * limit;
-    setSkip(skip);
+    setPageNumber(val);
   };
 
   useEffect(() => {
@@ -118,11 +117,12 @@ const ServiceWrapper = () => {
         if (values._id) {
           dispatch(editServiceRequest({ ...serviceForm, _id: values._id }));
           dispatch(closeModalRequest({}));
+          dispatch(resetServiceForm());
         } else {
           dispatch(serviceRequest({ ...serviceForm }));
           dispatch(closeModalRequest({}));
+          dispatch(resetServiceForm());
         }
-
       }
       catch (error) {
         console.error(error)
@@ -152,6 +152,7 @@ const ServiceWrapper = () => {
     dispatch(closeModalRequest({}));
     dispatch(resetServiceForm());
     setFile('');
+    setShow(false);
   };
 
   const modalClose = () => {
@@ -203,6 +204,7 @@ const ServiceWrapper = () => {
           <button onClick={() => {
             dispatch(openModalRequest());
             dispatch(resetServiceForm());
+            formik.resetForm();
             setFile('');
           }} className="yellowBtn">
             Add
@@ -233,21 +235,6 @@ const ServiceWrapper = () => {
               <div className="tableWrapper my-5">
                 <Servicetable />
               </div>
-              {/* <div className='select-all mt-4 d-flex align-items-center'>
-                <label className='d-flex align-items-center gap-2'>
-                  <input type='checkbox'></input>select-all
-                </label>
-              </div> */}
-              {totalRecord > 10 && (
-                <Pagination
-                  data={serviceState}
-                  limit={limit}
-                  totalRecord={totalRecord}
-                  paginitionClbk={(e: any) => {
-                    paginitionClbk(e);
-                  }}
-                />
-              )}
               
             </Tab>
             {/* Category Tab Started */}
@@ -269,16 +256,6 @@ const ServiceWrapper = () => {
               <div className="tableWrapper my-5">
                 <TableCategory />
               </div>
-              {totalCategory > 10 && (
-                <Pagination
-                  data={categoriesState}
-                  limit={limit}
-                  totalRecord={totalCategory}
-                  paginitionClbk={(e: any) => {
-                    paginitionClbk(e);
-                  }}
-                />
-              )}
             </Tab>
 
             {/*Sub Category Tab Started */}
@@ -299,16 +276,6 @@ const ServiceWrapper = () => {
               <div className="tableWrapper my-5">
                 <TableSubCategory />
               </div>
-              {totalSubCategory > 10 && (
-                <Pagination
-                  data={subCategriesState}
-                  limit={limit}
-                  totalRecord={totalSubCategory}
-                  paginitionClbk={(e: any) => {
-                    paginitionClbk(e);
-                  }}
-                />
-              )}
             </Tab>
           </Tabs>
         </div>

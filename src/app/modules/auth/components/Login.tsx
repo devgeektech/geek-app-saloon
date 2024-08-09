@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 import { Field, FormikProvider, useFormik } from "formik";
 import { useDispatch, useSelector } from "react-redux";
 import { loginRequest } from "../../../redux/reducer/authSlice";
-import FieldInputText from "../../../components/inputs/FieldInputText";
+import FieldInputText from "../../../components/common/inputs/FieldInputText";
 import { INVALID_EMAIL } from "../../../utils/ErrorMessages";
 
 const loginSchema = Yup.object().shape({

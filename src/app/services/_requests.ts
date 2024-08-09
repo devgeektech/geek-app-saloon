@@ -116,7 +116,7 @@ export function addService(body: any) {
 }
 
 export function getAllServices(search: string, skip: number, limit: number) {
-  return axios.get(GET_ALL_PRODUCT + `?search=${search}&skip=${skip}&limit=${limit}`)
+  return axios.get(GET_ALL_PRODUCT + `?search=${search || ''}&skip=${skip}&limit=${limit}`)
 }
 
 export function updateService(id: string, values: any) {

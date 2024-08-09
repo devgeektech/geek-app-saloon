@@ -1,21 +1,28 @@
 import pencilEditIcon from '../../../_metronic/images/pencilEditIcon.svg'
 import deleteIcon from '../../../_metronic/images/deleteIcon.svg'
 import { Table } from 'react-bootstrap'
-import DeleteModal from '../common/modal/deleteModal'
+import DeleteModal from '../common/modal/DeleteModal'
 import './style.scss'
 import { useDispatch, useSelector } from 'react-redux'
-import { closeDeleteModal, deleteCategoryRequest, resetCategoryForm, setCategoryForm, setDeleteModal, setSelectedCategoryId } from '../../redux/reducer/categorySlice'
+import { closeDeleteModal, deleteCategoryRequest, getCategoryRequest, resetCategoryForm, setCategoryForm, setDeleteModal, setSelectedCategoryId } from '../../redux/reducer/categorySlice'
 import dummyImg from '../../../_metronic/images/dummy.webp'
 import { getImageUrl } from '../../utils/common'
+import Pagination from '../common/pagination'
+import { useState } from 'react'
+import ArrowRightIcon from '../common/Icons/ArrowRightIcon'
 
 export default function TableCategory() {
-  const dispatch = useDispatch()
-  const { categoryList, selectedCategoryId, showDeleteModal } = useSelector((state: any) => state.category);
+  const dispatch = useDispatch();
+  const { categoryList, selectedCategoryId, showDeleteModal, totalRecord } = useSelector((state: any) => state.category);
+  const [pageNumber, setPageNumber] = useState(1);
+  const limit = 10;
 
   const deleteItem = (event: any) => {
     if (event && selectedCategoryId !== "") {
       dispatch(deleteCategoryRequest({ id: selectedCategoryId }));
       dispatch(resetCategoryForm());
+      setPageNumber(1);
+      dispatch(getCategoryRequest({ skip: 0, limit }))
     }
   }
 
@@ -23,9 +30,14 @@ export default function TableCategory() {
     dispatch(setCategoryForm({ id: data._id, name: data.name, image: data.photo }));
   }
 
+  const handlePageChange = (pageNumber: number) => {
+    setPageNumber(pageNumber);
+    dispatch(getCategoryRequest({ skip: pageNumber, limit }))
+  };
+
   return (
     <>
-      <Table responsive className='table table-bordered'>
+      <Table responsive className='table table-bordered mb-5'>
         <thead>
           <tr>
             <th>Category Name</th>
@@ -63,20 +75,7 @@ export default function TableCategory() {
                         <img src={deleteIcon} alt='deleteIcon' />
                       </button>
                       <button className='deleteBtn'>
-                        <svg
-                          xmlns='http://www.w3.org/2000/svg'
-                          width='13'
-                          height='14'
-                          viewBox='0 0 13 14'
-                          fill='none'
-                        >
-                          <path
-                            d='M4 11.5L8 7.5L4 3.5'
-                            stroke='#8D8D8D'
-                            strokeLinecap='round'
-                            strokeLinejoin='round'
-                          />
-                        </svg>
+                        <ArrowRightIcon/>
                       </button>
                     </div>
                   </td>
@@ -85,6 +84,14 @@ export default function TableCategory() {
             })}
         </tbody>
       </Table>
+      {totalRecord > 10 && (
+        <Pagination
+          limit={limit}
+          totalRecord={totalRecord}
+          paginitionClbk={handlePageChange}
+          currentPage={pageNumber}
+        />
+      )}
       <DeleteModal
         deleteUserClbk={deleteItem}
         openModal={showDeleteModal}

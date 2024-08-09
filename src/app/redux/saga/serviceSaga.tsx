@@ -41,6 +41,7 @@ function* addServiceSaga(action) {
 }
 
 function* getServiceSaga(action) {
+  console.log(" action.payload",  action.payload);
   const { search, skip, limit } = action.payload;
   try {
     const res = yield call(getAllServices, search, skip, limit)

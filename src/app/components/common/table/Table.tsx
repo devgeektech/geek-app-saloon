@@ -7,7 +7,6 @@ const CommonTable = (props: any) => {
 
   const { data, columns } = props
 
-
   const { getTableProps, getTableBodyProps, headers, rows, prepareRow } =
     useTable({ columns, data, });
 

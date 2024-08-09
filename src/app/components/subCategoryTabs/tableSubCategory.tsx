@@ -2,12 +2,14 @@ import React, { useEffect, useState } from 'react'
 import pencilEditIcon from '../../../_metronic/images/pencilEditIcon.svg'
 import deleteIcon from '../../../_metronic/images/deleteIcon.svg'
 import { Dropdown, Tab, Table, Tabs } from 'react-bootstrap'
-import DeleteModal from '../common/modal/deleteModal'
+import DeleteModal from '../common/modal/DeleteModal'
 import { useDispatch, useSelector } from 'react-redux'
 import dummyImg from '../../../_metronic/images/dummy.webp'
 import { getImageUrl } from '../../utils/common'
-import { closeDeleteModal, deleteSubCategoryRequest, resetSubCategoryForm, setDeleteModal, setSelectedId, setSubCategoryForm } from '../../redux/reducer/subCategorySlice';
+import { closeDeleteModal, deleteSubCategoryRequest, getSubCategoryRequest, resetSubCategoryForm, setDeleteModal, setSelectedId, setSubCategoryForm } from '../../redux/reducer/subCategorySlice';
 import DeleteIcon from '../common/Icons/DeleteIcon'
+import Pagination from '../common/pagination'
+import ArrowRightIcon from '../common/Icons/ArrowRightIcon'
 
 // Interface for Category
 interface SubCategory {
@@ -30,13 +32,17 @@ interface Category {
 
 export default function TableSubCategory() {
   const dispatch = useDispatch();
-  const { subCategoryList, showDeleteModal, selectedId} = useSelector((state: any) => state.subcategory);
+  const { subCategoryList, showDeleteModal, selectedId, totalRecord  } = useSelector((state: any) => state.subcategory);
+  const [pageNumber, setPageNumber] = useState<number>(1);
 
+  const limit = 10;
 
   const deleteItem = (event: Boolean) => {
     if (event && selectedId !== "") {
       dispatch(deleteSubCategoryRequest({ id: selectedId }));
       dispatch(resetSubCategoryForm());
+      setPageNumber(1);
+      dispatch(getSubCategoryRequest({ search : '', skip: 0, limit }));
     }
   }
 
@@ -49,9 +55,15 @@ export default function TableSubCategory() {
     }));
   }
 
+   const paginitionClbk = (pageNumber?: any) => {
+    setPageNumber(pageNumber);
+    const skip = (pageNumber - 1) * limit;
+    dispatch(getSubCategoryRequest({ search : '', skip, limit }));
+  };
+
   return (
     <div>
-      <Table responsive className='table table-bordered'>
+      <Table responsive className='table table-bordered mb-5'>
         <thead>
           <tr>
             <th>Subcategory</th>
@@ -86,20 +98,7 @@ export default function TableSubCategory() {
                       <DeleteIcon />
                     </button>
                     <button className='deleteBtn'>
-                      <svg
-                        xmlns='http://www.w3.org/2000/svg'
-                        width='13'
-                        height='14'
-                        viewBox='0 0 13 14'
-                        fill='none'
-                      >
-                        <path
-                          d='M4 11.5L8 7.5L4 3.5'
-                          stroke='#8D8D8D'
-                          strokeLinecap='round'
-                          strokeLinejoin='round'
-                        />
-                      </svg>
+                      <ArrowRightIcon/>
                     </button>
                   </div>
                 </td>
@@ -107,7 +106,15 @@ export default function TableSubCategory() {
             ))}
         </tbody>
       </Table>
-
+      {totalRecord > 10 && (
+        <Pagination
+          data={subCategoryList}
+          limit={10}
+          totalRecord={totalRecord}
+          paginitionClbk={paginitionClbk}
+          currentPage={pageNumber}
+        />
+      )}
       <DeleteModal
         deleteUserClbk={deleteItem}
         openModal={showDeleteModal}

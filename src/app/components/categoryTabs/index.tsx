@@ -15,7 +15,6 @@ import { fileTypeMap } from '../../utils/const'
 export default function CategoryTabs() {
   const dispatch = useDispatch()
   const { initialValues } = useSelector((state: any) => state.category);
-  // const [file, setFile] = useState('');
   const loading = false
 
   const categorySchema: any = Yup.object().shape({

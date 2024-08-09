@@ -4,64 +4,69 @@ import coupon from "../../../_metronic/images/coupon.svg";
 import searchIcon from "../../../_metronic/images/searchIcon.svg";
 import { Table } from "react-bootstrap";
 import Pagination from "../../components/common/pagination";
-import { useCallback, useEffect, useState } from "react";
-import { deleteBanner, deleteVender, getBanner, getBanners } from "../../services/_requests";
-import pencilEditIcon from "../../../_metronic/images/pencilEditIcon.svg";
-import deleteIcon from "../../../_metronic/images/deleteIcon.svg";
+import { useEffect, useState } from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import { addBanner, commonFileUpload } from "../../services/_requests";
-import "./styles.scss"
 import { toast } from "react-toastify";
 import NoDataFound from "../../components/common/noDataFound/NoDataFound";
 import BannerModal from "./addBannerModal";
 import moment from "moment";
 import dummyImg from "../../../_metronic/images/dummy.webp";
 import { useDebounce } from "../../../_metronic/helpers";
-import DeleteModal from "../../components/common/modal/deleteModal";
+import DeleteModal from "../../components/common/modal/DeleteModal";
 import { getImageUrl } from "../../utils/common";
+import { useDispatch, useSelector } from "react-redux";
+import { commonFileUpload } from "../../services/_requests";
+import DeleteIcon from "../../components/common/Icons/DeleteIcon";
+import { addBannerRequest, deleteBannerRequest, getBannerRequest } from "../../redux/reducer/bannerSlice";
 
 const BannerWrapper = () => {
-  const [banners, setBanners] = useState([]);
-  const [file, setFile] = useState<any>(null);
-  const [modalShow, setModalShow] = useState(false);
+  const dispatch = useDispatch();
   const intl = useIntl();
-  const [id, setId] = useState("");
-  const [limit, setLimit] = useState(10)
-  const [skip, setSkip] = useState(0);
-  const { REACT_APP_IMAGE_URL } = process.env;
-  const [searchValue, setSearchValue] = useState("");
-  const [debounceValue, setDebounceValue] = useState("");
-  const [totalRecord, setTotalRecord] = useState(0);
-  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [file, setFile] = useState<File | null>(null);
+  const [modalShow, setModalShow] = useState<boolean>(false);
+  const [id, setId] = useState<string>("");
+  const [showDeleteModal, setShowDeleteModal] = useState<boolean>(false);
+  const [pageNumber, setPageNumber] = useState<number>(1);
+  const [searchValue, setSearchValue] = useState<string>('');
+  const { bannerList, totalRecord, loading } = useSelector((state: any) => state.banner);
 
-  useEffect(() => {
-    getBannersList();
-  }, [debounceValue, skip]);
+  const limit = 10;
+  const skip = (pageNumber - 1) * limit;
+
+  const debounceSearch = useDebounce(searchValue, 1000);
 
   const initialValues = {
     name: '',
-    image: '',
+    image: file,
     type: '',
   }
 
   const serviceSchema = Yup.object().shape({
     name: Yup.string().required('Required'),
-    // image: Yup.string().required('Required'),
+    image: Yup.mixed()
+    .required('Image is required')
+    .test('fileSize', 'File size is too large', (value: any) => {
+      return !value || (value && value.size <= 2 * 1024 * 1024); // 2MB limit
+    })
+    .test('fileType', 'Unsupported file format', (value: any ) => {
+      return !value || ['image/jpeg', 'image/png'].includes(value.type);
+    }),
     type: Yup.string().required('Required'),
-  })
+  });
 
   const formik = useFormik({
     initialValues,
     validationSchema: serviceSchema,
     onSubmit: async (values, { setStatus, setSubmitting }) => {
       try {
-        const imageUrl = await upload(file);
-        const data = { ...values, image: imageUrl };
-        await addBanner(data);
-        closeBannerModal();
-        getBannersList();
-      } catch (error:any) {
+        if (file) {
+          const imageUrl = await upload(file);
+          const data = { ...values, image: imageUrl };
+          dispatch(addBannerRequest(data));
+          closeBannerModal();
+        }
+      } catch (error: any) {
         console.error(error);
         toast.error(error.responseMessage || 'An error occurred');
       } finally {
@@ -69,59 +74,6 @@ const BannerWrapper = () => {
       }
     },
   });
-
-  const getBannersList = async () => {
-    try {
-      await getBanners(searchValue, skip, limit).then((res: any) => {
-        setBanners(res?.data?.data);
-        setTotalRecord(res.data?.totalRecord)
-      });
-    }
-    catch (error) {
-      console.log(error)
-    }
-  }
-
-  const handleFileChange = async (file: any) => {
-    console.log("filefilefilefile", file);
-    setFile(file);
-
-    // if (e.target?.files && e.target?.files.length > 0) {
-    //   const file = e.target.files[0];
-    //   const fileSize = file.size / 1024 / 1024;
-
-    //   if (fileSize > 2) {
-    //     renderMessageToaster(FILE_SIZE, 'error');
-    //     return;
-    //   }
-
-    //   const fileReader = new FileReader();
-    //   fileReader.onloadend = function () {
-    //     const result = fileReader.result;
-    //     if (result && typeof result !== 'string') {
-    //       const arr = new Uint8Array(result).subarray(0, 4);
-    //       const header = arr.reduce((acc, byte) => acc + byte.toString(16).padStart(2, '0'), "");
-
-    //       const fileType = fileTypeMap[header] || UNKNOWN;
-
-    //       if (fileType === UNKNOWN) return renderMessageToaster(INVALID_IMAGE, 'error');
-
-    //       setFile(URL.createObjectURL(file));
-    //       const formData = new FormData();
-    //       formData.append('image', file);
-    //       commonFileUpload(formData).then((res) => {
-    //         if (res.data.responseCode === 200) {
-    //           formik.setFieldValue('image', res.data.data.url);
-    //         }
-    //       });
-    //     } else {
-    //       renderMessageToaster(UNABLE, 'error');
-    //     }
-    //   };
-
-    //   fileReader.readAsArrayBuffer(file);
-    // }
-  };
 
   const upload = async (file: File): Promise<string> => {
     try {
@@ -138,61 +90,46 @@ const BannerWrapper = () => {
       throw new Error('Failed to upload image');
     }
   };
-  
 
-  const tags = ["TOP", "MIDDLE"];
+  const handleFileChange = (file: File) => {
+    formik.setFieldValue("image", file);
+    setFile(file);
+  };
+ 
+  const editBanner = (id: string) => {
+    dispatch(getBannerRequest(id)); 
+    setModalShow(true);
+  };
 
-  const editBanner = async (id: any) => {
-    await getBanner(id).then((res) => {
-      const { name, image, type } = res.data.data;
-      formik.setValues({ name, image, type });
-      setFile(`${process.env.REACT_APP_IMAGE_URL}${image}`)
-      addBannerModal()
-    }).catch((error) => { console.log(error) })
-  }
-
-  const deleteUser: any = async (event: any) => {
-    if (event) {
-      await deleteBanner(id).then((res: any) => {
-        if (res.data.responseCode === 200) {
-          toast.success("Banner Deleted Successfully");
-          setShowDeleteModal(false);
-          getBannersList();
-        }
-      });
+  const deleteBannerHandler = () => {
+    if (id) {
+      dispatch(deleteBannerRequest(id));
       setShowDeleteModal(false);
-      getBannersList();
+      setPageNumber(1);
     }
   };
 
-  const deleteOpenModal = (id: string) => {
-    setShowDeleteModal(true);
-    setId(id);
-  };
-
-  const addBannerModal = () => {
-    setModalShow(true)
-  };
-
   const closeBannerModal = () => {
-    setModalShow(false)
+    setModalShow(false);
     formik.resetForm();
   };
 
   const closeDeleteModal = () => {
     setShowDeleteModal(false);
     setId('');
-  }
+  };
 
-  const debounceVal = useDebounce(searchValue, 1000);
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchValue(e.target.value);
+  };
+
+  const handlePageChange = (page: number) => {
+    setPageNumber(page);
+  };
 
   useEffect(() => {
-    setDebounceValue(searchValue);
-  }, [debounceVal]);
-
-  const paginitionClbk = useCallback((val: number) => {
-    setSkip((val - 1) * limit);
-  }, [limit]);
+    dispatch(getBannerRequest({ search: debounceSearch, skip, limit }));
+  }, [debounceSearch, skip, limit, dispatch]);
 
   return (
     <>
@@ -201,13 +138,13 @@ const BannerWrapper = () => {
       </PageTitle>
       <div className="appointmentContent">
         <div className="title_text d-flex justify-content-between align-items-center">
-          <div className="">
+          <div>
             <h2 className="page_title">
               <img src={coupon} alt="coupon" />
               Banners
             </h2>
           </div>
-          <button onClick={addBannerModal} className="yellowBtn">
+          <button onClick={() => setModalShow(true)} className="yellowBtn">
             Add
           </button>
         </div>
@@ -218,7 +155,7 @@ const BannerWrapper = () => {
                 type="text"
                 className="form-control"
                 placeholder="Search..."
-                onChange={(e) => setSearchValue(e.target.value)}
+                onChange={handleSearchChange}
               />
               <button>
                 <img src={searchIcon} alt="searchIcon" />
@@ -238,12 +175,11 @@ const BannerWrapper = () => {
                 </tr>
               </thead>
               <tbody>
-                {banners &&
-                  banners.length > 0 &&
-                  banners.map((item: any, index) => (
+                {bannerList && bannerList.length > 0 ? (
+                  bannerList.map((item: any, index: number) => (
                     <tr key={item?._id}>
-                      <td>{`${index + 1}`}</td>
-                      <td>{item?.name ? item.name : 'N/A'}</td>
+                      <td>{index + 1}</td>
+                      <td>{item?.name || 'N/A'}</td>
                       <td>
                         <img
                           className="profileImg"
@@ -255,29 +191,27 @@ const BannerWrapper = () => {
                       <td>{moment(item.createdAt).format("dddd, MMM DD, h:mm a")}</td>
                       <td>
                         <div className="d-flex">
-                          {/* <button onClick={() => { editBanner(item._id) }} className="editBtn">
-                            <img src={pencilEditIcon} alt="pencilEditIcon" />
-                          </button> */}
-                          <button onClick={() => { deleteOpenModal(item._id) }} className="deleteBtn">
-                            <img src={deleteIcon} alt="deleteIcon" />
+                          <button onClick={() => { setShowDeleteModal(true); setId(item._id); }} className="deleteBtn">
+                            <DeleteIcon />
                           </button>
                         </div>
                       </td>
                     </tr>
-                  ))}
+                  ))
+                ) : (
+                  <NoDataFound />
+                )}
               </tbody>
             </Table>
-            {banners.length === 0 && <>
-              <NoDataFound />
-            </>}
           </div>
-
-          {totalRecord > 10 && <Pagination
-            limit={limit}
-            totalRecord={totalRecord}
-            paginitionClbk={paginitionClbk}
-          />}
-
+          {totalRecord > limit && (
+            <Pagination
+              limit={limit}
+              totalRecord={totalRecord}
+              paginitionClbk={handlePageChange}
+              currentPage={pageNumber}
+            />
+          )}
         </div>
       </div>
       {modalShow && (
@@ -288,11 +222,12 @@ const BannerWrapper = () => {
           formik={formik}
           cancelButton={closeBannerModal}
           handleFileChange={handleFileChange}
-          type={tags}
-        ></BannerModal>
+          type={["TOP", "MIDDLE"]}
+        />
       )}
+
       <DeleteModal
-        deleteUserClbk={deleteUser}
+        deleteUserClbk={deleteBannerHandler}
         openModal={showDeleteModal}
         closeModal={closeDeleteModal}
       />

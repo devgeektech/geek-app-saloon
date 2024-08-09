@@ -72,6 +72,7 @@ const serviceSlice = createSlice({
       return {
         ...state,
         error: action.payload,
+        loading: false
       }
     },
     editServiceRequest: (state, action) => {
@@ -83,7 +84,7 @@ const serviceSlice = createSlice({
         ...state,
         loading: false,
         isModalOpen: false,
-        serviceList: action.payload.data,
+        // serviceList: action.payload.data,
       }
     },
     editServiceFailure: (state, action) => {

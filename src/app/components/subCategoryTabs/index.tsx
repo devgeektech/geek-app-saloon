@@ -231,7 +231,7 @@ export default function SubCategoryTabs() {
                   id='kt_sign_in_submit'
                   disabled={formik.isSubmitting || !formik.isValid}
                 >
-                  {!loading && <span className='indicator-label'>Add</span>}
+                  {!loading && <span className='indicator-label'>Save</span>}
                   {loading && (
                     <span className='indicator-progress' style={{ display: 'block' }}>
                       Please wait...
