@@ -68,6 +68,8 @@ export default function TableSubCategory() {
       <Table responsive className='table table-bordered mb-5'>
         <thead>
           <tr>
+            {/* <th>Sr No</th> */}
+            <th>Photo</th>
             <th>Subcategory</th>
             <th>Photo</th>
             <th>Category</th>
@@ -79,6 +81,14 @@ export default function TableSubCategory() {
             subCategoryList.length > 0 &&
             subCategoryList.map((subCat: any, index: number) => (
               <tr key={`subCat${index}`}>
+                {/* <td>{index + 1}</td> */}
+                <td>
+                  <img
+                    src={subCat.image ? getImageUrl(subCat.image) : dummyImg}
+                    className='user-img'
+                    alt='img'
+                  />
+                </td>
                 <td>{subCat?.name}</td>
                 <td>
                   <img

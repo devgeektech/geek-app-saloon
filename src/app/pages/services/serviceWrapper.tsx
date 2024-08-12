@@ -203,7 +203,7 @@ const ServiceWrapper = () => {
             formik.resetForm();
             setFile('');
           }} className="yellowBtn">
-            Add
+            Create a Service
           </button>
         </div>
         <div className="tabWrapper">

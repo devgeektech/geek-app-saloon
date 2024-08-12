@@ -195,7 +195,7 @@ export default function SubCategoryTabs() {
                         name="name"
                         validate={subCategorySchema}
                         required={true}
-                        label="SubCategory Name"
+                        label="Sub Category Name"
                         component={FieldInputText}
                         disabled={!formik.values.categoryId}
                       />
