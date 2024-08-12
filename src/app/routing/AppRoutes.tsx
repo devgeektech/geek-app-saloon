@@ -9,6 +9,7 @@ import { toast } from "react-toastify";
 
 const { PUBLIC_URL } = process.env;
 
+
 const AppRoutes: FC = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(true);
   const [loading, setLoding] = useState(false);
