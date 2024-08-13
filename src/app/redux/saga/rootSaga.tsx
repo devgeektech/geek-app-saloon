@@ -4,7 +4,7 @@ import {fetchUserListSaga} from './usersSaga'
 import {addcategorySaga, deleteCategorySaga, getCategorySaga, updateCategorySaga} from './categorySaga'
 import {addSubCategorySaga, deleteSubCategorySaga, getSubCategorySaga, updateSubCategorySaga} from './subCategorySaga'
 import {addServiceSaga, deleteServiceSaga, editServiceDataSaga, editServiceSaga, getServiceSaga, selectedTabSaga} from './serviceSaga'
-import {closeModalSaga, openModalSaga} from './modalSaga'
+import {closeModalSaga, openModalSaga} from './modalSaga';
 
 function* rootSaga() {
   yield takeLatest('auth/loginRequest', loginSaga)

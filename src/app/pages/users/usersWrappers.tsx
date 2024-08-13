@@ -7,42 +7,47 @@ import searchIcon from "../../../_metronic/images/searchIcon.svg";
 import DeleteModal from "../../components/common/modal/deleteModal";
 import "./userStyle.scss";
 import {  Table } from "react-bootstrap";
-import { deleteUserApi, getUsersList } from "../../services/_requests";
+import { deleteUserApi } from "../../services/_requests";
 import { useNavigate } from "react-router-dom";
 import {  toast } from "react-toastify";
 import Pagination from "../../components/common/pagination/index";
 import NoDataFound from "../../components/common/noDataFound/NoDataFound";
 import dummyImg from '../../../_metronic/images/dummy.webp'
 import { useDebounce } from "../../../_metronic/helpers";
+import { selectUserList, selectUserListError, fetchUserListRequest  } from "../../redux/reducer/userSlice";
 
+
+import { useDispatch, useSelector } from "react-redux";
 
 const UsersWrapper = () => {
+  const dispatch = useDispatch();
+
   const intl = useIntl();
-  const [users, setUsers] = useState([]);
+  const state: any = useSelector((state) => state);
+
+  const users: [] = useSelector(
+    (state: any) => state.users.userList
+  );
+  const error = useSelector(selectUserListError);
+  const {  totalRecord } = useSelector((state: any) => state.users)
+
   const [singleUser, setSingleUser] = useState({});
   const [modalShow, setModalShow] = React.useState(false);
   const [deleteUserId, setDeleteUserId] = useState("");
   const [searchUser, setSearchUser] = useState("");
-  const [totalRecord, setTotalRecord] = useState(0);
   const [limit, setLimit] = useState(10)
   const [skip, setSkip] = useState(0)
   const [debounceVal, setDebounceVal] = useState("");
 
   const navigate = useNavigate();
 
+ 
   useEffect(() => {
-    getUserList();
-  }, [debounceVal, skip]);
+  
+    dispatch(fetchUserListRequest({ search: searchUser, skip, limit }));
+  }, [dispatch,debounceVal, searchUser, skip, limit]);
 
-  const getUserList = () => {
-    getUsersList(searchUser, skip, limit).then((res: any) => {
-      if ((res.data.responseCode === 200)) {
-        setUsers(res.data.data);
-        setTotalRecord(res.data?.totalRecord)
-        setSingleUser(res.data?.data[0]);
-      }
-    });
-  };
+
 
   const paginitionClbk = (val?: any) => {
     let skip1 = (val - 1) * limit
@@ -76,11 +81,13 @@ const UsersWrapper = () => {
         if (res.data.responseCode === 200) {
           toast.success("User Deleted Successfully");
           setModalShow(false);
-          getUserList();
+          dispatch(fetchUserListRequest({ search: searchUser, skip, limit }));
+
         }
       });
       setModalShow(false);
-      getUserList();
+      dispatch(fetchUserListRequest({ search: searchUser, skip, limit }));
+
     }
   };
   
@@ -196,12 +203,7 @@ const UsersWrapper = () => {
                                 viewBox="0 0 13 14"
                                 fill="none"
                               >
-                                {/* <path
-                                  d="M4 11.5L8 7.5L4 3.5"
-                                  stroke="#8D8D8D"
-                                  strokeLinecap="round"
-                                  strokeLinejoin="round"
-                                /> */}
+                               
                               </svg>
                             </button>
                           </div>

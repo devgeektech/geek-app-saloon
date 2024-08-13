@@ -41,7 +41,7 @@ const categorySlice = createSlice({
         ...state,
         loading: false,
         category: action.payload.data,
-      };
+      };  
     },
     editCategoryFailure: (state, action) => {
       state.error = action.payload;

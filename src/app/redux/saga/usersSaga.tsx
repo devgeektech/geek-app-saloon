@@ -6,13 +6,15 @@ import {
 import { getUsersList } from "../../services/_requests";
 
 function* fetchUserListSaga(action) {
-  try {
+  try { 
     const { search, skip, limit } = action.payload;
     const response = yield call(getUsersList,search,skip,limit);
-    yield put(fetchUserListSuccess(response));
+    yield put(fetchUserListSuccess(response.data));
   } catch (error) {
     yield put(fetchUserListFailure(error));
+
   }
+   
 }
 
 export { fetchUserListSaga };
