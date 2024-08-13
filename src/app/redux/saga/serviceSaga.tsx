@@ -14,6 +14,7 @@ import {
   addServiceFailure,
   addServiceSuccess,
   deleteServiceSuccess,
+  editServiceFailure,
   editServiceRequestDataSuccess,
   editServiceSuccess,
   getServiceFailure,
@@ -41,6 +42,7 @@ function* addServiceSaga(action) {
 }
 
 function* getServiceSaga(action) {
+  console.log("action.payload454545454",  action.payload);
   const { search, skip, limit } = action.payload;
   try {
     const res = yield call(getAllServices, search, skip, limit)
@@ -49,17 +51,20 @@ function* getServiceSaga(action) {
     yield put(getServiceFailure(error.response))
   }
 }
-
 function* editServiceSaga(action) {
-  const { payload } = action
-  console.log("payload", payload);
+  const { payload } = action;
   try {
-    const res = yield call(updateService, payload?._id, { ...payload })
-    yield put(editServiceSuccess(res.data))
-  } catch (error: any) {
-    yield put(getServiceFailure(error.response))
+    const res = yield call(updateService, payload?._id, {
+      ...payload,
+      hours: payload.hours,
+      minutes: payload.minutes,
+    });
+    yield put(editServiceSuccess(res.data));
+  } catch (error) {
+    yield put(editServiceFailure(error));
   }
 }
+
 
 function* editServiceDataSaga(action) {
   try {

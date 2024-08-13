@@ -4,7 +4,8 @@ import {fetchUserListSaga} from './usersSaga'
 import {addcategorySaga, deleteCategorySaga, getCategorySaga, updateCategorySaga} from './categorySaga'
 import {addSubCategorySaga, deleteSubCategorySaga, getSubCategorySaga, updateSubCategorySaga} from './subCategorySaga'
 import {addServiceSaga, deleteServiceSaga, editServiceDataSaga, editServiceSaga, getServiceSaga, selectedTabSaga} from './serviceSaga'
-import {closeModalSaga, openModalSaga} from './modalSaga';
+import {closeModalSaga, openModalSaga} from './modalSaga'
+import { addBannerSaga, deleteBannerSaga, getBannerSaga } from './bannerSaga'
 
 function* rootSaga() {
   yield takeLatest('auth/loginRequest', loginSaga)
@@ -21,8 +22,6 @@ function* rootSaga() {
   yield takeLatest('subcategory/updateSubCategoryRequest', updateSubCategorySaga)
   yield takeLatest('subcategory/deleteSubCategoryRequest', deleteSubCategorySaga)
 
-
-
   // Services Request
   yield takeLatest('service/setSelectedTab', selectedTabSaga)
   yield takeLatest('service/serviceRequest', addServiceSaga)
@@ -35,8 +34,15 @@ function* rootSaga() {
   // open/close modal globaly
   yield takeLatest('modal/openModalRequest', openModalSaga)
   yield takeLatest('modal/closeModalRequest', closeModalSaga)
+  
 
   yield takeLatest('users/fetchUserListRequest', fetchUserListSaga)
+
+  // Banner request 
+  yield takeLatest('banner/addBannerRequest', addBannerSaga)
+  yield takeLatest('banner/getBannerRequest', getBannerSaga)
+  yield takeLatest('banner/deleteBannerRequest', deleteBannerSaga);
+
 }
 
 export default rootSaga

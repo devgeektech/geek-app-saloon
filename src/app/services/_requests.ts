@@ -1,7 +1,6 @@
 import axios from 'axios'
 import { AuthModel, UserModel, CategoryModel } from './_models'
 import { setSelectedTab } from '../redux/reducer/serviceSlice'
-// import {AuthProvider, setupAxios} from '../../app'
 const API_URL = process.env.REACT_APP_API_URL
 export const GET_USER_BY_ACCESSTOKEN_URL = `${API_URL}/auth/verify_token`
 export const LOGIN_URL = `${API_URL}/login`
@@ -10,20 +9,14 @@ export const REQUEST_PASSWORD_URL = `${API_URL}/auth/forgotPassword`
 export const ADMIN_LOGIN_URL = `${API_URL}/auth/admin/login`
 export const CATEGORY_URL = `${API_URL}/category`
 export const SUB_CATEGORY_URL = `${API_URL}/subcategory`
-
 export const GET_VENDORS = `${API_URL}/vendor/getNearbyVendorList`
 export const DELETE_VENDOR = `${API_URL}/vendor/deleteVendor`
-
 export const GET_USERS = `${API_URL}/users`
 export const DELETE_USER = `${API_URL}/users`
-
 export const BANNER = `${API_URL}/banner`
-
-
 export const SERVICE_URL = `${API_URL}/product`
 export const FILE_UPLOAD = `${API_URL}/product/upload`
 export const GET_ALL_PRODUCT = `${API_URL}/product`
-
 
 // Server should return AuthModel
 export function login(email: any, password: any) {
@@ -71,11 +64,9 @@ export function adminLogin(email: any, password: any) {
 }
 
 // *************************CATEGORY API LIST ************************
-export function createCategory(name: string, photo: string) {
-  return axios.post(CATEGORY_URL, {
-    name,
-    photo,
-  })
+
+export function createCategory(values: any) {
+  return axios.post(CATEGORY_URL, values)
 }
 
 export function getCategory(search: string, skip: number, limit: number) {
@@ -86,15 +77,12 @@ export function deleteCategory(id: string) {
   return axios.delete(CATEGORY_URL + `/${id}`, {})
 }
 
-export function updateCategory(id: string, name: string, photo: string) {
-  return axios.put(CATEGORY_URL + `/${id}`, {
-    name,
-    photo,
-  })
+export function updateCategory(id: string, payload) {
+  return axios.put(CATEGORY_URL + `/${id}`, payload)
 }
 
-export function createSubCategory(id: string, name: string, image: string) {
-  return axios.post(SUB_CATEGORY_URL, { id, name, image, })
+export function createSubCategory(id: string, name: string, image: string, description: string) {
+  return axios.post(SUB_CATEGORY_URL, { id, name, image, description })
 }
 
 export function getSubCreateCategory(search: string, skip: number, limit: number) {
@@ -116,11 +104,10 @@ export function addService(body: any) {
 }
 
 export function getAllServices(search: string, skip: number, limit: number) {
-  return axios.get(GET_ALL_PRODUCT + `?search=${search}&skip=${skip}&limit=${limit}`)
+  return axios.get(GET_ALL_PRODUCT + `?search=${search || ''}&skip=${skip}&limit=${limit}`)
 }
 
 export function updateService(id: string, values: any) {
-  console.log("id: string, values: any", id, values)
   return axios.put(SERVICE_URL + `/${id}`, values)
 }
 
@@ -153,6 +140,7 @@ export function deleteUserApi(id: string) {
 export function addBanner(body: any) {
   return axios.post(BANNER, body)
 }
+
 export function getBanners(search: string, skip: number, limit: number) {
   return axios.get(BANNER + `?search=${search}&skip=${skip}&limit=${limit}`, {})
 }
@@ -166,8 +154,6 @@ export function deleteBanner(id) {
 export function commonFileUpload(file: any) {
   return axios.post(FILE_UPLOAD, file)
 }
-
-
 
 export function selectTab(tab) {
   return {

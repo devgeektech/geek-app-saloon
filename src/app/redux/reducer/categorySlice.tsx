@@ -1,7 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { toast } from "react-toastify";
 
-const categoryForm = { id: "", name: "", image: "" }
+const categoryForm = { id: "", name: "", photo: "" , description :""}
 
 const initialState = {
   initialValues: categoryForm,
@@ -23,14 +23,11 @@ const categorySlice = createSlice({
     addCategoryRequest: (state, action) => {
       return { ...state, loading: true, error: null };
     },
-    addCategorySuccess: (state, action) => {
+    addCategorySuccess: (state: any, action) => {
       toast.success(action.payload.responseMessage);
-      return {
-        ...state,
-        loading: false,
-        error: null,
-        categoryList: action.payload.data,
-      };
+      state.loading =false;
+      state.error = null;
+      state.categoryList = [...state.categoryList, ...action.payload.data];
     },
     addCateogryFailure: (state, action) => {
       toast.error(action.payload.data.responseMessage);

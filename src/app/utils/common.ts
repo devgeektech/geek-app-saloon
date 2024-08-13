@@ -6,8 +6,6 @@ export const renderMessageToaster = (message: string, messageType: string) => {
 };
 
 export function getCroppedImg(image: any, crop: any, fileName: string) {
-  console.log("crop.width", crop.width);
-  console.log("crop", crop);
   const canvas = document.createElement("canvas");
   const scaleX = image.naturalWidth / image.width;
   const scaleY = image.naturalHeight / image.height;
@@ -59,3 +57,4 @@ export const getImageUrl = (imageUrl: string) => {
 export const capitalizeFirstLetter = (string) => {
   return string?.charAt(0)?.toUpperCase() + string?.slice(1);
 }
+

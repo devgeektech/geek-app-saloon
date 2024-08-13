@@ -1,7 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { toast } from "react-toastify";
 
-const subCategoryForm = { name: "", image: "", categoryId: "" }
+const subCategoryForm = { name: "", image: "", categoryId: "", description: '' }
 
 const initialState = {
   initialValues: subCategoryForm,
@@ -23,14 +23,11 @@ const subCategorySlice = createSlice({
     addSubCategoryRequest: (state, action) => {
       return { ...state, loading: true, error: null };
     },
-    addSubCategorySuccess: (state, action) => {
+    addSubCategorySuccess: (state: any, action) => {
       toast.success("Subcategory Added Successfully");
-      return {
-        ...state,
-        loading: false,
-        error: null,
-        subCategoryList: action.payload.data,
-      };
+      state.loading = false;
+      state.error = null;
+      state.subCategoryList = [...state.subCategoryList, ...action.payload.data]
     },
     addSubCateogryFailure: (state, action) => {
       toast.error(action.payload.data.responseMessage);
@@ -67,7 +64,7 @@ const subCategorySlice = createSlice({
       state.subCategoryList = state.subCategoryList.filter(
         (el: any) => el._id !== data?._id
       );
-      state.totalRecord =  state.totalRecord - 1
+      state.totalRecord = state.totalRecord - 1
     },
     deleteSubCategoryFailure: (state, action) => {
       state.error = action.payload;
@@ -129,7 +126,7 @@ export const {
   setDeleteModal,
   closeDeleteModal,
   setSelectedId,
-  
+
 } = subCategorySlice.actions;
 
 export default subCategorySlice.reducer;

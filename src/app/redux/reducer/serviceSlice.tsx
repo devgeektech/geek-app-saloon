@@ -18,13 +18,13 @@ const serviceSlice = createSlice({
   name: 'service',
   initialState: {
     initialValues: serviceForm,
-    serviceList: [],
+    serviceList: [] as any[],
     loading: false,
     error: null,
     isModalOpen: false,
-    selectedTab: 'service', // default tab
-    skip: 0, // initial value for skip
-    limit: 10, // initial value for limit
+    selectedTab: 'service',
+    skip: 0, 
+    limit: 10, 
     search:'',
     totalRecord : 0
 
@@ -42,7 +42,7 @@ const serviceSlice = createSlice({
         ...state,
         loading: false,
         error: null,
-        serviceList: action.payload.data,
+    serviceList: [...state.serviceList, action.payload.data], // Add new service to the list
       }
     },
     addServiceFailure: (state, action) => {
@@ -58,6 +58,7 @@ const serviceSlice = createSlice({
       return {...state, loading: true, error: null}
     },
     getServiceSuccess: (state, action) => {
+      debugger
       return {
         ...state,
         loading: false,
@@ -72,6 +73,7 @@ const serviceSlice = createSlice({
       return {
         ...state,
         error: action.payload,
+        loading: false
       }
     },
     editServiceRequest: (state, action) => {
@@ -83,11 +85,13 @@ const serviceSlice = createSlice({
         ...state,
         loading: false,
         isModalOpen: false,
-        serviceList: action.payload.data,
+        // serviceList: action.payload.data,
+        
       }
     },
     editServiceFailure: (state, action) => {
-      toast.error(action.payload.data.responseMessage)
+      console.log("action.payload.data", action.payload);
+      toast.error(action.payload.responseMessage)
       return {
         ...state,
         error: action.payload,
@@ -109,9 +113,16 @@ const serviceSlice = createSlice({
     deleteServiceFailure: (state, action) => {
       state.error = action.payload;
     },
+    // setServiceForm: (state, { payload }) => {
+    //   state.initialValues = payload;
+    //   return;
+    // },
     setServiceForm: (state, { payload }) => {
-      state.initialValues = payload;
-      return;
+      state.initialValues = {
+        ...payload,
+        hours: payload?.hours || 0,
+        minutes: payload?.minutes || 0,
+      };
     },
     resetServiceForm: (state) => {
       state.initialValues = serviceForm;

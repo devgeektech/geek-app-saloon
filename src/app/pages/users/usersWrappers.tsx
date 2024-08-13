@@ -4,7 +4,7 @@ import { PageTitle } from "../../../_metronic/layout/core";
 import UserIcon from "../../../_metronic/images/UserIcon.svg";
 import deleteIcon from "../../../_metronic/images/deleteIcon.svg";
 import searchIcon from "../../../_metronic/images/searchIcon.svg";
-import DeleteModal from "../../components/common/modal/deleteModal";
+import DeleteModal from "../../components/common/modal/DeleteModal";
 import "./userStyle.scss";
 import {  Table } from "react-bootstrap";
 import { deleteUserApi } from "../../services/_requests";

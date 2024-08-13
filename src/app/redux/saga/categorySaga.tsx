@@ -15,9 +15,10 @@ import { createCategory, deleteCategory, getCategory, updateCategory } from '../
 const call: any = Effects.call
 
 function* addcategorySaga(action) {
-  const { name, image } = action.payload
+  const values = action.payload;
+  delete values.id;
   try {
-    const createCategoryRes = yield call(createCategory, name, image)
+    const createCategoryRes = yield call(createCategory, values)
     yield put(addCategorySuccess(createCategoryRes.data))
   } catch (error: any) {
     yield put(addCateogryFailure(error.response))
@@ -47,8 +48,10 @@ function* deleteCategorySaga(action) {
 
 function* updateCategorySaga(action) {
   try {
-    const { id, name, image } = action.payload;
-    const response = yield call(updateCategory, id, name, image);
+    const values = action.payload;
+    const id = action.payload.id;
+    delete values.id;
+    const response = yield call(updateCategory, id, values);
     console.log("response", response);
     yield put(updateCategorySuccess(response.data));
   } catch (error: any) {

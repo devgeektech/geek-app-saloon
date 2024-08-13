@@ -1,5 +1,4 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { toast } from "react-toastify";
 
 const initialState = {
   isOpen: false,
@@ -49,6 +48,5 @@ const modalSlice = createSlice({
 
 export const { openModalRequest, openModalSuccess, openModalFailure, closeModalRequest, closeModalSuccess, closeModalFailure } =
   modalSlice.actions;
-
 
 export default modalSlice.reducer;

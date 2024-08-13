@@ -1,7 +1,7 @@
 import { Form } from "react-bootstrap";
 import { getIn } from "formik";
-import { LableWrapper } from "../../utils/LabelWrapper";
-import { ErrorWrapper } from "../../utils/ErrorWapper";
+import { LableWrapper } from "../../../utils/LabelWrapper";
+import { ErrorWrapper } from "../../../utils/ErrorWapper";
 
 const FieldInputText = ({ field, form, ...props }: any) => {
   const error = getIn(form.errors, field.name);
