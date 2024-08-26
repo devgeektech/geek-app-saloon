@@ -23,7 +23,7 @@ const bannerSlice = createSlice({
             toast.success(action.payload.responseMessage);
             state.loading = false;
             state.error = null;
-            state.bannerList = [...state.bannerList, action.payload.data];
+            state.bannerList = [...state.bannerList,    action.payload.data];
         },
         addBannerFailure: (state, action) => {
             toast.error(action.payload.responseMessage);

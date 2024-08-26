@@ -17,8 +17,9 @@ import Toster from '../src/app/utils/toaster'
 import {Provider} from 'react-redux'
 import {PersistGate} from 'redux-persist/integration/react'
 import {persistor, store} from './app/redux/store'
+import { Store } from 'redux';
 
-setupAxios(axios)
+setupAxios(axios,store)
 Chart.register(...registerables)
 
 // const queryClient = new QueryClient();

@@ -7,7 +7,7 @@ import {
   getBannerListSuccess,
   getBannerListFailure,
 } from '../reducer/bannerSlice';
-import { addBanner, deleteBanner, getBanners } from '../../services/_requests';
+import { addBanner, deleteBanner, getAdminBanners, getBanners } from '../../services/_requests';
 
 function* addBannerSaga(action) {
   try {
@@ -30,7 +30,7 @@ function* deleteBannerSaga(action) {
 
 function* getBannerSaga(action) {
   try {
-    console.log("action.payload", action.payload)
+    console.log("action.payload???????????/", action.payload)
     const { search, skip, limit } = action.payload;
     const response = yield call(getBanners, search, skip, limit)
     yield put(getBannerListSuccess(response));

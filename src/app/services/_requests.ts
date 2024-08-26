@@ -10,6 +10,7 @@ export const ADMIN_LOGIN_URL = `${API_URL}/auth/admin/login`
 export const CATEGORY_URL = `${API_URL}/category`
 export const SUB_CATEGORY_URL = `${API_URL}/subcategory`
 export const GET_VENDORS = `${API_URL}/vendor/getNearbyVendorList`
+export const ADD_SALOON = `${API_URL}/vendor`
 export const DELETE_VENDOR = `${API_URL}/vendor/deleteVendor`
 export const GET_USERS = `${API_URL}/users`
 export const DELETE_USER = `${API_URL}/users`
@@ -17,6 +18,8 @@ export const BANNER = `${API_URL}/banner`
 export const SERVICE_URL = `${API_URL}/product`
 export const FILE_UPLOAD = `${API_URL}/product/upload`
 export const GET_ALL_PRODUCT = `${API_URL}/product`
+export const GET_ALL_ADMIN_BANNERS = `${API_URL}/banner/admin`
+export const GET_ALL_ADMIN_SERVICES = `${API_URL}/product/admin`
 
 // Server should return AuthModel
 export function login(email: any, password: any) {
@@ -104,6 +107,7 @@ export function addService(body: any) {
 }
 
 export function getAllServices(search: string, skip: number, limit: number) {
+  console.log('hit API')
   return axios.get(GET_ALL_PRODUCT + `?search=${search || ''}&skip=${skip}&limit=${limit}`)
 }
 
@@ -129,6 +133,11 @@ export function getVendors(lat: any, long: any, skip: any, limit: any, search: a
   return axios.get(GET_VENDORS + `?lat=${lat}&long=${long}&skip=${skip}&limit=${limit}&search=${search}`, {})
 }
 
+
+export function addSaloon(body: any) {
+  return axios.post(ADD_SALOON, body)
+}
+
 export function getUsersList(search: string, skip: number, limit: number) {
   return axios.get(GET_USERS + `?search=${search}&skip=${skip}&limit=${limit}`, {})
 }
@@ -143,6 +152,9 @@ export function addBanner(body: any) {
 
 export function getBanners(search: string, skip: number, limit: number) {
   return axios.get(BANNER + `?search=${search}&skip=${skip}&limit=${limit}`, {})
+}
+export function getAdminBanners(search: string, skip: number, limit: number) {
+  return axios.get(GET_ALL_ADMIN_BANNERS + `?search=${search}&skip=${skip}&limit=${limit}`, {})
 }
 export function getBanner(id) {
   return axios.get(BANNER + `/${id}`)

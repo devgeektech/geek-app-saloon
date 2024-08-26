@@ -58,3 +58,30 @@ export const capitalizeFirstLetter = (string) => {
   return string?.charAt(0)?.toUpperCase() + string?.slice(1);
 }
 
+
+export const fetchLocationFromLatLng = async (lat: number, lng: number): Promise<string> => {
+  try {
+    const response = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&addressdetails=1`);
+    const data = await response.json();
+    
+    if (data && data.address) {
+      // Extract address components
+      const road = data.address.road || '';
+      const city = data.address.city || data.address.town || data.address.village || '';
+      const country = data.address.country || '';
+
+     
+      let location = '';
+      if (road) location += `${road}, `;
+      if (city) location += `${city}, `;
+      if (country) location += `${country}`;
+      
+      return location.trim();  
+    }
+    
+    throw new Error('No address found');
+  } catch (error) {
+    console.error('Error fetching location:', error);
+    return '';
+  }
+};

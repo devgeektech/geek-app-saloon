@@ -31,7 +31,7 @@ export default function Servicetable(props: any) {
   } 
 
   const openModal = (id: string) => {
-    debugger
+    
     setModalShow(true);
     setId(id);
   }
@@ -42,7 +42,7 @@ export default function Servicetable(props: any) {
       setId('');
       setModalShow(false);
       setPageNumber(1);
-       debugger
+       
       dispatch(getServiceRequest({ skip: 0, limit }))
     }
   }

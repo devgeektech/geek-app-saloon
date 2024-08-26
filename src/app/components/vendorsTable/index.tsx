@@ -5,9 +5,9 @@ import deleteIcon from '../../../_metronic/images/deleteIcon.svg'
 import './style.scss'
 
 export default function ActiveTable(data) {
-  const [vendors, seVendors] = useState([])
+  const [vendors, setVendors] = useState([])
   useEffect(() => {
-    seVendors(data.vendors)
+    setVendors(data.vendors)
   }, [data])
 
   return (

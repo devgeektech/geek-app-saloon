@@ -9,6 +9,7 @@ import FieldTextArea from "../../components/common/inputs/FieldTextArea";
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { getImageUrl } from "../../utils/common";
+import { getVendors } from "../../services/_requests";
 
 export const AddServiceModal = (props) => {
   const {
@@ -19,13 +20,39 @@ export const AddServiceModal = (props) => {
     handleFileChange,
     genders,
     cancelButton,
-    file,
+    file
   } = props;
   const [subCategories, setSubcategories] = useState([]);
   const [disablesubCategory, setDisablesubCategory] = useState(true);
-  const serviceState: any = useSelector((state: any) => state.service);
+  const [vendors, setVendors] = useState([]);
+  const [selectedVendor, setSelectedVendor] = useState('');
+  const [lat, setLat] = useState(30.741482)
+  const [lng, setLang] = useState(76.768066)
+  const [limit, setLimit] = useState(10)
+  const [skip, setSkip] = useState(0)
 
+  const [searchUser, setSearchUser] = useState("");
 
+  useEffect(() => {
+    if (show) {
+      const fetchVendors = async (lat: any, long: any, skip: any, limit: any, search: any) => {
+        try {
+          const response = await getVendors(lat, long, skip, limit, search); 
+          setVendors(response.data || []);
+        } catch (error) {
+          console.error('Error fetching vendors:', error);
+        }
+      };
+      fetchVendors(lat,lng,limit,skip,searchUser);
+    }
+  }, [show]);
+
+  const handleVendorChange = (e) => {
+    const vendorId = e.target.value;
+    setSelectedVendor(vendorId);
+    formik.setFieldValue('vendor', vendorId);
+  };
+ 
   useEffect(() => {
     if (formik.values.category) {
       const selectedCategory = categories.find(cat => cat._id === formik.values.category);
@@ -68,6 +95,10 @@ export const AddServiceModal = (props) => {
     }
   };
 
+  const handleServiceChange = (e) => {
+    formik.setFieldValue(e.target.id, e.target.value);
+  };
+
 
   return (
     <Modal className="addServicesModal" show={show} onHide={cancelButton}>
@@ -100,6 +131,7 @@ export const AddServiceModal = (props) => {
             <div>
               <Row>
                 <Col sm={6}>
+                
                   <div className="fv-row mb-4">
                     <Field
                       name="name"
@@ -110,10 +142,12 @@ export const AddServiceModal = (props) => {
                       component={FieldInputText}
                     />
                   </div>
+                
                   <div className="fv-row mb-4">
+                
                     <Field
                       as="select"
-                      name="category"
+                      name="category" 
                       validate={schema}
                       label="Category"
                       required={true}
@@ -134,7 +168,11 @@ export const AddServiceModal = (props) => {
                       component={FieldSelectInput}
                     />
                   </div>
+              
                 </Col>
+               
+               
+                 
                 <Col sm={6}>
                   <div>
                     <label className="form-label">

@@ -1,11 +1,13 @@
-import {takeLatest} from 'redux-saga/effects'
+import {takeEvery, takeLatest} from 'redux-saga/effects'
 import {loginSaga} from './authSaga'
 import {fetchUserListSaga} from './usersSaga'
 import {addcategorySaga, deleteCategorySaga, getCategorySaga, updateCategorySaga} from './categorySaga'
 import {addSubCategorySaga, deleteSubCategorySaga, getSubCategorySaga, updateSubCategorySaga} from './subCategorySaga'
-import {addServiceSaga, deleteServiceSaga, editServiceDataSaga, editServiceSaga, getServiceSaga, selectedTabSaga} from './serviceSaga'
+import {addServiceSaga, deleteServiceSaga, editServiceDataSaga, editServiceSaga, fetchDataSaga, getServiceSaga, selectedTabSaga} from './serviceSaga'
 import {closeModalSaga, openModalSaga} from './modalSaga'
 import { addBannerSaga, deleteBannerSaga, getBannerSaga } from './bannerSaga'
+import { addSaloonSaga, getSaloonSaga } from './saloonSaga'
+import { FETCH_LIST_REQUEST } from '../actions/serviceAction'
 
 function* rootSaga() {
   yield takeLatest('auth/loginRequest', loginSaga)
@@ -25,7 +27,7 @@ function* rootSaga() {
   // Services Request
   yield takeLatest('service/setSelectedTab', selectedTabSaga)
   yield takeLatest('service/serviceRequest', addServiceSaga)
-  yield takeLatest('service/getServiceRequest', getServiceSaga)
+  // yield takeEvery('service/getServiceRequest', getServiceSaga)
   yield takeLatest('service/editServiceRequest', editServiceSaga)
   yield takeLatest('service/deleteServiceRequest', deleteServiceSaga)
 
@@ -42,6 +44,12 @@ function* rootSaga() {
   yield takeLatest('banner/addBannerRequest', addBannerSaga)
   yield takeLatest('banner/getBannerRequest', getBannerSaga)
   yield takeLatest('banner/deleteBannerRequest', deleteBannerSaga);
+
+  //Saloon Request
+  yield takeLatest('saloon/addSaloonRequest', addSaloonSaga )
+  yield takeLatest('saloon/getSaloonRequest', getSaloonSaga)
+
+  yield takeEvery(FETCH_LIST_REQUEST, fetchDataSaga);
 
 }
 

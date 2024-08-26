@@ -4,13 +4,13 @@ import settingIcon from "../../../_metronic/images/setting.svg";
 import Pagination from "../../components/common/pagination/index";
 import "./styles.scss";
 import "../appointment/style.scss";
-import { Tab, Tabs } from "react-bootstrap";
+import { Dropdown, Tab, Tabs } from "react-bootstrap";
 import CategoryTabs from "../../components/categoryTabs/index";
 import TableCategory from "../../components/categoryTabs/table";
 import SubCategoryTabs from "../../components/subCategoryTabs/index";
 import TableSubCategory from "../../components/subCategoryTabs/table";
 import { useEffect, useState } from "react";
-import { useFormik } from "formik";
+import { Field, useFormik } from "formik";
 import * as Yup from "yup";
 import { commonFileUpload, selectTab } from "../../services/_requests";
 import { useDispatch, useSelector } from "react-redux";
@@ -30,6 +30,9 @@ import Servicetable from "../../components/serviceTable/index";
 import { REQUIRED_FIELD } from "../../utils/ErrorMessages";
 import { AddServiceModal } from "./addServiceModal";
 import { useDebounce } from "../../../_metronic/helpers";
+import { getSaloonRequest, setSaloonId } from "../../redux/reducer/saloonSlice";
+import { fetchDataSaga } from "../../redux/saga/serviceSaga";
+import { fetchListRequest } from "../../redux/actions/serviceAction";
 
 const ServiceWrapper = () => {
   const dispatch = useDispatch();
@@ -42,25 +45,35 @@ const ServiceWrapper = () => {
   const totalCategory = useSelector((state: any) => state.category.totalRecord);
   const totalSubCategory = useSelector((state: any) => state.subcategory.totalRecord);
   const subCategriesState: [] = useSelector((state: any) => state.subcategory.subCategoryList);
-  const serviceState: [] = useSelector(
-    (state: any) => state.service.serviceList
-  );
+  const [lat, setLat] = useState(30.741482)
+  const [lng, setLang] = useState(76.768066)
+  const [searchUser, setSearchUser] = useState("");
+
+
   const { initialValues, totalRecord } = useSelector((state: any) => state.service)
   const [selectedTab, setSelectedTab] = useState(state.service.selectedTab);
   const [pageNumber, setPageNumber] = useState<number>(1);
-
+  const { saloonList, saloonId } = useSelector((state: any) => state.saloon);
   const [search, setSearch] = useState("");
   const limit = 10;
   const skip = (pageNumber - 1) * limit;
 
   const { isOpen } = useSelector((state: any) => state.modal);
   const debounceVal = useDebounce(searchValue, 1000);
+  const {data} = useSelector((state:any) => state.saloonService);
 
   useEffect(() => {
     if (selectedTab === "service") {
       dispatch(getServiceRequest({ search, skip, limit }));
     }
-  }, [dispatch, search, skip, limit]);
+  }, [dispatch, search, skip, limit, saloonId]);
+
+  useEffect(() => {
+   
+    dispatch(fetchListRequest(0,10,''));
+
+    dispatch(getSaloonRequest({ lat, lng, skip, limit, searchUser }));
+  }, [ debounceVal]);
 
   useEffect(() => {
     if (selectedTab === "category") {
@@ -78,11 +91,14 @@ const ServiceWrapper = () => {
     setShow(isOpen);
   }, [isOpen]);
 
+
   const serviceSchema = Yup.object().shape({
     name: Yup.string().required(REQUIRED_FIELD),
     image: Yup.string().required(REQUIRED_FIELD),
     category: Yup.string().required(REQUIRED_FIELD),
     subcategory: Yup.string().required(REQUIRED_FIELD),
+    saloon: Yup.string().required(REQUIRED_FIELD),
+
     gender: Yup.array().min(1).required(REQUIRED_FIELD),
     description: Yup.string()
       .min(10, "Minimum 10 charectors")
@@ -104,6 +120,7 @@ const ServiceWrapper = () => {
           image: values.image,
           category: values.category,
           subcategory: values.subcategory,
+          saloon: values.saloon,
           gender: values.gender,
           description: values.description,
           cost: values.cost,
@@ -175,6 +192,12 @@ const ServiceWrapper = () => {
     }
   };
 
+  const handleSelect = (saloonID:any) => {
+    dispatch(setSaloonId(saloonID))
+    dispatch(fetchListRequest(skip, limit, search));
+
+
+  };
  
 
   return (
@@ -191,6 +214,29 @@ const ServiceWrapper = () => {
             </h2>
             {/* <p>Facilitate seamless control over services offered by you</p> */}
           </div>
+
+          <div className="fv-row mb-4">
+            <Dropdown onSelect={handleSelect}>
+              <Dropdown.Toggle variant="primary" id="dropdown-basic">
+                Select saloon
+              </Dropdown.Toggle>
+
+              <Dropdown.Menu>
+                
+                {saloonList?.length > 0 && (
+                  saloonList?.map((saloon)=>{
+                    console.log(saloonList,"saloonList>>>>")
+                    return(
+                      <>
+                      <Dropdown.Item eventKey={saloon?._id}>{saloon?.name}</Dropdown.Item>
+                      </>
+                    )
+                  })
+                )}
+              </Dropdown.Menu>
+            </Dropdown>
+          </div>
+
           <button onClick={() => {
             dispatch(openModalRequest());
             dispatch(resetServiceForm());
@@ -225,7 +271,7 @@ const ServiceWrapper = () => {
               <div className="tableWrapper my-5">
                 <Servicetable />
               </div>
-              
+
             </Tab>
             {/* Category Tab Started */}
             <Tab eventKey="category" title="Category">

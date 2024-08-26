@@ -15,7 +15,7 @@ export function AsideMenuMain() {
         title={intl.formatMessage({ id: 'MENU.DASHBOARD' })}
       ></AsideMenuItem>
       <AsideMenuItem to='/users' icon='fa-light fa-user' title='Users' />
-      <AsideMenuItem to='/vendor' icon='fa-solid fa-rocket' title='Vendors' />
+      <AsideMenuItem to='/vendor' icon='fa-solid fa-rocket' title='Saloon' />
       <AsideMenuItem to='/services' icon='fas fa-wrench' title='Services' />
       <AsideMenuItem to='/banner' icon='fa-solid fa-rocket' title='Banner' />
       <AsideMenuItem to='/appointment' icon='fa-light fa-user-clock' title='Appointments' />

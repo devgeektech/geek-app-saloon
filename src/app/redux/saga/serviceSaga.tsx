@@ -1,4 +1,4 @@
-import { put } from 'redux-saga/effects'
+import { put,takeEvery,select } from 'redux-saga/effects'
 import * as Effects from 'redux-saga/effects'
 import {
   addService,
@@ -9,7 +9,7 @@ import {
   getSubCreateCategory,
   selectTab,
   updateService,
-} from '../../services/_requests' // Your API functions
+} from '../../services/_requests' 
 import {
   addServiceFailure,
   addServiceSuccess,
@@ -22,6 +22,7 @@ import {
   setSelectedTab,
 } from '../reducer/serviceSlice'
 import { deleteSubCategoryFailure } from '../reducer/subCategorySlice'
+import { FETCH_LIST_REQUEST, fetchListFailure, fetchListSuccess } from '../actions/serviceAction'
 
 const call: any = Effects.call
 
@@ -42,10 +43,12 @@ function* addServiceSaga(action) {
 }
 
 function* getServiceSaga(action) {
-  console.log("action.payload454545454",  action.payload);
+
   const { search, skip, limit } = action.payload;
   try {
+    
     const res = yield call(getAllServices, search, skip, limit)
+    console.log('====>>>',res)
     yield put(getServiceSuccess(res.data))
   } catch (error: any) {
     yield put(getServiceFailure(error.response))
@@ -86,4 +89,28 @@ function* deleteServiceSaga(action) {
   }
 }
 
-export { selectedTabSaga, addServiceSaga, getServiceSaga, editServiceSaga, editServiceDataSaga, deleteServiceSaga }
+
+
+// Simulate an API call
+
+
+function* fetchDataSaga(action) {
+  try {
+    debugger
+    const { skip, limit, searchUser , saloonId} = action.payload;
+    console.log('payload---------???----',action.payload)
+
+    const data = yield call(getAllServices, skip, limit, searchUser, saloonId);
+
+
+    console.log('v?????????????????????????vvvvvvvvvvvv--->',data.data)
+    yield put(fetchListSuccess(data));
+  } catch (error:any) {
+    yield put(fetchListFailure(error.message));
+  }
+}
+
+export { selectedTabSaga, addServiceSaga, getServiceSaga, editServiceSaga, editServiceDataSaga, deleteServiceSaga, fetchDataSaga }
+
+
+

@@ -151,7 +151,6 @@ const BannerModal = (props: any) => {
               <button
                 className="blackBtn btn-sm w-150"
                 type="submit"
-
               disabled={formik.isSubmitting || !formik.isValid}
               >
                 <span className="indicator-label">Save</span>

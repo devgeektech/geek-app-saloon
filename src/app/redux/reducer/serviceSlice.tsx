@@ -1,5 +1,6 @@
 import {createSlice} from '@reduxjs/toolkit'
 import {toast} from 'react-toastify'
+import { FETCH_LIST_FAILURE, FETCH_LIST_REQUEST, FETCH_LIST_SUCCESS } from '../actions/serviceAction';
 
 const serviceForm = {
   name: "",
@@ -42,11 +43,10 @@ const serviceSlice = createSlice({
         ...state,
         loading: false,
         error: null,
-    serviceList: [...state.serviceList, action.payload.data], // Add new service to the list
+    serviceList: [...state.serviceList, action.payload.data],
       }
     },
     addServiceFailure: (state, action) => {
-      console.log("action.payloa11111111111111d", action.payload)
       toast.error(action.payload.responseMessage)
       return {
         ...state,
@@ -55,14 +55,25 @@ const serviceSlice = createSlice({
       }
     },
     getServiceRequest: (state, action) => {
-      return {...state, loading: true, error: null}
+      console.log('????????????????????????????111',action.type)
+      switch (action.type) {
+        case FETCH_LIST_REQUEST:
+          return { ...state, loading: true, error: null };
+        case FETCH_LIST_SUCCESS:
+          return { ...state, loading: false, data: action.payload };
+        case FETCH_LIST_FAILURE:
+          return { ...state, loading: false, error: action.payload };
+        default:
+          return state;
+      }
+      // return {...state, loading: true, error: null}
     },
     getServiceSuccess: (state, action) => {
-      debugger
+      
       return {
         ...state,
         loading: false,
-        serviceList: action.payload.data,
+        serviceList: action.payload.data.data,
         totalRecord: action.payload.totalRecord,
         skip: action.payload.skip,
         limit: action.payload.limit,
@@ -84,13 +95,10 @@ const serviceSlice = createSlice({
       return {
         ...state,
         loading: false,
-        isModalOpen: false,
-        // serviceList: action.payload.data,
-        
+        isModalOpen: false,    
       }
     },
     editServiceFailure: (state, action) => {
-      console.log("action.payload.data", action.payload);
       toast.error(action.payload.responseMessage)
       return {
         ...state,
