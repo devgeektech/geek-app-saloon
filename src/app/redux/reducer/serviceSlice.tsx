@@ -1,5 +1,5 @@
-import {createSlice} from '@reduxjs/toolkit'
-import {toast} from 'react-toastify'
+import { createSlice } from '@reduxjs/toolkit'
+import { toast } from 'react-toastify'
 import { FETCH_LIST_FAILURE, FETCH_LIST_REQUEST, FETCH_LIST_SUCCESS } from '../actions/serviceAction';
 
 const serviceForm = {
@@ -24,18 +24,17 @@ const serviceSlice = createSlice({
     error: null,
     isModalOpen: false,
     selectedTab: 'service',
-    skip: 0, 
-    limit: 10, 
-    search:'',
-    totalRecord : 0
-
+    skip: 0,
+    limit: 10,
+    search: '',
+    totalRecord: 0
   },
   reducers: {
-    setSelectedTab: (state:any, action) => {
+    setSelectedTab: (state: any, action) => {
       state.selectedTab = action.payload;
     },
     serviceRequest: (state, action) => {
-      return {...state, loading: true, error: null}
+      return { ...state, loading: true, error: null }
     },
     addServiceSuccess: (state, action) => {
       toast.success('Service Created Successfully')
@@ -43,7 +42,7 @@ const serviceSlice = createSlice({
         ...state,
         loading: false,
         error: null,
-    serviceList: [...state.serviceList, action.payload.data],
+        serviceList: [...state.serviceList, action.payload.data],
       }
     },
     addServiceFailure: (state, action) => {
@@ -55,12 +54,11 @@ const serviceSlice = createSlice({
       }
     },
     getServiceRequest: (state, action) => {
-      console.log('????????????????????????????111',action.type)
       switch (action.type) {
         case FETCH_LIST_REQUEST:
           return { ...state, loading: true, error: null };
         case FETCH_LIST_SUCCESS:
-          return { ...state, loading: false, data: action.payload };
+          return { ...state, loading: false, serviceList: action.payload, data: action.payload };
         case FETCH_LIST_FAILURE:
           return { ...state, loading: false, error: action.payload };
         default:
@@ -69,7 +67,6 @@ const serviceSlice = createSlice({
       // return {...state, loading: true, error: null}
     },
     getServiceSuccess: (state, action) => {
-      
       return {
         ...state,
         loading: false,
@@ -88,14 +85,14 @@ const serviceSlice = createSlice({
       }
     },
     editServiceRequest: (state, action) => {
-      return {...state, loading: true, error: null, isModalOpen: true}
+      return { ...state, loading: true, error: null, isModalOpen: true }
     },
     editServiceSuccess: (state, action) => {
       toast.success('Service Updated Successfully')
       return {
         ...state,
         loading: false,
-        isModalOpen: false,    
+        isModalOpen: false,
       }
     },
     editServiceFailure: (state, action) => {
@@ -116,7 +113,7 @@ const serviceSlice = createSlice({
       state.serviceList = state.serviceList.filter(
         (el: any) => el._id !== data?._id
       );
-      state.totalRecord =  state.totalRecord - 1
+      state.totalRecord = state.totalRecord - 1
     },
     deleteServiceFailure: (state, action) => {
       state.error = action.payload;
@@ -172,7 +169,7 @@ const serviceEditSlice = createSlice({
   },
   reducers: {
     editServiceRequestData: (state, action) => {
-      return {...state, loading: true, error: null}
+      return { ...state, loading: true, error: null }
     },
     editServiceRequestDataSuccess: (state, action) => {
       return {
@@ -192,6 +189,6 @@ const serviceEditSlice = createSlice({
   },
 })
 
-export const {editServiceRequestData, editServiceRequestDataSuccess} = serviceEditSlice.actions
+export const { editServiceRequestData, editServiceRequestDataSuccess } = serviceEditSlice.actions
 
 export const editServiceReducer = serviceEditSlice.reducer

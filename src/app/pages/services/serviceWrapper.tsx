@@ -56,24 +56,18 @@ const ServiceWrapper = () => {
   const { saloonList, saloonId } = useSelector((state: any) => state.saloon);
   const [search, setSearch] = useState("");
   const limit = 10;
-  const skip = (pageNumber - 1) * limit;
+  const skip = 0;
 
   const { isOpen } = useSelector((state: any) => state.modal);
   const debounceVal = useDebounce(searchValue, 1000);
-  const {data} = useSelector((state:any) => state.saloonService);
+  const { data } = useSelector((state: any) => state.saloonService);
+
 
   useEffect(() => {
     if (selectedTab === "service") {
-      dispatch(getServiceRequest({ search, skip, limit }));
+      dispatch(fetchListRequest(0, 0, ''));
     }
-  }, [dispatch, search, skip, limit, saloonId]);
-
-  useEffect(() => {
-   
-    dispatch(fetchListRequest(0,10,''));
-
-    dispatch(getSaloonRequest({ lat, lng, skip, limit, searchUser }));
-  }, [ debounceVal]);
+  }, [dispatch, search, saloonId]);
 
   useEffect(() => {
     if (selectedTab === "category") {
@@ -115,17 +109,20 @@ const ServiceWrapper = () => {
     validateOnBlur: false,
     onSubmit: async (values, { setStatus, setSubmitting }) => {
       try {
+        let saloonId = localStorage.getItem('saloonId');
+        // if(!saloonId) return
         const serviceForm = {
           name: values.name,
           image: values.image,
           category: values.category,
           subcategory: values.subcategory,
-          saloon: values.saloon,
+          // saloon: values.saloon,
           gender: values.gender,
           description: values.description,
           cost: values.cost,
           hours: values.hours,
           minutes: values.minutes,
+          saloonId: saloonId
         };
         if (values._id) {
           dispatch(editServiceRequest({ ...serviceForm, _id: values._id }));
@@ -192,13 +189,12 @@ const ServiceWrapper = () => {
     }
   };
 
-  const handleSelect = (saloonID:any) => {
+  const handleSelect = (saloonID: any) => {
     dispatch(setSaloonId(saloonID))
-    dispatch(fetchListRequest(skip, limit, search));
-
-
+    dispatch(fetchListRequest(0, limit, search));
   };
- 
+
+
 
   return (
     <>
@@ -212,30 +208,9 @@ const ServiceWrapper = () => {
               <img src={settingIcon} alt="settingIcon" />
               Services
             </h2>
-            {/* <p>Facilitate seamless control over services offered by you</p> */}
           </div>
 
-          <div className="fv-row mb-4">
-            <Dropdown onSelect={handleSelect}>
-              <Dropdown.Toggle variant="primary" id="dropdown-basic">
-                Select saloon
-              </Dropdown.Toggle>
 
-              <Dropdown.Menu>
-                
-                {saloonList?.length > 0 && (
-                  saloonList?.map((saloon)=>{
-                    console.log(saloonList,"saloonList>>>>")
-                    return(
-                      <>
-                      <Dropdown.Item eventKey={saloon?._id}>{saloon?.name}</Dropdown.Item>
-                      </>
-                    )
-                  })
-                )}
-              </Dropdown.Menu>
-            </Dropdown>
-          </div>
 
           <button onClick={() => {
             dispatch(openModalRequest());
@@ -254,41 +229,11 @@ const ServiceWrapper = () => {
             defaultActiveKey="service"
             id="uncontrolled-tab-example"
           >
-            <Tab eventKey="service" title="Services">
-              {/* <div className="searchbar_filter d-flex justify-content-end">
-                <div className="searchbar">
-                  <input
-                    type="text"
-                    className="form-control"
-                    placeholder="Search..."
-                    onChange={(e) => setSearchValue }
-                  />
-                  <button>
-                    <img src={searchIcon} alt="searchIcon" />
-                  </button>
-                </div>
-              </div> */}
-              <div className="tableWrapper my-5">
-                <Servicetable />
-              </div>
 
-            </Tab>
             {/* Category Tab Started */}
             <Tab eventKey="category" title="Category">
               <CategoryTabs />
-              {/* <div className="searchbar_filter d-flex justify-content-end">
-                <div className="searchbar">
-                  <input
-                    type="text"
-                    className="form-control"
-                    placeholder="Search..."
-                    onChange={(e) => setSearchValue(e.target.value)}
-                  />
-                  <button>
-                    <img src={searchIcon} alt="searchIcon" />
-                  </button>
-                </div>
-              </div> */}
+
               <div className="tableWrapper my-5">
                 <TableCategory />
               </div>
@@ -297,21 +242,17 @@ const ServiceWrapper = () => {
             {/*Sub Category Tab Started */}
             <Tab eventKey="subcategory" title="Subcategory">
               <SubCategoryTabs />
-              {/* <div className="searchbar_filter d-flex justify-content-end">
-                <div className="searchbar">
-                  <input
-                    type="text"
-                    className="form-control"
-                    placeholder="Search..."
-                  />
-                  <button>
-                    <img src={searchIcon} alt="searchIcon" />
-                  </button>
-                </div>
-              </div> */}
+
               <div className="tableWrapper my-5">
                 <TableSubCategory />
               </div>
+            </Tab>
+            <Tab eventKey="service" title="Services">
+
+              <div className="tableWrapper my-5">
+                <Servicetable />
+              </div>
+
             </Tab>
           </Tabs>
         </div>

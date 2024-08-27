@@ -6,9 +6,9 @@ import subCategoryReducer from './subCategorySlice'
 import { editServiceReducer, serviceReducer } from './serviceSlice'
 import modalReducer from './modalSlice'
 import bannerReducer from './bannerSlice'
-import saloonReducer from './saloonSlice'
 import saloonServiceReducer from './serviceReducer'
 import { services } from '../services/serviceSlice'
+import { saloonSlice } from './saloonSlice'
 
 export const rootReducer = combineReducers({
   auth: authReducer,
@@ -19,7 +19,7 @@ export const rootReducer = combineReducers({
   service: serviceReducer,
   editServiceData: editServiceReducer,
   modal: modalReducer,
-  saloon: saloonReducer,
-  saloonService:saloonServiceReducer,
+  saloon: saloonSlice.reducer,
+  saloonService: saloonServiceReducer,
   serviceSlice: services.reducer,
 })

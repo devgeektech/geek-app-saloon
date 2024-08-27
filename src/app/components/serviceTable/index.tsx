@@ -13,11 +13,13 @@ import Pagination from '../common/pagination'
 export default function Servicetable(props: any) {
 
   const dispatch = useDispatch()
-  const { serviceList, totalRecord } = useSelector((state: any) => state.service)
+  const serviceList = useSelector((state: any) => state.saloonService?.data?.data)
+  
   const [id, setId] = useState<string>('')
   const [modalShow, setModalShow] = useState<Boolean>(false);
   const [pageNumber, setPageNumber] = useState<number>(1);
   const limit = 10;
+  const totalRecord:any = serviceList?.length;
 
 
   const editService = (serviceObj: any) => {

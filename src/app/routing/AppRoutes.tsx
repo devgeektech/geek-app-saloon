@@ -15,11 +15,11 @@ const AppRoutes: FC = () => {
   const [loading, setLoding] = useState(false);
 
   const state = useSelector((state: any) => state.auth);
-
+  const { saloonList, saloonId } = useSelector((state: any) => state.saloon);
   useEffect(() => {
     setIsAuthenticated(state.isAuthenticated);
     setLoding(state.loading);
-  }, [isAuthenticated, state]);
+  }, [isAuthenticated, state, saloonId]);
 
   return (
     <BrowserRouter>
@@ -28,7 +28,7 @@ const AppRoutes: FC = () => {
           <Route path="error/*" element={<ErrorsPage />} />
           {/* <Route path='logout' element={<Logout />} /> */}
           {isAuthenticated ? (
-            <>
+            <>  
               <Route path="/*" element={<PrivateRoutes />} />
               <Route index element={<Navigate to="/dashboard" />} />
             </>

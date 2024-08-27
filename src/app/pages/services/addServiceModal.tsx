@@ -249,12 +249,11 @@ export const AddServiceModal = (props) => {
                   <div className="fv-row mb-4">
                     <Field
                       name="description"
-                      validate={schema}
+                      validate={disablesubCategory ? null : schema}
                       required={true}
                       label="Description"
                       options={subCategories}
                       component={FieldTextArea}
-                      
                     />
                   </div>
                 </Col>

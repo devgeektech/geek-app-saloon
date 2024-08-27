@@ -107,7 +107,6 @@ export function addService(body: any) {
 }
 
 export function getAllServices(search: string, skip: number, limit: number) {
-  console.log('hit API')
   return axios.get(GET_ALL_PRODUCT + `?search=${search || ''}&skip=${skip}&limit=${limit}`)
 }
 

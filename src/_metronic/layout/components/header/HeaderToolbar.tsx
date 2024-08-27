@@ -8,37 +8,45 @@ import { useLayout } from '../../core'
 import Dropdown from 'react-bootstrap/Dropdown'
 import '../../components/aside/AsideToolbar.scss'
 import LoginIcon from '../../../images/M1_S3_3.png'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { logout } from '../../../../app/redux/reducer/authSlice'
 import { toast } from 'react-toastify'
+import { setSaloonId } from '../../../../app/redux/reducer/saloonSlice'
+import { fetchListRequest } from '../../../../app/redux/actions/serviceAction'
+import Form from 'react-bootstrap/Form';
 
 const HeaderToolbar = () => {
   const dispatch = useDispatch()
+  const { saloonList, saloonId } = useSelector((state: any) => state.saloon);
 
   const logOut = () => {
     dispatch(logout())
     localStorage.clear()
   }
 
+  const handleSelect = (event: any) => {
+    const saloonID = event.target.value;
+    dispatch(setSaloonId(saloonID))
+    localStorage.setItem('saloonId', saloonID);
+  };
+
   return (
     <div className='toolbar d-flex align-items-center justify-content-between w-100'>
-      {/* begin::Toolbar container */}
       <div className='inr-dropdown-location'>
-        {/* <Dropdown>
-          <Dropdown.Toggle
-            className='bg-transparent text-dark location-dorpdown'
-            id='dropdown-basic'
-          >
 
-          
-          </Dropdown.Toggle>
+      <Form.Select size="sm" value={saloonId}   onChange={handleSelect}>
+        <option value ="">Select Salon</option>
+        {saloonList?.length > 0 && (
+            saloonList?.map((saloon:any ) => (
+              <option key={saloon._id} value={saloon._id}>
+                {saloon.name}
+              </option>
+            ))
+          )}
+      </Form.Select>
 
-          <Dropdown.Menu>
-            <Dropdown.Item href='#/action-1'>Action</Dropdown.Item>
-            <Dropdown.Item href='#/action-2'>Another action</Dropdown.Item>
-            <Dropdown.Item href='#/action-3'>Something else</Dropdown.Item>
-          </Dropdown.Menu>
-        </Dropdown> */}
+     
+
       </div>
       <div className='inr-dropdown-login'>
         <Dropdown>

@@ -30,6 +30,7 @@ export default function CategoryTabs() {
       .max(50, "Maximum 50 charectors")
       .required(REQUIRED_FIELD),
     photo: Yup.string().required(REQUIRED_FIELD),
+
   })
 
   const formik: any = useFormik({
@@ -37,6 +38,8 @@ export default function CategoryTabs() {
     validationSchema: categorySchema,
     enableReinitialize: true,
     onSubmit: async (values, { setStatus, setSubmitting }) => {
+      debugger
+      values['saloonId'] = localStorage.getItem('saloonId')
       if (values.id.trim() !== '') {
         dispatch(updateCategoryRequest({ id: values.id, ...values }));
       } else {
@@ -103,7 +106,7 @@ export default function CategoryTabs() {
 
   useEffect(() => {
     if (initialValues.photo) {
-      setFile(getImageUrl(initialValues.photo)); 
+      setFile(getImageUrl(initialValues.photo));
     }
     else {
       setFile('');
@@ -199,7 +202,7 @@ export default function CategoryTabs() {
               </div>
               <div className='spacing-left'>
                 <div className='upload-img pl-5'>
-                  <img src={file? file : Dropzone} alt='UploadImage' />
+                  <img src={file ? file : Dropzone} alt='UploadImage' />
                 </div>
               </div>
             </Col>

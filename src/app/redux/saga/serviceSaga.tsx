@@ -96,15 +96,10 @@ function* deleteServiceSaga(action) {
 
 function* fetchDataSaga(action) {
   try {
-    debugger
     const { skip, limit, searchUser , saloonId} = action.payload;
-    console.log('payload---------???----',action.payload)
 
-    const data = yield call(getAllServices, skip, limit, searchUser, saloonId);
-
-
-    console.log('v?????????????????????????vvvvvvvvvvvv--->',data.data)
-    yield put(fetchListSuccess(data));
+    const data = yield call(getAllServices, searchUser, skip, limit, saloonId);
+    yield put(fetchListSuccess(data.data));
   } catch (error:any) {
     yield put(fetchListFailure(error.message));
   }
