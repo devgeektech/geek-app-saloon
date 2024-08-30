@@ -30,6 +30,9 @@ const HeaderToolbar = () => {
     localStorage.setItem('saloonId', saloonID);
   };
 
+
+  
+
   return (
     <div className='toolbar d-flex align-items-center justify-content-between w-100'>
       <div className='inr-dropdown-location'>

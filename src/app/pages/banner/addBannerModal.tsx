@@ -8,6 +8,7 @@ import ReactCrop, { centerCrop, makeAspectCrop, type Crop } from 'react-image-cr
 import { useEffect, useRef, useState } from 'react';
 import { getCroppedImg } from '../../utils/common';
 import 'react-image-crop/src/ReactCrop.scss'
+import 'react-image-crop/dist/ReactCrop.css'
 
 const BannerModal = (props: any) => {
   const {

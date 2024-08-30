@@ -102,6 +102,7 @@ const categorySlice = createSlice({
       state.showDeleteModal = false;
     },
     setCategoryForm: (state, { payload }) => {
+      debugger
       state.initialValues = payload;
     },
     resetCategoryForm: (state) => {

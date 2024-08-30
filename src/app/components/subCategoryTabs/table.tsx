@@ -65,7 +65,7 @@ export default function TableSubCategory() {
 
   return (
     <div>
-      <Table responsive className='table table-bordered mb-5'>
+      <Table responsive className='table table-bordered'>
         <thead>
           <tr>
             {/* <th>Sr No</th> */}

@@ -20,6 +20,9 @@ export default function CategoryTabs() {
   const { initialValues } = useSelector((state: any) => state.category);
   const loading = false
 
+  useEffect(()=>{
+       console.log(initialValues)
+  },[initialValues])
   const categorySchema: any = Yup.object().shape({
     name: Yup.string()
       .min(3, 'Minimum 3 symbols')
@@ -29,14 +32,12 @@ export default function CategoryTabs() {
       .min(10, "Minimum 10 charectors")
       .max(50, "Maximum 50 charectors")
       .required(REQUIRED_FIELD),
-    photo: Yup.string().required(REQUIRED_FIELD),
 
   })
 
   const formik: any = useFormik({
     initialValues,
     validationSchema: categorySchema,
-    enableReinitialize: true,
     onSubmit: async (values, { setStatus, setSubmitting }) => {
       debugger
       values['saloonId'] = localStorage.getItem('saloonId')
@@ -215,7 +216,7 @@ export default function CategoryTabs() {
                   className='blackBtn btn-sm'
                   type='submit'
                   id='kt_sign_in_submit'
-                  disabled={!(formik.values.name && formik.values.photo && formik.isValid)}
+                  disabled={!(formik.isValid)}
                 >
                   {!loading && <span className='indicator-label'>Save</span>}
                   {loading && (

@@ -45,13 +45,13 @@ const BannerWrapper = () => {
   const serviceSchema = Yup.object().shape({
     name: Yup.string().required('Required'),
     image: Yup.mixed()
-    .required('Image is required')
-    .test('fileSize', 'File size is too large', (value: any) => {
-      return !value || (value && value.size <= 2 * 1024 * 1024); // 2MB limit
-    })
-    .test('fileType', 'Unsupported file format', (value: any ) => {
-      return !value || ['image/jpeg', 'image/png'].includes(value.type);
-    }),
+      .required('Image is required')
+      .test('fileSize', 'File size is too large', (value: any) => {
+        return !value || (value && value.size <= 2 * 1024 * 1024); // 2MB limit
+      })
+      .test('fileType', 'Unsupported file format', (value: any) => {
+        return !value || ['image/jpeg', 'image/png'].includes(value.type);
+      }),
     type: Yup.string().required('Required'),
   });
 
@@ -95,9 +95,9 @@ const BannerWrapper = () => {
     formik.setFieldValue("image", file);
     setFile(file);
   };
- 
+
   const editBanner = (id: string) => {
-    dispatch(getBannerRequest(id)); 
+    dispatch(getBannerRequest(id));
     setModalShow(true);
   };
 

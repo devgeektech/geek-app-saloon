@@ -17,6 +17,7 @@ const call: any = Effects.call
 function* addcategorySaga(action) {
   const values = action.payload;
   delete values.id;
+  if(!values.photo) delete values.photo;
   try {
     const createCategoryRes = yield call(createCategory, values)
     yield put(addCategorySuccess(createCategoryRes.data))
