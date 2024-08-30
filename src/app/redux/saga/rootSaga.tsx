@@ -6,7 +6,7 @@ import {addSubCategorySaga, deleteSubCategorySaga, getSubCategorySaga, updateSub
 import {addServiceSaga, deleteServiceSaga, editServiceDataSaga, editServiceSaga, fetchDataSaga, getServiceSaga, selectedTabSaga} from './serviceSaga'
 import {closeModalSaga, openModalSaga} from './modalSaga'
 import { addBannerSaga, deleteBannerSaga, getBannerSaga } from './bannerSaga'
-import { addSaloonSaga, getSaloonSaga } from './saloonSaga'
+import { addSaloonSaga, editSaloonSaga, getSaloonSaga } from './saloonSaga'
 import { FETCH_LIST_REQUEST } from '../actions/serviceAction'
 
 function* rootSaga() {
@@ -48,6 +48,7 @@ function* rootSaga() {
   //Saloon Request
   yield takeLatest('saloon/addSaloonRequest', addSaloonSaga )
   yield takeLatest('saloon/getSaloonRequest', getSaloonSaga)
+  yield takeLatest('saloon/editSaloonRequest', editSaloonSaga)
 
   yield takeEvery(FETCH_LIST_REQUEST, fetchDataSaga);
 

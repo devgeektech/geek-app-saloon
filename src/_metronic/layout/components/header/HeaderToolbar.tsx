@@ -38,7 +38,7 @@ const HeaderToolbar = () => {
       <div className='inr-dropdown-location'>
 
       <Form.Select size="sm" value={saloonId}   onChange={handleSelect}>
-        <option value ="">Select Salon</option>
+        <option value ="">Select Saloon</option>
         {saloonList?.length > 0 && (
             saloonList?.map((saloon:any ) => (
               <option key={saloon._id} value={saloon._id}>

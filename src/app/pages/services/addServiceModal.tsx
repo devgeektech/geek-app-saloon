@@ -162,7 +162,7 @@ export const AddServiceModal = (props) => {
                       name="subcategory"
                       validate={schema}
                       label="Sub Category"
-                      disabled={disablesubCategory}
+                      disabled={formik.values.category ? false : true}
                       options={subCategories}
                       handleCategoryChange={handleCategoryChange}
                       component={FieldSelectInput}

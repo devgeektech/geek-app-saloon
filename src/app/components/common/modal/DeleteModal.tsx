@@ -6,11 +6,11 @@ import TrashIcon from '../Icons/TrashIcon'
 
 
 export default function DeleteModal(props) {
-  const { closeModal, deleteUserClbk } = props
+  const { closeModal, deleteUserClbk,openModal } = props
   return (
     <>
 
-      <Modal {...props} size='md' aria-labelledby='contained-modal-title-vcenter' centered>
+      <Modal show={openModal} onHide={closeModal} aria-labelledby='contained-modal-title-vcenter' centered>
         <div className='delete-modal'>
           <Modal.Header>
             <button>

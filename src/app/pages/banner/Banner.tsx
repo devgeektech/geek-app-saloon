@@ -16,9 +16,10 @@ import { useDebounce } from "../../../_metronic/helpers";
 import DeleteModal from "../../components/common/modal/DeleteModal";
 import { getImageUrl } from "../../utils/common";
 import { useDispatch, useSelector } from "react-redux";
-import { commonFileUpload } from "../../services/_requests";
+import { commonFileUpload, deleteBanner } from "../../services/_requests";
 import DeleteIcon from "../../components/common/Icons/DeleteIcon";
-import { addBannerRequest, deleteBannerRequest, getBannerRequest } from "../../redux/reducer/bannerSlice";
+import { addBannerRequest, deleteBannerRequest, getBannerRequest, setBannerId } from "../../redux/reducer/bannerSlice";
+import { SUCCESS } from "../../utils/const";
 
 const BannerWrapper = () => {
   const dispatch = useDispatch();
@@ -29,7 +30,8 @@ const BannerWrapper = () => {
   const [showDeleteModal, setShowDeleteModal] = useState<boolean>(false);
   const [pageNumber, setPageNumber] = useState<number>(1);
   const [searchValue, setSearchValue] = useState<string>('');
-  const { bannerList, totalRecord, loading } = useSelector((state: any) => state.banner);
+  const { bannerList, totalRecord, loading, bannerId } = useSelector((state: any) => state.banner);
+  const { saloonId } = useSelector((state: any) => state.saloon);
 
   const limit = 10;
   const skip = (pageNumber - 1) * limit;
@@ -63,6 +65,7 @@ const BannerWrapper = () => {
         if (file) {
           const imageUrl = await upload(file);
           const data = { ...values, image: imageUrl };
+          data['saloonId'] = saloonId;
           dispatch(addBannerRequest(data));
           closeBannerModal();
         }
@@ -116,7 +119,7 @@ const BannerWrapper = () => {
 
   const closeDeleteModal = () => {
     setShowDeleteModal(false);
-    setId('');
+    dispatch(setBannerId(null))
   };
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -127,9 +130,29 @@ const BannerWrapper = () => {
     setPageNumber(page);
   };
 
+  const deleteOpenModal = (id: string) => {
+    setShowDeleteModal(true);
+    dispatch(setBannerId(id))
+  };
+
+
+  const deleteUser: any = async (event: any) => {
+    if (event === true) {
+      await deleteBanner(bannerId).then((res: any) => {
+        if (res.data.responseCode === 200) {
+          toast.success(SUCCESS);
+          setShowDeleteModal(false);
+          dispatch(getBannerRequest({ search: debounceSearch, skip, limit }));
+        }
+      });
+      dispatch(setBannerId(null))
+      setModalShow(false);
+    }
+  };
+
   useEffect(() => {
     dispatch(getBannerRequest({ search: debounceSearch, skip, limit }));
-  }, [debounceSearch, skip, limit, dispatch]);
+  }, [debounceSearch, skip, limit, dispatch, saloonId]);
 
   return (
     <>
@@ -191,7 +214,7 @@ const BannerWrapper = () => {
                       <td>{moment(item.createdAt).format("dddd, MMM DD, h:mm a")}</td>
                       <td>
                         <div className="d-flex">
-                          <button onClick={() => { setShowDeleteModal(true); setId(item._id); }} className="deleteBtn">
+                          <button onClick={() => deleteOpenModal(item._id)} className="deleteBtn">
                             <DeleteIcon />
                           </button>
                         </div>
@@ -226,8 +249,16 @@ const BannerWrapper = () => {
         />
       )}
 
-      <DeleteModal
+      {/* <DeleteModal
         deleteUserClbk={deleteBannerHandler}
+        openModal={showDeleteModal}
+        closeModal={closeDeleteModal}
+      /> */}
+
+      <DeleteModal
+        deleteUserClbk={(e: any) => {
+          deleteUser(e);
+        }}
         openModal={showDeleteModal}
         closeModal={closeDeleteModal}
       />

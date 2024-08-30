@@ -93,6 +93,7 @@ export default function TableCategory() {
       </Table>
       {totalRecord > 10 && (
         <Pagination
+          data={categoryList}
           limit={limit}
           totalRecord={totalRecord}
           paginitionClbk={handlePageChange}

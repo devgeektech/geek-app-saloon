@@ -18,7 +18,10 @@ export default function CategoryTabs() {
   const dispatch = useDispatch();
   const [file, setFile] = useState('');
   const { initialValues } = useSelector((state: any) => state.category);
-  const loading = false
+  const loading = false;
+  const { saloonId } = useSelector((state: any) => state.saloon);
+  const limit = 10;
+
 
   useEffect(()=>{
        console.log(initialValues)
@@ -39,15 +42,16 @@ export default function CategoryTabs() {
     initialValues,
     validationSchema: categorySchema,
     onSubmit: async (values, { setStatus, setSubmitting }) => {
-      debugger
-      values['saloonId'] = localStorage.getItem('saloonId')
+      values['saloonId'] = saloonId;
       if (values.id.trim() !== '') {
         dispatch(updateCategoryRequest({ id: values.id, ...values }));
       } else {
         dispatch(addCategoryRequest(values));
+        dispatch(getCategoryRequest({ skip: 0, limit }))
       }
       getCategoryList();
-      resetForm();
+      formik.resetForm();
+      setFile("");
     },
   })
 
@@ -113,8 +117,6 @@ export default function CategoryTabs() {
       setFile('');
     }
   }, [initialValues]);
-
-  console.log("formk values", formik.values);
 
   useEffect(() => {
     if (formik.values.id) {

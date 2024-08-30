@@ -47,9 +47,12 @@
 
   export const getImageUrl = (imageUrl: string) => {
     const { REACT_APP_IMAGE_URL } = process.env;
-    if (imageUrl.startsWith('upload')) {
+    if (imageUrl.startsWith('/')) {
+      return REACT_APP_IMAGE_URL + imageUrl.substring(1);
+      } else if (imageUrl.startsWith('upload')) {
       return REACT_APP_IMAGE_URL + imageUrl;
-    } else {
+    } 
+    else {
       return imageUrl;
     }
   }

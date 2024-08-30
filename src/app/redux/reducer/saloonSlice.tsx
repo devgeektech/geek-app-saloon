@@ -44,6 +44,22 @@ export const saloonSlice = createSlice({
             state.loading = false;
         },
 
+        editSaloonRequest: (state, action) => {
+            // state.loading = true;
+            // state.error = null;
+            return { ...state, loading: true, error: null }
+        },
+        editSaloonSuccess: (state: any, action) => {
+            toast.success(action.payload.responseMessage);
+            state.loading = false;
+            state.error = null;
+        },
+        editSaloonFailure: (state, action) => {
+            toast.error(action.payload.responseMessage);
+            state.error = action.payload;
+            state.loading = false;
+        },        
+
         getSaloonRequest: (state, action) => {
             return { ...state, loading: true, error: null };
         },
@@ -54,6 +70,7 @@ export const saloonSlice = createSlice({
             state.totalRecord = action.payload.totalRecord;
             state.skip = action.payload.skip;
             state.limit = action.payload.limit;
+            state.totalRecord = action.payload?.totalRecord
         },
 
         getSaloonListFailure: (state, action) => {
@@ -94,7 +111,7 @@ export const selectServiceSlice = createSlice({
 
 
 export const {
-    addSaloonFailure, addSaloonRequest, addSaloonSuccess, getSaloonRequest, getSaloonListSuccess, getSaloonListFailure, setSaloonId
+    addSaloonFailure, addSaloonRequest, addSaloonSuccess, getSaloonRequest, getSaloonListSuccess, getSaloonListFailure, setSaloonId, editSaloonRequest, editSaloonFailure, editSaloonSuccess
 } = saloonSlice.actions;
 
 

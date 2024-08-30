@@ -12,6 +12,7 @@ const serviceForm = {
   cost: "",
   hours: 0,
   minutes: 0,
+  saloonId:''
 };
 
 // @ADD SERVICE ACTION CREATED

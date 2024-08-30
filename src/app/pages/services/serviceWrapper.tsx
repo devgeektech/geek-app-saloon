@@ -33,6 +33,9 @@ import { useDebounce } from "../../../_metronic/helpers";
 import { getSaloonRequest, setSaloonId } from "../../redux/reducer/saloonSlice";
 import { fetchDataSaga } from "../../redux/saga/serviceSaga";
 import { fetchListRequest } from "../../redux/actions/serviceAction";
+import { toast } from 'react-toastify'
+import { SALOON_ID_REQUIRED } from "../../utils/const";
+
 
 const ServiceWrapper = () => {
   const dispatch = useDispatch();
@@ -49,7 +52,6 @@ const ServiceWrapper = () => {
   const [lng, setLang] = useState(76.768066)
   const [searchUser, setSearchUser] = useState("");
 
-
   const { initialValues, totalRecord } = useSelector((state: any) => state.service)
   const [selectedTab, setSelectedTab] = useState(state.service.selectedTab);
   const [pageNumber, setPageNumber] = useState<number>(1);
@@ -60,8 +62,6 @@ const ServiceWrapper = () => {
 
   const { isOpen } = useSelector((state: any) => state.modal);
   const debounceVal = useDebounce(searchValue, 1000);
-  const { data } = useSelector((state: any) => state.saloonService);
-
 
   useEffect(() => {
     if (selectedTab === "service") {
@@ -90,15 +90,12 @@ const ServiceWrapper = () => {
     name: Yup.string().required(REQUIRED_FIELD),
     image: Yup.string().required(REQUIRED_FIELD),
     category: Yup.string().required(REQUIRED_FIELD),
-    subcategory: Yup.string().required(REQUIRED_FIELD),
-    saloon: Yup.string().required(REQUIRED_FIELD),
-
     gender: Yup.array().min(1).required(REQUIRED_FIELD),
     description: Yup.string()
       .min(10, "Minimum 10 charectors")
       .max(50, "Maximum 50 charectors")
       .required(REQUIRED_FIELD),
-    cost: Yup.string().required(REQUIRED_FIELD),
+    cost: Yup.number().required(REQUIRED_FIELD),
   });
 
   const formik: any = useFormik({
@@ -109,8 +106,9 @@ const ServiceWrapper = () => {
     validateOnBlur: false,
     onSubmit: async (values, { setStatus, setSubmitting }) => {
       try {
-        let saloonId = localStorage.getItem('saloonId');
-        // if(!saloonId) return
+        if(!saloonId) {
+          toast.success(SALOON_ID_REQUIRED);
+        }
         const serviceForm = {
           name: values.name,
           image: values.image,
@@ -128,6 +126,7 @@ const ServiceWrapper = () => {
           dispatch(editServiceRequest({ ...serviceForm, _id: values._id }));
           dispatch(closeModalRequest({}));
           dispatch(resetServiceForm());
+          dispatch(fetchListRequest(0, 0, ''));
         } else {
           dispatch(serviceRequest({ ...serviceForm }));
           dispatch(closeModalRequest({}));
@@ -189,12 +188,6 @@ const ServiceWrapper = () => {
     }
   };
 
-  const handleSelect = (saloonID: any) => {
-    dispatch(setSaloonId(saloonID))
-    dispatch(fetchListRequest(0, limit, search));
-  };
-
-
 
   return (
     <>
@@ -209,8 +202,6 @@ const ServiceWrapper = () => {
               Services
             </h2>
           </div>
-
-
 
           <button onClick={() => {
             dispatch(openModalRequest());

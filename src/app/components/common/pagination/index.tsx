@@ -7,8 +7,6 @@ const Pagination = (props: any) => {
 
   const pageCount = Math.ceil(props.totalRecord / 10);
 
-  console.log("props.totalRecord>>>>>>>>>>>>>>", props.totalRecord);
-
   const paginationPage = (page?: any) => {
     props.paginitionClbk(page);
   }

@@ -11,7 +11,7 @@ export const CATEGORY_URL = `${API_URL}/category`
 export const SUB_CATEGORY_URL = `${API_URL}/subcategory`
 export const GET_VENDORS = `${API_URL}/vendor/getNearbyVendorList`
 export const ADD_SALOON = `${API_URL}/vendor`
-export const DELETE_VENDOR = `${API_URL}/vendor/deleteVendor`
+export const DELETE_VENDOR = `${API_URL}/vendor`
 export const GET_USERS = `${API_URL}/users`
 export const DELETE_USER = `${API_URL}/users`
 export const BANNER = `${API_URL}/banner`
@@ -20,6 +20,11 @@ export const FILE_UPLOAD = `${API_URL}/product/upload`
 export const GET_ALL_PRODUCT = `${API_URL}/product`
 export const GET_ALL_ADMIN_BANNERS = `${API_URL}/banner/admin`
 export const GET_ALL_ADMIN_SERVICES = `${API_URL}/product/admin`
+export const GET_SALOON = `${API_URL}/vendor`
+export const Edit_SALOON = `${API_URL}/vendor`
+export const DELETE_SERVICE = `${API_URL}/product`
+export const DELETE_BANNER = `${API_URL}/banner`
+
 
 // Server should return AuthModel
 export function login(email: any, password: any) {
@@ -175,4 +180,16 @@ export function selectTab(tab) {
 
 export function deleteVender(id: string) {
   return axios.delete(DELETE_VENDOR + `/${id}`, {})
+}
+
+export function getSaloonById(id: string) {
+  return axios.get(GET_SALOON, {})
+}
+
+export function editSaloon(body: any) {
+  return axios.put(ADD_SALOON + `/${body.id}`, body)
+}
+
+export function deleteService(id: string) {
+  return axios.delete(DELETE_SERVICE + `/${id}`, {})
 }

@@ -14,24 +14,11 @@ const SaloonModal = (props: any) => {
     formik,
     show,
     schema,
-    cancelButton,
+    cancelButton
   } = props;
   console.log('formik=--------------', formik.isSubmitting ,formik.isValid)
   const [location, setLocation] = useState('');
-
-  useEffect(() => {
-    const { latitude, longitude } = formik.values;
-    if (latitude && longitude) {
-      fetchLocationFromLatLng(latitude, longitude).then(setLocation);
-    }
-  }, [formik.values.latitude, formik.values.longitude]);
-
-  useEffect(() => {
-    formik.setFieldValue('location', location);
-  }, [location]);
-
-
-
+  
   return (
     <Modal show={show} size='lg' onHide={cancelButton}>
       <FormikProvider value={formik}>
@@ -66,7 +53,7 @@ const SaloonModal = (props: any) => {
                     placeholder="Saloon Name"
                   />
                 </Col>
-                <Col sm={12}>
+                {/* <Col sm={12}>
                   <Field
                     name="description"
                     validate={schema}
@@ -74,7 +61,7 @@ const SaloonModal = (props: any) => {
                     component={FieldInputText}
                     placeholder="Description"
                   />
-                </Col>
+                </Col> */}
 
                 <Col sm={6}>
                   <Field
@@ -101,8 +88,20 @@ const SaloonModal = (props: any) => {
                     name='location'
                     label='Location'
                     component={FieldInputText}
-                    value={location} // Use the state to display location
-                    readOnly
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                      formik.setFieldValue('location', e.target.value);
+                    }}
+                  />
+                </Col>
+                <Col sm={12}>
+                  <Field
+                    type='number'
+                    name='phone'
+                    label='Phone'
+                    component={FieldInputText}
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                      formik.setFieldValue('phone', e.target.value);
+                    }}
                   />
                 </Col>
               </Row>

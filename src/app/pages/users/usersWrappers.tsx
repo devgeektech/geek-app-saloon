@@ -38,16 +38,14 @@ const UsersWrapper = () => {
   const [limit, setLimit] = useState(10)
   const [skip, setSkip] = useState(0)
   const [debounceVal, setDebounceVal] = useState("");
-
+  const { saloonId } = useSelector((state: any) => state.saloon);
   const navigate = useNavigate();
 
  
   useEffect(() => {
   
     dispatch(fetchUserListRequest({ search: searchUser, skip, limit }));
-  }, [dispatch,debounceVal, searchUser, skip, limit]);
-
-
+  }, [dispatch,debounceVal, searchUser, skip, limit,saloonId]);
 
   const paginitionClbk = (val?: any) => {
     let skip1 = (val - 1) * limit

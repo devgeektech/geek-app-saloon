@@ -8,13 +8,17 @@ const initialState = {
     skip: 0,
     limit: 10,
     search: '',
-    totalRecord: 0
+    totalRecord: 0,
+    bannerId: null
 };
 
 const bannerSlice = createSlice({
     name: "banner",
     initialState,
     reducers: {
+        setBannerId: (state, action) => {
+            state.bannerId = action.payload;
+        },
         addBannerRequest: (state, action) => {
             state.loading = true;
             state.error = null;
@@ -106,6 +110,7 @@ export const {
     updateBannerRequest,
     updateBannerSuccess,
     updateBannerFailure,
+    setBannerId
 } = bannerSlice.actions;
 
 export default bannerSlice.reducer;
