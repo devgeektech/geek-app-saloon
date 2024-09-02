@@ -90,7 +90,6 @@ export default function Servicetable(props: any) {
           toast.success(SUCCESS);
           setModalShow(false);
           dispatch(fetchListRequest(0, 0, ''));
-          // dispatch(getSaloonRequest({ lat, lng, skip, limit, searchUser }));
         }
       });
       setDeleteUserId('');

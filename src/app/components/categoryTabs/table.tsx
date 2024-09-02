@@ -28,9 +28,8 @@ export default function TableCategory() {
   }
 
   const handleEdit = (data: any) => {
-    debugger
     dispatch(setCategoryForm({
-      id: data._id,
+       id: data._id,
       name: data.name,
       photo: data.photo,
       description: data.description

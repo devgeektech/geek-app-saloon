@@ -1,10 +1,10 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { toast } from "react-toastify";
 
-const categoryForm = { id: "", name: "", photo: "" , description :""}
+const categoryForm = { id: "", name: "", photo: "", description: "" }
 
 const initialState = {
-  initialValues: categoryForm,
+  details: categoryForm,
   categoryList: [],
   selectedCategoryId: null,
   showDeleteModal: false,
@@ -25,7 +25,7 @@ const categorySlice = createSlice({
     },
     addCategorySuccess: (state: any, action) => {
       toast.success(action.payload.responseMessage);
-      state.loading =false;
+      state.loading = false;
       state.error = null;
       state.categoryList = [...state.categoryList, ...action.payload.data];
     },
@@ -38,7 +38,7 @@ const categorySlice = createSlice({
         ...state,
         loading: false,
         category: action.payload.data,
-      };  
+      };
     },
     editCategoryFailure: (state, action) => {
       state.error = action.payload;
@@ -53,7 +53,7 @@ const categorySlice = createSlice({
       state.categoryList = state.categoryList.filter(
         (category: any) => category._id !== data?._id
       );
-      state.totalRecord =  state.totalRecord - 1
+      state.totalRecord = state.totalRecord - 1
     },
     deleteCategoryFailure: (state, action) => {
       state.error = action.payload;
@@ -81,7 +81,7 @@ const categorySlice = createSlice({
       toast.success(action.payload.responseMessage);
       state.loading = false;
       state.error = null;
-      state.initialValues = categoryForm;
+      state.details = categoryForm;
     },
     updateCategoryFailure: (state, action) => {
       toast.error(action.payload.data.responseMessage);
@@ -100,11 +100,11 @@ const categorySlice = createSlice({
       state.showDeleteModal = false;
     },
     setCategoryForm: (state, { payload }) => {
-      debugger
-      state.initialValues = payload;
+      
+      state.details = { ...payload };
     },
     resetCategoryForm: (state) => {
-      state.initialValues = categoryForm;
+      state.details = categoryForm;
       state.selectedCategoryId = null;
     },
   },

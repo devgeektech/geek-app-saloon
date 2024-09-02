@@ -17,20 +17,17 @@ import FieldTextArea from '../common/inputs/FieldTextArea'
 export default function CategoryTabs() {
   const dispatch = useDispatch();
   const [file, setFile] = useState('');
-  const { initialValues } = useSelector((state: any) => state.category);
+  const category = useSelector((state: any) => state.category);
   const loading = false;
   const { saloonId } = useSelector((state: any) => state.saloon);
   const limit = 10;
 
 
-  useEffect(()=>{
-       console.log(initialValues)
-  },[initialValues])
-
   useEffect(() => {
     getCategoryList();
+    console.log(category.details)
   }, [dispatch, saloonId]);
-  
+
   const categorySchema: any = Yup.object().shape({
     name: Yup.string()
       .min(3, 'Minimum 3 symbols')
@@ -43,22 +40,33 @@ export default function CategoryTabs() {
 
   })
 
+
+
   const formik: any = useFormik({
-    initialValues,
+    initialValues: {
+      name: '',
+      description: '',
+      photo: '',
+      id:''
+    },
     validationSchema: categorySchema,
-    onSubmit: async (values, { setStatus, setSubmitting }) => {
+    onSubmit: async (values: any, { setStatus, setSubmitting }) => {
       values['saloonId'] = saloonId;
+      console.log('values++++++++++++++',values)
       if (values.id.trim() !== '') {
         dispatch(updateCategoryRequest({ id: values.id, ...values }));
       } else {
         dispatch(addCategoryRequest(values));
-        dispatch(getCategoryRequest({ skip: 0, limit }))
-      }
-      getCategoryList();
+        }
+      dispatch(getCategoryRequest({ skip: 0, limit }))
+      // getCategoryList();
       formik.resetForm();
       setFile("");
     },
   })
+
+  useEffect(() => {
+  }, [category.details, formik.values])
 
   const handleFileChange = async (e: any) => {
     if (e.target?.files && e.target?.files.length > 0) {
@@ -110,18 +118,21 @@ export default function CategoryTabs() {
     setFile("");
   }
 
-  useEffect(() => {
-    resetForm();
-  }, []);
+
 
   useEffect(() => {
-    if (initialValues.photo) {
-      setFile(getImageUrl(initialValues.photo));
+    if (category.details) {
+      formik.setFieldValue('name', category.details.name)
+      formik.setFieldValue('description', category.details.description)
+      setFile(getImageUrl(category.details.photo));
+      formik.setFieldValue('id', category.details.id)
+      formik.setFieldValue('photo', category.details.photo)
     }
+
     else {
       setFile('');
     }
-  }, [initialValues]);
+  }, [category.details]);
 
   useEffect(() => {
     if (formik.values.id) {

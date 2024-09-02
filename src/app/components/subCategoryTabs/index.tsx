@@ -7,7 +7,7 @@ import * as Yup from 'yup'
 import clsx from 'clsx'
 import { commonFileUpload } from '../../services/_requests'
 import { Field, FormikProvider, useFormik } from 'formik'
-import { addSubCategoryRequest, getSubCategoryRequest, resetSubCategoryForm, updateSubCategoryRequest } from '../../redux/reducer/subCategorySlice'
+import { addSubCategoryRequest, getSubCategoryRequest, resetSubCategoryForm, setSubCategoryForm, updateSubCategoryRequest } from '../../redux/reducer/subCategorySlice'
 import { getImageUrl, renderMessageToaster } from '../../utils/common'
 import { FILE_SIZE, INVALID_IMAGE, REQUIRED_FIELD, UNABLE, UNKNOWN } from '../../utils/ErrorMessages'
 import { fileTypeMap } from '../../utils/const'
@@ -41,22 +41,35 @@ export default function SubCategoryTabs() {
       .min(10, "Minimum 10 charectors")
       .max(50, "Maximum 50 charectors")
       .required(REQUIRED_FIELD),
-    image: Yup.string().required('Image is required'),
+    // image: Yup.string().required('Image is required'),
   })
 
   const formik: any = useFormik({
-    initialValues,
+    initialValues: {
+      name: '',
+      categoryId: '',
+      image: '',
+      description:'',
+      id:''
+    },
     validationSchema: subCategorySchema,
-    enableReinitialize: true,
+    // enableReinitialize: true,
     onSubmit: async (values, { setStatus, setSubmitting }) => {
+      let obj = {
+        name:values?.name,
+        id:values?.categoryId,
+        description:values?.description,
+        image:values?.image
+        }
       if (values.id) {
-        dispatch(updateSubCategoryRequest(values));
+        obj['id'] = values?.id
+        obj['categoryId'] = values?.categoryId
+        dispatch(updateSubCategoryRequest(obj));
+        } else {
+        dispatch(addSubCategoryRequest(obj));
       }
-      else {
-        dispatch(addSubCategoryRequest(values));
-      }
-      resetForm();
-      getSubCategoryList()
+      formik.resetForm();
+      getSubCategoryList();
     },
   })
 
@@ -118,14 +131,19 @@ export default function SubCategoryTabs() {
     setFile('');
   }
 
-  useEffect(() => {
-    if(initialValues.image) {
+  useEffect(() => {    
+    if(initialValues) {
+      formik.setFieldValue('name', initialValues.name)
+      formik.setFieldValue('categoryId', initialValues.categoryId)
+      formik.setFieldValue('image', initialValues.image)
+      formik.setFieldValue('description', initialValues.description)
+      formik.setFieldValue('id', initialValues.id)
       setFile(getImageUrl(initialValues.image))
     }
     else {
       setFile("");
     }
-  }, [initialValues]);
+  }, [initialValues,formik.isValid]);
 
   useEffect(() => {
     if (formik.values.id) {
@@ -268,7 +286,7 @@ export default function SubCategoryTabs() {
                     className='blackBtn btn-sm'
                     type='submit'
                     id='kt_sign_in_submit'
-                    disabled={!(formik.values.name && formik.values.description && formik.values.image && formik.values.categoryId && formik.isValid)}
+                    disabled={!(formik.isValid)}
                   >
                     {!loading && <span className='indicator-label'>Save</span>}
                     {loading && (

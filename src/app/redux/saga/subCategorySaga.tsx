@@ -11,13 +11,16 @@ import {
   updateSubCategoryFailure,
   updateSubCategorySuccess,
 } from '../reducer/subCategorySlice'
+import { toast } from "react-toastify";
 
 const call: any = Effects.call
 
 function* addSubCategorySaga(action) {
-  const { categoryId, name, image, description } = action.payload
+  const { id, name, image, description } = action.payload
+  console.log('?????????????',action.payload);
+  
   try {
-    const createCategoryRes = yield call(createSubCategory, categoryId, name, image, description)
+    const createCategoryRes = yield call(createSubCategory, id, name, image, description)
     yield put(addSubCategorySuccess(createCategoryRes.data))
   } catch (error: any) {
     yield put(addSubCateogryFailure(error.response))
@@ -30,6 +33,7 @@ function* updateSubCategorySaga(action) {
     const response = yield call(updateSubCategory, id, { id: categoryId, name, image, description });
     yield put(updateSubCategorySuccess(response.data));
   } catch (error: any) {
+    toast.error(error?.responseMessage || 'An error occurred');
     yield put(updateSubCategoryFailure(error.response));
   }
 }

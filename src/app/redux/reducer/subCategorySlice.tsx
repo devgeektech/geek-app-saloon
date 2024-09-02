@@ -30,7 +30,7 @@ const subCategorySlice = createSlice({
       state.subCategoryList = [...state.subCategoryList, ...action.payload.data]
     },
     addSubCateogryFailure: (state, action) => {
-      toast.error(action.payload.data.responseMessage);
+      toast.error(action.payload.data?.responseMessage);
       state.error = action.payload;
     },
     updateSubCategoryRequest: (state, action) => {
