@@ -37,7 +37,6 @@ function* addServiceSaga(action) {
     const createCategoryRes = yield call(addService, action.payload)
     yield put(addServiceSuccess(createCategoryRes.data))
   } catch (error: any) {
-    console.log("errrrr", error);
     yield put(addServiceFailure(error))
   }
 }
@@ -48,7 +47,6 @@ function* getServiceSaga(action) {
   try {
     
     const res = yield call(getAllServices, search, skip, limit)
-    console.log('====>>>',res)
     yield put(getServiceSuccess(res.data))
   } catch (error: any) {
     yield put(getServiceFailure(error.response))
@@ -81,7 +79,6 @@ function* editServiceDataSaga(action) {
 function* deleteServiceSaga(action) {
   try {
     const { id } = action.payload;
-    console.log("id", id)
     const response = yield call(deleteServiceApi, id);
     yield put(deleteServiceSuccess(response.data));
   } catch (error: any) {

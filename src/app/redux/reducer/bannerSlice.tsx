@@ -49,7 +49,6 @@ const bannerSlice = createSlice({
             state.error = null;
         },
         deleteBannerSuccess: (state: any, action) => {
-            console.log("action.payload", action.payload);
             toast.success(action.payload.responseMessage);
             state.bannerList = state.bannerList.filter(
                 (banner: any ) => banner._id !== action.payload.data._id

@@ -34,7 +34,7 @@ import { getSaloonRequest, setSaloonId } from "../../redux/reducer/saloonSlice";
 import { fetchDataSaga } from "../../redux/saga/serviceSaga";
 import { fetchListRequest } from "../../redux/actions/serviceAction";
 import { toast } from 'react-toastify'
-import { SALOON_ID_REQUIRED } from "../../utils/const";
+import { REQUIRED, SALOON_ID_REQUIRED } from "../../utils/const";
 
 
 const ServiceWrapper = () => {
@@ -87,15 +87,15 @@ const ServiceWrapper = () => {
 
 
   const serviceSchema = Yup.object().shape({
-    name: Yup.string().required(REQUIRED_FIELD),
-    image: Yup.string().required(REQUIRED_FIELD),
-    category: Yup.string().required(REQUIRED_FIELD),
-    gender: Yup.array().min(1).required(REQUIRED_FIELD),
+    name: Yup.string().required(REQUIRED),
+    image: Yup.string().required(REQUIRED),
+    category: Yup.string().required(REQUIRED),
+    gender: Yup.array().min(1).required(REQUIRED),
     description: Yup.string()
       .min(10, "Minimum 10 charectors")
       .max(50, "Maximum 50 charectors")
-      .required(REQUIRED_FIELD),
-    cost: Yup.number().required(REQUIRED_FIELD),
+      .required(REQUIRED),
+    cost: Yup.number().required(REQUIRED),
   });
 
   const formik: any = useFormik({

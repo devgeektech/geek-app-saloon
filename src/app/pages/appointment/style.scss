@@ -56,6 +56,10 @@
         border: 1px solid #adadad;
         border-top: none !important;
         border-bottom: none !important;
+        table.table {
+          margin-bottom: 0 !important;
+          // border-bottom: none !important;
+        }
         table.table.table-bordered.table {
           border-color: #b4b4b4;
           margin: 0;
@@ -130,6 +134,9 @@
               background: #f7e5e3;
             }
           }
+        }
+        table.table.table-bordered.coupons.table {
+          border-bottom: 1px solid #b4b4b4;
         }
       }
     }

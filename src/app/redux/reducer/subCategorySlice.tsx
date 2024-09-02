@@ -100,7 +100,6 @@ const subCategorySlice = createSlice({
       state.showDeleteModal = false;
     },
     setSelectedId: (state, action) => {
-      console.log(action.payload, 'action.payload')
       state.selectedId = action.payload;
     },
   },

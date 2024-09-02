@@ -6,7 +6,6 @@ import { ErrorWrapper } from "../../../utils/ErrorWapper";
 const FieldCheckBox = ({ field, form, ...props }: any) => {
   const error = getIn(form.errors, field.name);
   const touch = getIn(form.touched, field.name);
-  console.log("form", form)
   return (
     <div>
       <Form.Group className="mb-3">

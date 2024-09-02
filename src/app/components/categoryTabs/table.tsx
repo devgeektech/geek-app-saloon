@@ -10,6 +10,7 @@ import { getImageUrl } from '../../utils/common'
 import Pagination from '../common/pagination'
 import { useState } from 'react'
 import ArrowRightIcon from '../common/Icons/ArrowRightIcon'
+import NoDataFound from '../common/noDataFound/NoDataFound'
 
 export default function TableCategory() {
   const dispatch = useDispatch();
@@ -54,8 +55,9 @@ export default function TableCategory() {
           </tr>
         </thead>
         <tbody>
-          {categoryList &&
-            categoryList.length > 0 &&
+          {(categoryList &&
+            categoryList.length > 0) ?
+            (
             categoryList.map((listValue: any, index: number) => {
               return (
                 <tr key={`cat${index}`}>
@@ -88,7 +90,15 @@ export default function TableCategory() {
                   </td>
                 </tr>
               )
-            })}
+            })
+          ) : (
+            <tr>
+                    <td colSpan={6}>
+                      <NoDataFound />
+                      </td>  
+                  </tr>
+          )
+          }
         </tbody>
       </Table>
       {totalRecord > 10 && (

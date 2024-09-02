@@ -21,8 +21,6 @@ const Pagination = (props: any) => {
     props.paginitionClbk(props.currentPage + 1)
   }
 
-  console.log("props.pageNumber", props.currentPage)
-
   return (
     <>
       <div className='inr-pagenation d-flex justify-content-center align-items-center'>

@@ -26,6 +26,11 @@ export default function CategoryTabs() {
   useEffect(()=>{
        console.log(initialValues)
   },[initialValues])
+
+  useEffect(() => {
+    getCategoryList();
+  }, [dispatch, saloonId]);
+  
   const categorySchema: any = Yup.object().shape({
     name: Yup.string()
       .min(3, 'Minimum 3 symbols')

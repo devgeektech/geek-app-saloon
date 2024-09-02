@@ -14,10 +14,13 @@ import { toast } from 'react-toastify'
 import { setSaloonId } from '../../../../app/redux/reducer/saloonSlice'
 import { fetchListRequest } from '../../../../app/redux/actions/serviceAction'
 import Form from 'react-bootstrap/Form';
+import { useLocation } from 'react-router-dom'
+import { DASHBOARD, USERS, VENDOR } from '../../../../app/utils/const'
 
 const HeaderToolbar = () => {
   const dispatch = useDispatch()
   const { saloonList, saloonId } = useSelector((state: any) => state.saloon);
+  const location = useLocation()
 
   const logOut = () => {
     dispatch(logout())
@@ -31,24 +34,24 @@ const HeaderToolbar = () => {
   };
 
 
-  
+
 
   return (
-    <div className='toolbar d-flex align-items-center justify-content-between w-100'>
-      <div className='inr-dropdown-location'>
+    <div className='toolbar d-flex align-items-center justify-content-end w-100'>
+      <div className='inr-dropdown-location me-4'>
 
-      <Form.Select size="sm" value={saloonId}   onChange={handleSelect}>
-        <option value ="">Select Saloon</option>
-        {saloonList?.length > 0 && (
-            saloonList?.map((saloon:any ) => (
-              <option key={saloon._id} value={saloon._id}>
-                {saloon.name}
-              </option>
-            ))
-          )}
-      </Form.Select>
-
-     
+        {((location?.pathname !== DASHBOARD) && (location?.pathname !== USERS) && ((location?.pathname !== VENDOR))) &&
+          (<Form.Select className='' size="sm" value={saloonId} onChange={handleSelect}>
+            <option value="">Select Saloon</option>
+            {saloonList?.length > 0 && (
+              saloonList?.map((saloon: any) => (
+                <option key={saloon._id} value={saloon._id}>
+                  {saloon.name}
+                </option>
+              ))
+            )}
+          </Form.Select>)
+        }
 
       </div>
       <div className='inr-dropdown-login'>

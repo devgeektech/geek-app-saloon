@@ -19,7 +19,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { commonFileUpload, deleteBanner } from "../../services/_requests";
 import DeleteIcon from "../../components/common/Icons/DeleteIcon";
 import { addBannerRequest, deleteBannerRequest, getBannerRequest, setBannerId } from "../../redux/reducer/bannerSlice";
-import { SUCCESS } from "../../utils/const";
+import { REQUIRED, SUCCESS } from "../../utils/const";
 
 const BannerWrapper = () => {
   const dispatch = useDispatch();
@@ -45,16 +45,16 @@ const BannerWrapper = () => {
   }
 
   const serviceSchema = Yup.object().shape({
-    name: Yup.string().required('Required'),
+    name: Yup.string().required(REQUIRED),
     image: Yup.mixed()
-      .required('Image is required')
+      .required(REQUIRED)
       .test('fileSize', 'File size is too large', (value: any) => {
         return !value || (value && value.size <= 2 * 1024 * 1024); // 2MB limit
       })
       .test('fileType', 'Unsupported file format', (value: any) => {
         return !value || ['image/jpeg', 'image/png'].includes(value.type);
       }),
-    type: Yup.string().required('Required'),
+    type: Yup.string().required(REQUIRED),
   });
 
   const formik = useFormik({
@@ -222,7 +222,11 @@ const BannerWrapper = () => {
                     </tr>
                   ))
                 ) : (
-                  <NoDataFound />
+                  <tr>
+                    <td colSpan={6}>
+                      <NoDataFound />
+                      </td>  
+                  </tr>
                 )}
               </tbody>
             </Table>

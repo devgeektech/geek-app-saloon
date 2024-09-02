@@ -14,8 +14,8 @@ import { getVendors } from "../../services/_requests";
 export const AddServiceModal = (props) => {
   const {
     formik,
-    show,
     schema,
+    show,
     categories,
     handleFileChange,
     genders,

@@ -21,7 +21,6 @@ function* addBannerSaga(action) {
 function* deleteBannerSaga(action) {
   try {
     const response = yield call(deleteBanner, action.payload);
-    console.log("response>>>>>>>>>>", response);
     yield put(deleteBannerSuccess(response.data));
   } catch (error: any ) {
     yield put(deleteBannerFailure(error.response));
@@ -30,7 +29,6 @@ function* deleteBannerSaga(action) {
 
 function* getBannerSaga(action) {
   try {
-    console.log("action.payload???????????/", action.payload)
     const { search, skip, limit } = action.payload;
     const response = yield call(getBanners, search, skip, limit)
     yield put(getBannerListSuccess(response));

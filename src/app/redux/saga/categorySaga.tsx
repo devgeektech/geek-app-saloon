@@ -37,7 +37,6 @@ function* getCategorySaga(action) {
 }
 
 function* deleteCategorySaga(action) {
-  console.log('deleteCategorySaga action payload:', action.payload);
   try {
     const { id } = action.payload;
     const response = yield call(deleteCategory, id);
@@ -53,10 +52,8 @@ function* updateCategorySaga(action) {
     const id = action.payload.id;
     delete values.id;
     const response = yield call(updateCategory, id, values);
-    console.log("response", response);
     yield put(updateCategorySuccess(response.data));
   } catch (error: any) {
-    console.log("error.response", error.response)
     yield put(updateCategoryFailure(error.response));
   }
 }

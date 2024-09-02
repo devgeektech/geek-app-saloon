@@ -16,7 +16,6 @@ const SaloonModal = (props: any) => {
     schema,
     cancelButton
   } = props;
-  console.log('formik=--------------', formik.isSubmitting ,formik.isValid)
   const [location, setLocation] = useState('');
   
   return (

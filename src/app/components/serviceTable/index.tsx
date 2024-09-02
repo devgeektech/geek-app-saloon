@@ -165,9 +165,18 @@ export default function Servicetable(props: any) {
           ))
           }
         </tbody>}
+        {((saloonId && serviceList?.length === 0) || !saloonId) && (
+        <tbody>
+          <tr>
+            <td colSpan={7}>
+              {saloonId && serviceList?.length === 0 && <p className='text-center'><NoDataFound /></p>}
+              {!saloonId && <p className='text-center'> <SaloonIdNotFound /></p>}
+            </td>
+          </tr>  
+        </tbody>
+        )}
       </Table>
-      {saloonId && serviceList?.length === 0 && <p className='text-center'><NoDataFound /></p>}
-      {!saloonId && <p className='text-center'> <SaloonIdNotFound /></p>}
+      
       {totalRecord > 10 && (
         <Pagination
           limit={limit}

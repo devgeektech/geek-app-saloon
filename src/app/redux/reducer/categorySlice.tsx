@@ -82,14 +82,12 @@ const categorySlice = createSlice({
       state.loading = false;
       state.error = null;
       state.initialValues = categoryForm;
-      console.log("update category data", action.payload.data);
     },
     updateCategoryFailure: (state, action) => {
       toast.error(action.payload.data.responseMessage);
       state.error = action.payload;
     },
     setSelectedCategoryId: (state, action) => {
-      console.log(action.payload, 'action.payload')
       state.selectedCategoryId = action.payload;
     },
     clearSelectedCategoryId: (state, action) => {

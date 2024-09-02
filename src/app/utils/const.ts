@@ -16,9 +16,12 @@ export const fileTypeMap: { [key: string]: string } = {
 export const IMAGE_BASE_URL = 'http://localhost:3000/';
 export const PHONE_REGEX = /^(?:(?:\+|0{0,2})91(\s*[\-]\s*)?|[0]?)?[6789]\d{9}$/;
 export const INVALID_PHONE_NUMBER = "Please enter valid contact number";
-export const REQUIRED = "This field is Required";
+export const REQUIRED = "Required";
 export const SUCCESS = "Success.";
 export const ADD = "Add";
 export const EDIT = "Edit";
 export const SALOON_ID_REQUIRED = "Saloon id required.";
+export const DASHBOARD = "/dashboard";
+export const USERS = "/users";
+export const VENDOR = "/vendor";
 

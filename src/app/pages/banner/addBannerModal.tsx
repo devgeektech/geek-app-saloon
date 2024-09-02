@@ -49,7 +49,6 @@ const BannerModal = (props: any) => {
   const handleFile = async (event: any) => {
     let file = event?.target?.files[0];
     let url = URL.createObjectURL(file);
-    console.log("url", url);
     setPreviewUrl(url);
   }
 
