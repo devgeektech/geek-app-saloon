@@ -34,14 +34,14 @@ export default function SubCategoryTabs() {
   const subCategorySchema = Yup.object().shape({
     categoryId: Yup.string().required('Category is required'),
     name: Yup.string()
-      .min(3, 'Minimum 3 symbols')
-      .max(50, 'Maximum 50 symbols')
+      // .min(3, 'Minimum 3 symbols')
+      // .max(50, 'Maximum 50 symbols')
       .required('Name is required'),
     description: Yup.string()
       .min(10, "Minimum 10 charectors")
       .max(50, "Maximum 50 charectors")
       .required(REQUIRED_FIELD),
-    // image: Yup.string().required('Image is required'),
+    // image: Yup.string(),
   })
 
   const formik: any = useFormik({
@@ -49,11 +49,12 @@ export default function SubCategoryTabs() {
       name: '',
       categoryId: '',
       image: '',
-      description:'',
+      description:'', 
       id:''
     },
     validationSchema: subCategorySchema,
-    // enableReinitialize: true,
+    enableReinitialize: true,
+    validateOnChange: false,
     onSubmit: async (values, { setStatus, setSubmitting }) => {
       let obj = {
         name:values?.name,
@@ -68,7 +69,8 @@ export default function SubCategoryTabs() {
         } else {
         dispatch(addSubCategoryRequest(obj));
       }
-      formik.resetForm();
+      formik.resetForm();  
+      setFile('');
       getSubCategoryList();
     },
   })
@@ -129,21 +131,22 @@ export default function SubCategoryTabs() {
     formik.resetForm();
     dispatch(resetSubCategoryForm());
     setFile('');
+   
   }
 
   useEffect(() => {    
     if(initialValues) {
-      formik.setFieldValue('name', initialValues.name)
       formik.setFieldValue('categoryId', initialValues.categoryId)
-      formik.setFieldValue('image', initialValues.image)
+      formik.setFieldValue('name', initialValues.name)
       formik.setFieldValue('description', initialValues.description)
+      formik.setFieldValue('image', initialValues.image)
       formik.setFieldValue('id', initialValues.id)
       setFile(getImageUrl(initialValues.image))
     }
     else {
       setFile("");
     }
-  }, [initialValues,formik.isValid]);
+  }, [initialValues]);
 
   useEffect(() => {
     if (formik.values.id) {
@@ -186,35 +189,10 @@ export default function SubCategoryTabs() {
                       </option>
                     ))}
                   </select>
-                  {/* <label>Enter Sub-Category Name</label> */}
                   <div className='inr-add-category'>
-                    {/* <label>Enter Category Name</label>
-              <input type='text' name='email' placeholder='Enter Category Name'></input> */}
+               
                     <div className='fv-row mb-4'>
-                      {/* <label className='form-label'>Name</label>
-                      <input
-                        type='text'
-                        autoComplete='off'
-                        placeholder='Enter Sub-Category Name'
-                        {...formik.getFieldProps('name')}
-                        className={clsx(
-                          'form-control bg-transparent',
-                          {
-                            'is-invalid': formik.touched.name && formik.errors.name,
-                          },
-                          {
-                            'is-valid': formik.touched.name && !formik.errors.name,
-                          }
-                        )}
-                        disabled={!formik.values.categoryId}
-                      />
-                      {formik.touched.name && formik.errors.name && (
-                        <div className='fv-plugins-message-container'>
-                          <div className='fv-help-block'>
-                            <span role='alert'>{formik.errors.name}</span>
-                          </div>
-                        </div>
-                      )} */}
+                    
                       <Field
                         name="name"
                         validate={subCategorySchema}
