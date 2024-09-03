@@ -5,7 +5,7 @@ import {
 } from "../reducer/userSlice";
 import { getUsersList } from "../../services/_requests";
 
-function* fetchUserListSaga(action) {
+function* fetchUserListSaga(action) { 
   try {     
     const { search, skip, limit } = action.payload;
     const response = yield call(getUsersList,search,skip,limit);
