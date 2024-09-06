@@ -8,6 +8,7 @@ import {closeModalSaga, openModalSaga} from './modalSaga'
 import { addBannerSaga, deleteBannerSaga, getBannerSaga } from './bannerSaga'
 import { addSaloonSaga, editSaloonSaga, getSaloonSaga } from './saloonSaga'
 import { FETCH_LIST_REQUEST } from '../actions/serviceAction'
+import { addStaffSaga, deleteStaffSaga, getStaffSaga, updateStaffSaga } from './staffSaga'
 
 function* rootSaga() {
   yield takeLatest('auth/loginRequest', loginSaga)
@@ -51,6 +52,13 @@ function* rootSaga() {
   yield takeLatest('saloon/editSaloonRequest', editSaloonSaga)
 
   yield takeEvery(FETCH_LIST_REQUEST, fetchDataSaga);
+
+   // Banner request 
+   yield takeLatest('staff/addStaffRequest', addStaffSaga)
+   yield takeLatest('staff/getStaffRequest', getStaffSaga)
+   yield takeLatest('staff/deleteStaffRequest', deleteStaffSaga);
+   yield takeLatest('staff/updateStaffRequest', updateStaffSaga);
+
 
 }
 

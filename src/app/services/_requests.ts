@@ -24,6 +24,7 @@ export const GET_SALOON = `${API_URL}/vendor`
 export const Edit_SALOON = `${API_URL}/vendor`
 export const DELETE_SERVICE = `${API_URL}/product`
 export const DELETE_BANNER = `${API_URL}/banner`
+export const STAFF = `${API_URL}/staff`
 
 
 // Server should return AuthModel
@@ -192,4 +193,27 @@ export function editSaloon(body: any) {
 
 export function deleteService(id: string) {
   return axios.delete(DELETE_SERVICE + `/${id}`, {})
+}
+
+
+
+// ========= staff request
+export function addStaff(body: any) {
+  return axios.post(STAFF, body)
+}
+
+export function getAllStaff(search: string, skip: number, limit: number) {
+  return axios.get(STAFF + `?search=${search}&skip=${skip}&limit=${limit}`, {})
+}
+
+export function getStaff(id:any) {
+  return axios.get(STAFF + `/${id}`)
+}
+export function deleteStaff(id:any) {
+  return axios.delete(STAFF + `/${id}`)
+}
+
+
+export function updateStaff(id: string, payload) {
+  return axios.put(STAFF + `/${id}`, payload)
 }

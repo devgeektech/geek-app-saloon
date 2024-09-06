@@ -15,6 +15,7 @@ import { RevenueWrapper } from '../pages/revenue'
 import { SettingWrapper } from '../pages/setting/settingWrapper'
 import { BannerWrapper } from '../pages/banner/Banner'
 import { ShopWrapper } from '../pages/vendors/Vendor'
+import { StaffWrapper } from '../pages/staff/Staff'
 
 const PrivateRoutes = () => {
   return (
@@ -90,6 +91,16 @@ const PrivateRoutes = () => {
             element={
               <SuspensedView>
                 <BannerWrapper />
+              </SuspensedView>
+            }
+          ></Route>
+        </Route>
+        <Route path='staff'>
+          <Route
+            index={true}
+            element={
+              <SuspensedView>
+                <StaffWrapper/>
               </SuspensedView>
             }
           ></Route>

@@ -16,12 +16,14 @@ export function AsideMenuMain() {
       ></AsideMenuItem>
       <AsideMenuItem to='/users' icon='fa-light fa-user' title='Users' />
       <AsideMenuItem to='/vendor' icon='fa-solid fa-rocket' title='Saloon' />
+      <AsideMenuItem to='/staff' icon='fa-light fa-user' title='Staff' />
       <AsideMenuItem to='/services' icon='fas fa-wrench' title='Services' />
       <AsideMenuItem to='/banner' icon='fa-solid fa-rocket' title='Banner' />
       <AsideMenuItem to='/appointment' icon='fa-light fa-user-clock' title='Appointments' />
       <AsideMenuItem to='/coupons' icon='fa-solid fa-percent' title='Coupons' />
       <AsideMenuItem to='/revenue' icon='fa-solid fa-file' title='Revenue' />
       <AsideMenuItem to='/setting' icon='fa-solid fa-gear' title='Settings' />
+   
       {/* <AsideMenuItem to='/builder' icon='fa-solid fa-rocket' title='Confirmation' /> */}
 
       {/* <div className='menu-item'>
