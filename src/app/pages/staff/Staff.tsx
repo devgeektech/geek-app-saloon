@@ -55,12 +55,6 @@ const StaffWrapper = () => {
   const staffSchema = Yup.object().shape({
     name: Yup.string().required(REQUIRED),
     image: Yup.mixed(),
-      // .test('fileSize', 'File size is too large', (value: any) => {
-      //   return value? (value && value.size <= 2 * 1024 * 1024): false; // 2MB limit
-      // })
-      // .test('fileType', 'Unsupported file format', (value: any) => {
-      //   return value ? ['image/jpeg', 'image/png'].includes(value.type): false;
-      // }),
     gender: Yup.string().required(REQUIRED),
     age: Yup.string().required(REQUIRED),
     aboutUs: Yup.string().required(REQUIRED),
@@ -122,11 +116,6 @@ const StaffWrapper = () => {
     setFile(file);
   };
 
-  // const editStaff = (id: string) => {
-  //   dispatch(getStaffRequest(id));
-  //   setModalShow(true);
-  // };
-
   const editStaff = (item:any) => {
     setEditMode(true);
     formik.setValues(item);
@@ -158,7 +147,7 @@ const StaffWrapper = () => {
   };
 
 
-  const deleteStaff: any = async (event: any) => {
+  const deleteSTaff: any = async (event: any) => {
     if (event === true) {
       await deleteStaff(staffId).then((res: any) => {
         if (res.data.responseCode === 200) {
@@ -315,7 +304,7 @@ const StaffWrapper = () => {
 
       <DeleteModal
         deleteUserClbk={(e: any) => {
-          deleteStaff(e);
+          deleteSTaff(e);
         }}
         openModal={showDeleteModal}
         closeModal={closeDeleteModal}
