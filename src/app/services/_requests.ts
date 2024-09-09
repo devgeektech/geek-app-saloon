@@ -14,17 +14,18 @@ export const ADD_SALOON = `${API_URL}/vendor`
 export const DELETE_VENDOR = `${API_URL}/vendor`
 export const GET_USERS = `${API_URL}/users`
 export const DELETE_USER = `${API_URL}/users`
-export const BANNER = `${API_URL}/banner`
-export const SERVICE_URL = `${API_URL}/product`
-export const FILE_UPLOAD = `${API_URL}/product/upload`
-export const GET_ALL_PRODUCT = `${API_URL}/product`
-export const GET_ALL_ADMIN_BANNERS = `${API_URL}/banner/admin`
-export const GET_ALL_ADMIN_SERVICES = `${API_URL}/product/admin`
-export const GET_SALOON = `${API_URL}/vendor`
-export const Edit_SALOON = `${API_URL}/vendor`
-export const DELETE_SERVICE = `${API_URL}/product`
-export const DELETE_BANNER = `${API_URL}/banner`
-export const STAFF = `${API_URL}/staff`
+export const BANNER = `${API_URL}/banner`;
+export const SERVICE_URL = `${API_URL}/product`;
+export const FILE_UPLOAD = `${API_URL}/product/upload`;
+export const GET_ALL_PRODUCT = `${API_URL}/product`;
+export const GET_ALL_ADMIN_BANNERS = `${API_URL}/banner/admin`;
+export const GET_ALL_ADMIN_SERVICES = `${API_URL}/product/admin`;
+export const GET_SALOON = `${API_URL}/vendor`;
+export const Edit_SALOON = `${API_URL}/vendor`;
+export const DELETE_SERVICE = `${API_URL}/product`;
+export const DELETE_BANNER = `${API_URL}/banner`;
+export const STAFF = `${API_URL}/staff`;
+export const COUPON = `${API_URL}/coupon`;
 
 
 // Server should return AuthModel
@@ -209,6 +210,7 @@ export function getAllStaff(search: string, skip: number, limit: number) {
 export function getStaff(id:any) {
   return axios.get(STAFF + `/${id}`)
 }
+
 export function deleteStaff(id:any) {
   return axios.delete(STAFF + `/${id}`)
 }
@@ -216,4 +218,27 @@ export function deleteStaff(id:any) {
 
 export function updateStaff(id: string, payload) {
   return axios.put(STAFF + `/${id}`, payload)
+}
+
+// ***** coupon services *********
+
+export function addCoupon(body: any) {
+  return axios.post(COUPON, body)
+}
+
+export function getAllCoupon(search: string, skip: number, limit: number,status:string) {
+  return axios.get(COUPON + `?search=${search}&skip=${skip}&limit=${limit}&status=${status}`, {})
+}
+
+export function getCoupon(id:any) {
+  return axios.get(COUPON + `/${id}`)
+}
+
+export function deleteCoupon(id:any) {
+  return axios.delete(COUPON + `/${id}`)
+}
+
+
+export function updateCoupon(id: string, payload) {
+  return axios.put(COUPON + `/${id}`, payload)
 }

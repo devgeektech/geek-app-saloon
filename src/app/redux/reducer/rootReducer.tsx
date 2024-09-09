@@ -9,7 +9,8 @@ import bannerReducer from './bannerSlice'
 import saloonServiceReducer from './serviceReducer'
 import { services } from '../services/serviceSlice'
 import { saloonSlice } from './saloonSlice'
-import staffReducer from './staffSlice'
+import staffReducer from './staffSlice';
+import couponReducer from './couponSlice';
 
 
 export const rootReducer = combineReducers({
@@ -24,6 +25,6 @@ export const rootReducer = combineReducers({
   saloon: saloonSlice.reducer,
   saloonService: saloonServiceReducer,
   serviceSlice: services.reducer,
-  staff:  staffReducer
-
+  staff:  staffReducer,
+  coupon: couponReducer
 })

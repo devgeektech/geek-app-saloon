@@ -2,92 +2,92 @@ import { createSlice } from "@reduxjs/toolkit";
 import { toast } from "react-toastify";
 
 const initialState = {
-    staffList: [],
+    couponList: [],
     error: null,
     loading: false,
     skip: 0,
     limit: 10,
     search: '',
     totalRecord: 0,
-    staffId: null
+    couponId: null
 };
 
-const staffSlice = createSlice({
-    name: "staff",
+const couponSlice = createSlice({
+    name: "coupon",
     initialState,
     reducers: {
-        setStaffId: (state, action) => {
-            state.staffId = action.payload;
+        setCouponId: (state, action) => {
+            state.couponId = action.payload;
         },
-        addStaffRequest: (state, action) => {
+        addCouponRequest: (state, action) => {
             state.loading = true;
             state.error = null;
         },
-        addStaffSuccess: (state: any, action) => {
+        addCouponSuccess: (state: any, action) => {
             toast.success(action.payload.responseMessage);
             state.loading = false;
             state.error = null;
-            state.staffList = [...state.staffList, action.payload.data];
+            state.couponList = [...state.couponList, action.payload.data];
             state.totalRecord+=1; 
         },
-        addStaffFailure: (state, action) => {
+        addCouponFailure: (state, action) => {
             toast.error(action.payload.responseMessage);
             state.error = action.payload;
             state.loading = false;
         },
-        editStaffSuccess: (state: any, action) => {
+        editCouponSuccess: (state: any, action) => {
             state.loading = false;
-            state.staffList = state.staffList.map((staff:any) =>
-                staff._id === action.payload.data._id ? action.payload.data : staff
+            state.couponList = state.couponList.map((coupon:any) =>
+                coupon._id === action.payload.data._id ? action.payload.data : coupon
             );
         },
-        editStaffFailure: (state, action) => {
+        editCouponFailure: (state, action) => {
             state.error = action.payload;
             state.loading = false;
         },
-        deleteStaffRequest: (state, action) => {
+        deleteCouponRequest: (state, action) => {
             state.loading = true;
             state.error = null;
         },
-        deleteStaffSuccess: (state: any, action) => {
+        deleteCouponSuccess: (state: any, action) => {
             toast.success(action.payload.responseMessage);
-            state.staffList = state.staffList.filter(
-                (staff: any ) => staff._id !== action.payload.data._id
+            state.couponList = state.couponList.filter(
+                (coupon: any ) => coupon?._id !== action.payload.data._id
             );
             state.totalRecord -= 1;
             state.loading = false;
         },
-        deleteStaffFailure: (state, action) => {
+        deleteCouponFailure: (state, action) => {
             state.error = action.payload;
             state.loading = false;
         },
-        getStaffRequest: (state, action) => {
+        getCouponRequest: (state, action) => {
             return { ...state, loading: true, error: null };
         },
-        getStaffListSuccess: (state, action) => {
+        getCouponListSuccess: (state, action) => {
             state.loading = false;
-            state.staffList = action.payload.data.data;
+            state.couponList = action.payload.data.data;
             state.totalRecord = action.payload.data.totalRecord;
             //   state.skip = action.payload.skip;
             //   state.limit = action.payload.limit;
         },
-        getStaffListFailure: (state, action) => {
+        getCouponListFailure: (state, action) => {
             state.error = action.payload;
             state.loading = false;
         },
-        updateStaffRequest: (state) => {
+        updateCouponRequest: (state) => {
             state.loading = true;
             state.error = null;
         },
-        updateStaffSuccess: (state: any, action) => {
+        updateCouponSuccess: (state: any, action) => {
             toast.success(action.payload.responseMessage);
             state.loading = false;
             state.error = null;
-            state.staffList = state.staffList.map((staff:any) =>
-                staff._id === action.payload.data._id ? action.payload.data : staff
+            state.couponList = state.couponList.map((coupon:any) =>
+                coupon._id === action.payload.data._id ? action.payload.data : coupon
             );
         },
-        updateStaffFailure: (state, action) => {
+        updateCouponFailure: (state, action) => {
             toast.error(action.payload.responseMessage);
             state.error = action.payload;
             state.loading = false;
@@ -96,21 +96,21 @@ const staffSlice = createSlice({
 });
 
 export const {
-    addStaffRequest,
-    addStaffSuccess,
-    addStaffFailure,
-    editStaffSuccess,
-    editStaffFailure,
-    deleteStaffRequest,
-    deleteStaffSuccess,
-    deleteStaffFailure,
-    getStaffRequest,
-    getStaffListSuccess,
-    getStaffListFailure,
-    updateStaffRequest,
-    updateStaffSuccess,
-    updateStaffFailure,
-    setStaffId
-} = staffSlice.actions;
+    addCouponRequest,
+    addCouponSuccess,
+    addCouponFailure,
+    editCouponSuccess,
+    editCouponFailure,
+    deleteCouponRequest,
+    deleteCouponSuccess,
+    deleteCouponFailure,
+    getCouponRequest,
+    getCouponListSuccess,
+    getCouponListFailure,
+    updateCouponRequest,
+    updateCouponSuccess,
+    updateCouponFailure,
+    setCouponId
+} = couponSlice.actions;
 
-export default staffSlice.reducer;
+export default couponSlice.reducer;

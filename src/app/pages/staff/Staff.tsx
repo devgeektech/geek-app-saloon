@@ -18,11 +18,11 @@ import { useDebounce } from "../../../_metronic/helpers";
 import DeleteModal from "../../components/common/modal/DeleteModal";
 import { getImageUrl } from "../../utils/common";
 import { useDispatch, useSelector } from "react-redux";
-import { commonFileUpload, deleteBanner, deleteStaff } from "../../services/_requests";
+import { addStaff, commonFileUpload, deleteBanner, deleteStaff, updateStaff } from "../../services/_requests";
 import DeleteIcon from "../../components/common/Icons/DeleteIcon";
 import { addBannerRequest, deleteBannerRequest, getBannerRequest, setBannerId } from "../../redux/reducer/bannerSlice";
 import { REQUIRED, SUCCESS } from "../../utils/const";
-import { addStaffRequest, getStaffRequest, setStaffId } from "../../redux/reducer/staffSlice";
+import { addStaffRequest, addStaffSuccess, getStaffRequest, setStaffId, updateStaffRequest, updateStaffSuccess } from "../../redux/reducer/staffSlice";
 import StaffModal from "./addStaffModal";
 
 const StaffWrapper = () => {
@@ -36,6 +36,7 @@ const StaffWrapper = () => {
   const [searchValue, setSearchValue] = useState<string>('');
   const { staffList, totalRecord, loading, staffId } = useSelector((state: any) => state.staff);
   const { saloonId } = useSelector((state: any) => state.saloon);
+  const [editMode, setEditMode] = useState<boolean>(false);
 
   const limit = 10;
   const skip = (pageNumber - 1) * limit;
@@ -51,34 +52,46 @@ const StaffWrapper = () => {
     qualification: '',
   }
 
-  const serviceSchema = Yup.object().shape({
+  const staffSchema = Yup.object().shape({
     name: Yup.string().required(REQUIRED),
-    image: Yup.mixed()
-      .required(REQUIRED)
-      .test('fileSize', 'File size is too large', (value: any) => {
-        return !value || (value && value.size <= 2 * 1024 * 1024); // 2MB limit
-      })
-      .test('fileType', 'Unsupported file format', (value: any) => {
-        return !value || ['image/jpeg', 'image/png'].includes(value.type);
-      }),
+    image: Yup.mixed(),
+      // .test('fileSize', 'File size is too large', (value: any) => {
+      //   return value? (value && value.size <= 2 * 1024 * 1024): false; // 2MB limit
+      // })
+      // .test('fileType', 'Unsupported file format', (value: any) => {
+      //   return value ? ['image/jpeg', 'image/png'].includes(value.type): false;
+      // }),
     gender: Yup.string().required(REQUIRED),
     age: Yup.string().required(REQUIRED),
     aboutUs: Yup.string().required(REQUIRED),
     qualification: Yup.string().required(REQUIRED),
   });
-
   const formik = useFormik({
     initialValues,
-    validationSchema: serviceSchema,
+    validationSchema: staffSchema,
+    enableReinitialize: true, // important to reset form values when 'initialValues' change
     onSubmit: async (values, { setStatus, setSubmitting }) => {
       try {
-        if (file) {
-          const imageUrl = await upload(file);
-          const data = { ...values, image: imageUrl };
-          data['saloonId'] = saloonId;
-          dispatch(addStaffRequest(data));
+          if(!saloonId){
+            return toast.info("Select Saloon First!")
+          }
+          let imageUrl;
+          if (file) {
+            imageUrl = await upload(file);
+          }
+          
+          const data = { ...values, image: imageUrl, saloonId };
+          if (editMode) {
+            let res=await updateStaff(staffId, data);
+            if (res.status === 200) {
+                dispatch(updateStaffSuccess(res.data));
+            }
+          } else {
+            let res=await addStaff(data);
+            dispatch(addStaffSuccess(res.data));
+          }
           closeStaffModal();
-        }
+          setEditMode(false)
       } catch (error: any) {
         console.error(error);
         toast.error(error.responseMessage || 'An error occurred');
@@ -109,11 +122,17 @@ const StaffWrapper = () => {
     setFile(file);
   };
 
-  const editStaff = (id: string) => {
-    dispatch(getStaffRequest(id));
+  // const editStaff = (id: string) => {
+  //   dispatch(getStaffRequest(id));
+  //   setModalShow(true);
+  // };
+
+  const editStaff = (item:any) => {
+    setEditMode(true);
+    formik.setValues(item);
+    dispatch(setStaffId(item?._id));
     setModalShow(true);
   };
-
 
   const closeStaffModal = () => {
     setModalShow(false);
@@ -139,7 +158,7 @@ const StaffWrapper = () => {
   };
 
 
-  const deleteUser: any = async (event: any) => {
+  const deleteStaff: any = async (event: any) => {
     if (event === true) {
       await deleteStaff(staffId).then((res: any) => {
         if (res.data.responseCode === 200) {
@@ -157,6 +176,7 @@ const StaffWrapper = () => {
     dispatch(getStaffRequest({ search: debounceSearch, skip, limit }));
   }, [debounceSearch, skip, limit, dispatch, saloonId]);
 
+  
   return (
     <>
       <PageTitle breadcrumbs={[]}>
@@ -170,7 +190,10 @@ const StaffWrapper = () => {
               Staff
             </h2>
           </div>
-          <button onClick={() => setModalShow(true)} className="yellowBtn">
+          <button onClick={() => {
+            setModalShow(true);
+            dispatch(setStaffId(null));
+          }} className="yellowBtn">
             Add
           </button>
         </div>
@@ -199,6 +222,7 @@ const StaffWrapper = () => {
                   <th>Age</th>
                   <th>About</th>
                   <th>Qualification</th>
+                  <th>Status</th>
                   <th>Action</th>
                 </tr>
               </thead>
@@ -219,7 +243,12 @@ const StaffWrapper = () => {
                       <td>{item?.age || 'N/A'}</td>
                       <td>{item?.aboutUs || 'N/A'}</td>
                       <td>{item?.qualification || 'N/A'}</td>
-
+                      <td className={item?.onLeave?'inactive':'active'}>
+                        <label className='switch' title={item?.onLeave ? 'On Leave':''}>
+                          <input type='checkbox' readOnly={true} checked={item?.onLeave} />
+                          <span className='slider round'></span>
+                        </label>
+                      </td>
 
                       <td>
                         <div className="d-flex">
@@ -234,8 +263,8 @@ const StaffWrapper = () => {
                     </tr>
                   ))
                 ) : (
-                  <tr>
-                    <td colSpan={6}>
+                  <tr >
+                    <td colSpan={12}>
                       <NoDataFound />
                     </td>
                   </tr>
@@ -256,7 +285,7 @@ const StaffWrapper = () => {
       {modalShow && (
         <StaffModal
           show={modalShow}
-          schema={serviceSchema}
+          schema={staffSchema}
           file={file}
           formik={formik}
           cancelButton={closeStaffModal}
@@ -267,7 +296,7 @@ const StaffWrapper = () => {
 
       <DeleteModal
         deleteUserClbk={(e: any) => {
-          deleteUser(e);
+          deleteStaff(e);
         }}
         openModal={showDeleteModal}
         closeModal={closeDeleteModal}

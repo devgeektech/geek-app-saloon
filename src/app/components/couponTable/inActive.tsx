@@ -4,8 +4,9 @@ import pencilEditIcon from '../../../_metronic/images/pencilEditIcon.svg'
 import deleteIcon from '../../../_metronic/images/deleteIcon.svg'
 import searchIcon from '../../../_metronic/images/searchIcon.svg'
 import './style.scss'
+import moment from 'moment'
 
-export default function InActiveTable() {
+export default function InActiveTable({coupons, deleteItem, editItem}) {
   return (
     <>
       <Table responsive className='table table-bordered coupons'>
@@ -15,7 +16,6 @@ export default function InActiveTable() {
               <input type='checkbox' />
             </th>
             <th>Sr no</th>
-            <th>Offer ID</th>
             <th>Offer Name</th>
             <th>Category</th>
             <th>Sub Category</th>
@@ -26,18 +26,19 @@ export default function InActiveTable() {
           </tr>
         </thead>
         <tbody>
-          <tr>
+        {
+          coupons?.map((coupon:any,index:number)=>
+          <tr key={index}>
             <td>
               <input type='checkbox' />
             </td>
-            <td>001</td>
-            <td>545151511451</td>
-            <td>Upto $10/- Off</td>
-            <td>Hair</td>
-            <td>Haircut</td>
-            <td>All</td>
-            <td>Tue,Sept 4,2023</td>
-            <td className='inactive'> inactive
+            <td>{index+1}</td>
+            <td>{coupon?.offerName}</td>
+            <td>{coupon?.category?.name}</td>
+            <td>{coupon?.subcategory?.name}</td>
+            <td>{coupon?.service?.name}</td>
+            <td>{moment(coupon?.createdAt).format('Do MMM YYYY')}</td>
+            <td className='inactive'> {coupon.status}
               <label className='switch' >
                 <input type='checkbox' checked />
                 <span className='slider round'></span>
@@ -45,240 +46,17 @@ export default function InActiveTable() {
             </td>
             <td>
               <div className='d-flex'>
-                <button className='editBtn'>
+                <button className='editBtn' onClick={()=>editItem(coupon)}>
                   <img src={pencilEditIcon} alt='pencilEditIcon' />
                 </button>
-                <button className='deleteBtn'>
+                <button className='deleteBtn' onClick={()=>deleteItem(coupon?._id)}>
                   <img src={deleteIcon} alt='deleteIcon' />
                 </button>
               </div>
             </td>
           </tr>
-          <tr>
-            <td>
-              <input type='checkbox' />
-            </td>
-            <td>001</td>
-            <td>545151511451</td>
-            <td>Upto $10/- Off</td>
-            <td>Hair</td>
-            <td>Haircut</td>
-            <td>All</td>
-            <td>Tue,Sept 4,2023</td>
-            <td className='inactive'> inactive
-              <label className='switch' >
-                <input type='checkbox' checked />
-                <span className='slider round'></span>
-              </label>
-            </td>
-            <td>
-              <div className='d-flex'>
-                <button className='editBtn'>
-                  <img src={pencilEditIcon} alt='pencilEditIcon' />
-                </button>
-                <button className='deleteBtn'>
-                  <img src={deleteIcon} alt='deleteIcon' />
-                </button>
-              </div>
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <input type='checkbox' />
-            </td>
-            <td>001</td>
-            <td>545151511451</td>
-            <td>Upto $10/- Off</td>
-            <td>Hair</td>
-            <td>Haircut</td>
-            <td>All</td>
-            <td>Tue,Sept 4,2023</td>
-            <td className='inactive'> inactive
-              <label className='switch' >
-                <input type='checkbox' checked />
-                <span className='slider round'></span>
-              </label>
-            </td>
-            <td>
-              <div className='d-flex'>
-                <button className='editBtn'>
-                  <img src={pencilEditIcon} alt='pencilEditIcon' />
-                </button>
-                <button className='deleteBtn'>
-                  <img src={deleteIcon} alt='deleteIcon' />
-                </button>
-              </div>
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <input type='checkbox' />
-            </td>
-            <td>001</td>
-            <td>545151511451</td>
-            <td>Upto $10/- Off</td>
-            <td>Hair</td>
-            <td>Haircut</td>
-            <td>All</td>
-            <td>Tue,Sept 4,2023</td>
-            <td className='inactive'> inactive
-              <label className='switch' >
-                <input type='checkbox' checked />
-                <span className='slider round'></span>
-              </label>
-            </td>
-            <td>
-              <div className='d-flex'>
-                <button className='editBtn'>
-                  <img src={pencilEditIcon} alt='pencilEditIcon' />
-                </button>
-                <button className='deleteBtn'>
-                  <img src={deleteIcon} alt='deleteIcon' />
-                </button>
-              </div>
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <input type='checkbox' />
-            </td>
-            <td>001</td>
-            <td>545151511451</td>
-            <td>Upto $10/- Off</td>
-            <td>Hair</td>
-            <td>Haircut</td>
-            <td>All</td>
-            <td>Tue,Sept 4,2023</td>
-            <td className='inactive'> inactive
-              <label className='switch' >
-                <input type='checkbox' checked />
-                <span className='slider round'></span>
-              </label>
-            </td>
-            <td>
-              <div className='d-flex'>
-                <button className='editBtn'>
-                  <img src={pencilEditIcon} alt='pencilEditIcon' />
-                </button>
-                <button className='deleteBtn'>
-                  <img src={deleteIcon} alt='deleteIcon' />
-                </button>
-              </div>
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <input type='checkbox' />
-            </td>
-            <td>001</td>
-            <td>545151511451</td>
-            <td>Upto $10/- Off</td>
-            <td>Hair</td>
-            <td>Haircut</td>
-            <td>All</td>
-            <td>Tue,Sept 4,2023</td>
-            <td className='inactive'> inactive
-              <label className='switch' >
-                <input type='checkbox' checked />
-                <span className='slider round'></span>
-              </label>
-            </td>
-            <td>
-              <div className='d-flex'>
-                <button className='editBtn'>
-                  <img src={pencilEditIcon} alt='pencilEditIcon' />
-                </button>
-                <button className='deleteBtn'>
-                  <img src={deleteIcon} alt='deleteIcon' />
-                </button>
-              </div>
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <input type='checkbox' />
-            </td>
-            <td>001</td>
-            <td>545151511451</td>
-            <td>Upto $10/- Off</td>
-            <td>Hair</td>
-            <td>Haircut</td>
-            <td>All</td>
-            <td>Tue,Sept 4,2023</td>
-            <td className='inactive'> inactive
-              <label className='switch' >
-                <input type='checkbox' checked />
-                <span className='slider round'></span>
-              </label>
-            </td>
-            <td>
-              <div className='d-flex'>
-                <button className='editBtn'>
-                  <img src={pencilEditIcon} alt='pencilEditIcon' />
-                </button>
-                <button className='deleteBtn'>
-                  <img src={deleteIcon} alt='deleteIcon' />
-                </button>
-              </div>
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <input type='checkbox' />
-            </td>
-            <td>001</td>
-            <td>545151511451</td>
-            <td>Upto $10/- Off</td>
-            <td>Hair</td>
-            <td>Haircut</td>
-            <td>All</td>
-            <td>Tue,Sept 4,2023</td>
-            <td className='inactive'> inactive
-              <label className='switch' >
-                <input type='checkbox' checked />
-                <span className='slider round'></span>
-              </label>
-            </td>
-            <td>
-              <div className='d-flex'>
-                <button className='editBtn'>
-                  <img src={pencilEditIcon} alt='pencilEditIcon' />
-                </button>
-                <button className='deleteBtn'>
-                  <img src={deleteIcon} alt='deleteIcon' />
-                </button>
-              </div>
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <input type='checkbox' />
-            </td>
-            <td>001</td>
-            <td>545151511451</td>
-            <td>Upto $10/- Off</td>
-            <td>Hair</td>
-            <td>Haircut</td>
-            <td>All</td>
-            <td>Tue,Sept 4,2023</td>
-            <td className='inactive'> inactive
-              <label className='switch' >
-                <input type='checkbox' checked />
-                <span className='slider round'></span>
-              </label>
-            </td>
-            <td>
-              <div className='d-flex'>
-                <button className='editBtn'>
-                  <img src={pencilEditIcon} alt='pencilEditIcon' />
-                </button>
-                <button className='deleteBtn'>
-                  <img src={deleteIcon} alt='deleteIcon' />
-                </button>
-              </div>
-            </td>
-          </tr>
-        </tbody>
+          )}
+          </tbody>
       </Table>
     </>
   )

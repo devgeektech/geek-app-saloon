@@ -37,8 +37,6 @@ export default function DeleteModal(props) {
           <Modal.Footer>
             <button
               onClick={() => {
-                // eslint-disable-next-line @typescript-eslint/no-unused-expressions
-                closeModal
                 deleteUserClbk(true)
               }}
               className='whitebtn'
