@@ -1,7 +1,7 @@
 import { call, put } from 'redux-saga/effects';
 
-import { addStaff, deleteStaff,  getAllStaff, updateStaff} from '../../services/_requests';
-import { addStaffFailure, addStaffSuccess, deleteStaffFailure, deleteStaffSuccess, getStaffListFailure, getStaffListSuccess, updateStaffFailure, updateStaffSuccess } from '../reducer/staffSlice';
+import { addStaff, deleteStaff,  getAllStaff, updateStaff, updateStaffStatus} from '../../services/_requests';
+import { addStaffFailure, addStaffSuccess, deleteStaffFailure, deleteStaffSuccess, getStaffListFailure, getStaffListSuccess, updateStaffFailure, updateStaffStatusFailure, updateStaffStatusSuccess, updateStaffSuccess } from '../reducer/staffSlice';
 
 function* addStaffSaga(action) {
   try {
@@ -43,4 +43,17 @@ function* updateStaffSaga(action) {
       yield put(updateStaffFailure(error.response));
     }
   }
-export {addStaffSaga, getStaffSaga, deleteStaffSaga, updateStaffSaga};
+
+
+function* updateStaffStatusSaga(action) {
+  try {
+    const values = action.payload;
+    const id = action.payload.id;
+    delete values.id;
+    const response = yield call(updateStaffStatus, id, values);
+    yield put(updateStaffStatusSuccess(response.data));
+  } catch (error: any) {
+    yield put(updateStaffStatusFailure(error.response));
+  }
+}
+export {addStaffSaga, getStaffSaga, deleteStaffSaga, updateStaffSaga,updateStaffStatusSaga};

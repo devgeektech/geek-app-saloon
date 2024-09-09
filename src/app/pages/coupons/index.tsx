@@ -67,7 +67,7 @@ const CouponsWrapper = () => {
   const formik = useFormik({
     initialValues,
     validationSchema: couponSchema,
-    enableReinitialize: true, // important to reset form values when 'initialValues' change
+    // enableReinitialize: true, 
     onSubmit: async (values, { setStatus, setSubmitting }) => {
       try {
         if (!saloonId) {
@@ -82,7 +82,6 @@ const CouponsWrapper = () => {
         } else {
           let res = await addCoupon(data);
           if (selectedTab == values.status) {
-            console.log("object", res)
             dispatch(addCouponSuccess(res.data));
           }
         }

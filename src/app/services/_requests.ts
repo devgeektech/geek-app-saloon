@@ -25,6 +25,7 @@ export const Edit_SALOON = `${API_URL}/vendor`;
 export const DELETE_SERVICE = `${API_URL}/product`;
 export const DELETE_BANNER = `${API_URL}/banner`;
 export const STAFF = `${API_URL}/staff`;
+export const STAFFStatus = `${API_URL}/staff/status`;
 export const COUPON = `${API_URL}/coupon`;
 
 
@@ -218,6 +219,10 @@ export function deleteStaff(id:any) {
 
 export function updateStaff(id: string, payload) {
   return axios.put(STAFF + `/${id}`, payload)
+}
+
+export function updateStaffStatus(id: string, payload) {
+  return axios.put(STAFFStatus + `/${id}`, payload)
 }
 
 // ***** coupon services *********

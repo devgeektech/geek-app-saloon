@@ -18,7 +18,7 @@ import { useDebounce } from "../../../_metronic/helpers";
 import DeleteModal from "../../components/common/modal/DeleteModal";
 import { getImageUrl } from "../../utils/common";
 import { useDispatch, useSelector } from "react-redux";
-import { addStaff, commonFileUpload, deleteBanner, deleteStaff, updateStaff } from "../../services/_requests";
+import { addStaff, commonFileUpload, deleteBanner, deleteStaff, updateStaff, updateStaffStatus } from "../../services/_requests";
 import DeleteIcon from "../../components/common/Icons/DeleteIcon";
 import { addBannerRequest, deleteBannerRequest, getBannerRequest, setBannerId } from "../../redux/reducer/bannerSlice";
 import { REQUIRED, SUCCESS } from "../../utils/const";
@@ -69,7 +69,7 @@ const StaffWrapper = () => {
   const formik = useFormik({
     initialValues,
     validationSchema: staffSchema,
-    enableReinitialize: true, // important to reset form values when 'initialValues' change
+      // enableReinitialize: true, // important to reset form values when 'initialValues' change
     onSubmit: async (values, { setStatus, setSubmitting }) => {
       try {
           if(!saloonId){
@@ -176,6 +176,20 @@ const StaffWrapper = () => {
     dispatch(getStaffRequest({ search: debounceSearch, skip, limit }));
   }, [debounceSearch, skip, limit, dispatch, saloonId]);
 
+  const handleToggleChange = async (id: string, onLeave: boolean) => {
+    try {
+      const updatedStaff = { onLeave: !onLeave };
+      const res = await updateStaffStatus(id, updatedStaff);
+      if (res.status === 200) {
+        dispatch(getStaffRequest({ search: debounceSearch, skip, limit }));
+        toast.success("Status updated successfully");
+      }
+    } catch (error) {
+      console.error(error);
+      toast.error('Failed to update status');
+    }
+  };
+  
   
   return (
     <>
@@ -243,9 +257,14 @@ const StaffWrapper = () => {
                       <td>{item?.age || 'N/A'}</td>
                       <td>{item?.aboutUs || 'N/A'}</td>
                       <td>{item?.qualification || 'N/A'}</td>
-                      <td className={item?.onLeave?'inactive':'active'}>
-                        <label className='switch' title={item?.onLeave ? 'On Leave':''}>
-                          <input type='checkbox' readOnly={true} checked={item?.onLeave} />
+                    
+                        <td className={item?.onLeave ? 'inactive' : 'active'}>
+                        <label className='switch' title={item?.onLeave ? 'On Leave' : ''}>
+                          <input
+                            type='checkbox'
+                            checked={item?.onLeave}
+                            onChange={() => handleToggleChange(item._id, item?.onLeave)}
+                          />
                           <span className='slider round'></span>
                         </label>
                       </td>
