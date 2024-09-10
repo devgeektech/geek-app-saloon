@@ -20,7 +20,7 @@ const StaffModal = (props: any) => {
     gender,
     cancelButton,
   } = props;
-
+  const { staffId } = useSelector((state: any) => state.staff);
   const imgRef = useRef<HTMLImageElement | null>(null);
   const [crop, setCrop] = useState<Crop>()
   const [previewUrl, setPreviewUrl] = useState('');
@@ -67,7 +67,7 @@ const StaffModal = (props: any) => {
       <FormikProvider value={formik}>
         <form onSubmit={formik.handleSubmit}>
           <Modal.Header>
-            <Modal.Title>Add Staff</Modal.Title>
+            <Modal.Title>{staffId ? 'Update':'Add'} Staff</Modal.Title>
             <button type='button' className='bg-transparent border-0' onClick={cancelButton}
             >
               <svg
@@ -124,7 +124,7 @@ const StaffModal = (props: any) => {
                  <Field
                    name="aboutUs"
                    required={true}
-                   label="About Us"
+                   label="About us"
               
                    component={FieldTextArea}
                  />
@@ -187,7 +187,7 @@ const StaffModal = (props: any) => {
               <button
                 className="blackBtn btn-sm w-150"
                 type="submit"
-              disabled={formik.isSubmitting || !formik.isValid}
+                disabled={formik.isSubmitting || !formik.isValid}
               >
                 <span className="indicator-label">Save</span>
               </button>
