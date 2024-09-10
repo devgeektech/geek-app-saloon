@@ -6,6 +6,8 @@ import { Table } from "react-bootstrap";
 import Pagination from "../../components/common/pagination";
 import { useEffect, useState } from "react";
 import { useFormik } from "formik";
+import pencilEditIcon from '../../../_metronic/images/pencilEditIcon.svg'
+
 import * as Yup from "yup";
 import { toast } from "react-toastify";
 import NoDataFound from "../../components/common/noDataFound/NoDataFound";
@@ -16,9 +18,9 @@ import { useDebounce } from "../../../_metronic/helpers";
 import DeleteModal from "../../components/common/modal/DeleteModal";
 import { getImageUrl } from "../../utils/common";
 import { useDispatch, useSelector } from "react-redux";
-import { commonFileUpload, deleteBanner } from "../../services/_requests";
+import { commonFileUpload, deleteBanner, updateBanner } from "../../services/_requests";
 import DeleteIcon from "../../components/common/Icons/DeleteIcon";
-import { addBannerRequest, deleteBannerRequest, getBannerRequest, setBannerId } from "../../redux/reducer/bannerSlice";
+import { addBannerRequest, deleteBannerRequest, getBannerRequest, setBannerId, updateBannerSuccess } from "../../redux/reducer/bannerSlice";
 import { REQUIRED, SUCCESS } from "../../utils/const";
 
 const BannerWrapper = () => {
@@ -32,6 +34,7 @@ const BannerWrapper = () => {
   const [searchValue, setSearchValue] = useState<string>('');
   const { bannerList, totalRecord, loading, bannerId } = useSelector((state: any) => state.banner);
   const { saloonId } = useSelector((state: any) => state.saloon);
+  const [editMode, setEditMode] = useState<boolean>(false);
 
   const limit = 10;
   const skip = (pageNumber - 1) * limit;
@@ -49,7 +52,7 @@ const BannerWrapper = () => {
     image: Yup.mixed()
       .required(REQUIRED)
       .test('fileSize', 'File size is too large', (value: any) => {
-        return !value || (value && value.size <= 2 * 1024 * 1024); // 2MB limit
+        return !value || (value && value.size <= 2 * 1024 * 1024); 
       })
       .test('fileType', 'Unsupported file format', (value: any) => {
         return !value || ['image/jpeg', 'image/png'].includes(value.type);
@@ -66,6 +69,16 @@ const BannerWrapper = () => {
           const imageUrl = await upload(file);
           const data = { ...values, image: imageUrl };
           data['saloonId'] = saloonId;
+
+          if (editMode) {
+            let res=await updateBanner(bannerId, data);
+            if (res.status === 200) {
+                dispatch(updateBannerSuccess(res.data));
+            }
+          } else {
+            dispatch(addBannerRequest(data));
+          }
+
           dispatch(addBannerRequest(data));
           closeBannerModal();
         }
@@ -111,7 +124,12 @@ const BannerWrapper = () => {
       setPageNumber(1);
     }
   };
-
+  const editStaff = (item:any) => {
+    setEditMode(true);
+    formik.setValues(item);
+    dispatch(setBannerId(item?._id));
+    setModalShow(true);
+  };
   const closeBannerModal = () => {
     setModalShow(false);
     formik.resetForm();
@@ -214,6 +232,9 @@ const BannerWrapper = () => {
                       <td>{moment(item.createdAt).format("dddd, MMM DD, h:mm a")}</td>
                       <td>
                         <div className="d-flex">
+                        <button className='editBtn' onClick={() => editStaff(item)}>
+                            <img src={pencilEditIcon} alt='pencilEditIcon' />
+                          </button>
                           <button onClick={() => deleteOpenModal(item._id)} className="deleteBtn">
                             <DeleteIcon />
                           </button>

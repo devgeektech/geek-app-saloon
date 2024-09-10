@@ -9,7 +9,7 @@ import { addBannerSaga, deleteBannerSaga, getBannerSaga } from './bannerSaga'
 import { addSaloonSaga, editSaloonSaga, getSaloonSaga } from './saloonSaga'
 import { FETCH_LIST_REQUEST } from '../actions/serviceAction'
 import { addStaffSaga, deleteStaffSaga, getStaffSaga, updateStaffSaga, updateStaffStatusSaga } from './staffSaga'
-import { addCouponSaga, deleteCouponSaga, getCouponSaga, updateCouponSaga } from './couponSaga'
+import { addCouponSaga, deleteCouponSaga, getCouponSaga, updateCouponSaga, updateCouponStatusSaga } from './couponSaga'
 
 function* rootSaga() {
   yield takeLatest('auth/loginRequest', loginSaga)
@@ -67,6 +67,7 @@ function* rootSaga() {
    yield takeLatest('coupon/getCouponRequest', getCouponSaga)
    yield takeLatest('coupon/deleteCouponRequest', deleteCouponSaga);
    yield takeLatest('coupon/updateCouponRequest', updateCouponSaga);
+   yield takeLatest('coupon/updateCouponStatusRequest', updateCouponStatusSaga);
 
 }
 

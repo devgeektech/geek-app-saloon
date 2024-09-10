@@ -223,9 +223,9 @@ const StaffWrapper = () => {
                   <th>Image</th>
                   <th>Gender</th>
                   <th>Age</th>
-                  <th>About</th>
+                  <th>About us</th>
                   <th>Qualification</th>
-                  <th>Status</th>
+                  <th>Leave Status</th>
                   <th>Action</th>
                 </tr>
               </thead>

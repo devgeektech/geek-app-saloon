@@ -27,6 +27,8 @@ export const DELETE_BANNER = `${API_URL}/banner`;
 export const STAFF = `${API_URL}/staff`;
 export const STAFFStatus = `${API_URL}/staff/status`;
 export const COUPON = `${API_URL}/coupon`;
+export const COUPONSTATUS = `${API_URL}/coupon/status`;
+
 
 
 // Server should return AuthModel
@@ -170,6 +172,10 @@ export function deleteBanner(id) {
   return axios.delete(BANNER + `/${id}`)
 }
 
+export function updateBanner(id: string, payload) {
+  return axios.put(BANNER + `/${id}`, payload)
+}
+
 export function commonFileUpload(file: any) {
   return axios.post(FILE_UPLOAD, file)
 }
@@ -246,4 +252,8 @@ export function deleteCoupon(id:any) {
 
 export function updateCoupon(id: string, payload) {
   return axios.put(COUPON + `/${id}`, payload)
+}
+
+export function updateCouponStatus(id: string, payload) {
+  return axios.put(COUPONSTATUS + `/${id}`, payload)
 }

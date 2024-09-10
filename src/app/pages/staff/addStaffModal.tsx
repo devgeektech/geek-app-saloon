@@ -124,7 +124,7 @@ const StaffModal = (props: any) => {
                  <Field
                    name="aboutUs"
                    required={true}
-                   label="About Us"
+                   label="About us"
               
                    component={FieldTextArea}
                  />

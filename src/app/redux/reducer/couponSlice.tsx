@@ -92,6 +92,23 @@ const couponSlice = createSlice({
             state.error = action.payload;
             state.loading = false;
         },
+        updateCouponStatusRequest: (state) => {
+            state.loading = true;
+            state.error = null;
+        },
+        updateCouponStatusSuccess: (state: any, action) => {
+            toast.success(action.payload.responseMessage);
+            state.loading = false;
+            state.error = null;
+            state.couponList = state.couponList.map((coupon:any) =>
+                coupon._id === action.payload.data._id ? action.payload.data : coupon
+            );
+        },
+        updateCouponStatusFailure: (state, action) => {
+            toast.error(action.payload.responseMessage);
+            state.error = action.payload;
+            state.loading = false;
+        },
     },
 });
 
@@ -110,7 +127,10 @@ export const {
     updateCouponRequest,
     updateCouponSuccess,
     updateCouponFailure,
-    setCouponId
+    setCouponId,
+    updateCouponStatusRequest,
+    updateCouponStatusSuccess,
+    updateCouponStatusFailure
 } = couponSlice.actions;
 
 export default couponSlice.reducer;
