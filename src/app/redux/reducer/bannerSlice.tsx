@@ -82,10 +82,11 @@ const bannerSlice = createSlice({
             toast.success(action.payload.responseMessage);
             state.loading = false;
             state.error = null;
-            state.bannerList = state.bannerList.map(banner =>
+            state.bannerList = state.bannerList.map((banner:any) =>
                 banner._id === action.payload.data._id ? action.payload.data : banner
             );
         },
+
         updateBannerFailure: (state, action) => {
             toast.error(action.payload.responseMessage);
             state.error = action.payload;

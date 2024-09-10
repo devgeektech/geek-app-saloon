@@ -26,8 +26,9 @@ const staffSlice = createSlice({
         addStaffSuccess: (state: any, action) => {
             toast.success(action.payload.responseMessage);
             state.loading = false;
-            state.error = null;
-            state.staffList = [...state.staffList,    action.payload.data];
+            state.error = null;            
+            state.staffList = [...state.staffList, action.payload.data?.staff];
+            state.totalRecord+=1; 
         },
         addStaffFailure: (state, action) => {
             toast.error(action.payload.responseMessage);
@@ -91,6 +92,25 @@ const staffSlice = createSlice({
             state.error = action.payload;
             state.loading = false;
         },
+
+
+        updateStaffStatusRequest: (state) => {
+            state.loading = true;
+            state.error = null;
+        },
+        updateStaffStatusSuccess: (state: any, action) => {
+            toast.success(action.payload.responseMessage);
+            state.loading = false;
+            state.error = null;
+            state.staffList = state.staffList.map((staff:any) =>
+                staff._id === action.payload.data._id ? action.payload.data : staff
+            );
+        },
+        updateStaffStatusFailure: (state, action) => {
+            toast.error(action.payload.responseMessage);
+            state.error = action.payload;
+            state.loading = false;
+        },
     },
 });
 
@@ -109,6 +129,9 @@ export const {
     updateStaffRequest,
     updateStaffSuccess,
     updateStaffFailure,
+    updateStaffStatusRequest,
+    updateStaffStatusSuccess,
+    updateStaffStatusFailure,
     setStaffId
 } = staffSlice.actions;
 
