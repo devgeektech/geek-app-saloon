@@ -16,12 +16,13 @@ import moment from "moment";
 import dummyImg from "../../../_metronic/images/dummy.webp";
 import { useDebounce } from "../../../_metronic/helpers";
 import DeleteModal from "../../components/common/modal/DeleteModal";
-import { getImageUrl } from "../../utils/common";
+import { capitalizeFirstLetter, getImageUrl } from "../../utils/common";
 import { useDispatch, useSelector } from "react-redux";
 import { commonFileUpload, deleteBanner, updateBanner } from "../../services/_requests";
 import DeleteIcon from "../../components/common/Icons/DeleteIcon";
 import { addBannerRequest, deleteBannerRequest, getBannerRequest, setBannerId, updateBannerSuccess } from "../../redux/reducer/bannerSlice";
 import { REQUIRED, SUCCESS } from "../../utils/const";
+import { REQUIRED_FIELD } from "../../utils/ErrorMessages";
 
 const BannerWrapper = () => {
   const dispatch = useDispatch();
@@ -48,16 +49,16 @@ const BannerWrapper = () => {
   }
 
   const serviceSchema = Yup.object().shape({
-    name: Yup.string().required(REQUIRED),
+    name: Yup.string().required(REQUIRED_FIELD),
     image: Yup.mixed()
-      .required(REQUIRED)
+      .required(REQUIRED_FIELD)
       .test('fileSize', 'File size is too large', (value: any) => {
         return !value || (value && value.size <= 2 * 1024 * 1024); 
       })
       .test('fileType', 'Unsupported file format', (value: any) => {
         return !value || ['image/jpeg', 'image/png'].includes(value.type);
       }),
-    type: Yup.string().required(REQUIRED),
+    type: Yup.string().required(REQUIRED_FIELD),
   });
 
   const formik = useFormik({
@@ -112,18 +113,7 @@ const BannerWrapper = () => {
     setFile(file);
   };
 
-  const editBanner = (id: string) => {
-    dispatch(getBannerRequest(id));
-    setModalShow(true);
-  };
 
-  const deleteBannerHandler = () => {
-    if (id) {
-      dispatch(deleteBannerRequest(id));
-      setShowDeleteModal(false);
-      setPageNumber(1);
-    }
-  };
   const editStaff = (item:any) => {
     setEditMode(true);
     formik.setValues(item);
@@ -158,7 +148,7 @@ const BannerWrapper = () => {
     if (event === true) {
       await deleteBanner(bannerId).then((res: any) => {
         if (res.data.responseCode === 200) {
-          toast.success(SUCCESS);
+          toast.success("Banner has been Deleted!");
           setShowDeleteModal(false);
           dispatch(getBannerRequest({ search: debounceSearch, skip, limit }));
         }
@@ -220,7 +210,7 @@ const BannerWrapper = () => {
                   bannerList.map((item: any, index: number) => (
                     <tr key={item?._id}>
                       <td>{index + 1}</td>
-                      <td>{item?.name || 'N/A'}</td>
+                      <td>{capitalizeFirstLetter(item?.name || 'N/A')}</td>
                       <td>
                         <img
                           className="profileImg"

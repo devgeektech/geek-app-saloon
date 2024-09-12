@@ -23,7 +23,7 @@ const SaloonModal = (props: any) => {
       <FormikProvider value={formik}>
         <form onSubmit={formik.handleSubmit}>
           <Modal.Header>
-            <Modal.Title>Add Saloon</Modal.Title>
+            <Modal.Title>{formik.values._id ? 'Update' : 'Add'} Saloon</Modal.Title>
             <button type='button' className='bg-transparent border-0' onClick={cancelButton}
             >
               <svg
@@ -120,7 +120,7 @@ const SaloonModal = (props: any) => {
                 type="submit"
                 disabled={formik.isSubmitting && formik.isValid}
               >
-                <span className="indicator-label">Save</span>
+                <span className="indicator-label">{formik.values._id ? 'Update' : 'Add'}</span>
               </button>
             </div>
           </Modal.Footer>

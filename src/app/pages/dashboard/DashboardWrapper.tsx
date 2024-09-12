@@ -26,17 +26,17 @@ const DashboardWrapper = () => {
   const [searchUser, setSearchUser] = useState("");
 
 useEffect(()=>{
-  // dispatch(getSaloonRequest({ lat, lng, skip, limit, searchUser}));
-  getSaloons()
+  dispatch(getSaloonRequest({ lat, lng, skip, limit, searchUser}));
+  // getSaloons()
 },[])
 
-const getSaloons = async()=>{
-  await getVendors(lat, lng, skip, limit, searchUser).then((res: any) => {
-    if (res.data.responseCode === 200) {
-      dispatch(setSaloonId(res?.data?.data[0]?._id))
-    }
-  });
-}
+// const getSaloons = async()=>{
+//   await getVendors(lat, lng, skip, limit, searchUser).then((res: any) => {
+//     if (res.data.responseCode === 200) {
+//       dispatch(setSaloonId(res?.data?.data[0]?._id))
+//     }
+//   });
+// }
 
   return (
     <>

@@ -33,10 +33,7 @@ export default function CategoryTabs() {
       .min(3, 'Minimum 3 symbols')
       .max(50, 'Maximum 50 symbols')
       .required(REQUIRED_FIELD),
-    description: Yup.string()
-      .min(10, "Minimum 10 charectors")
-      .max(50, "Maximum 50 charectors")
-      .required(REQUIRED_FIELD),
+    description: Yup.string().required(REQUIRED_FIELD),
 
   })
 

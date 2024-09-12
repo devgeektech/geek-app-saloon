@@ -28,6 +28,7 @@ export const STAFF = `${API_URL}/staff`;
 export const STAFFStatus = `${API_URL}/staff/status`;
 export const COUPON = `${API_URL}/coupon`;
 export const COUPONSTATUS = `${API_URL}/coupon/status`;
+export const APPOINTMENT = `${API_URL}/booking`;
 
 
 
@@ -256,4 +257,32 @@ export function updateCoupon(id: string, payload) {
 
 export function updateCouponStatus(id: string, payload) {
   return axios.put(COUPONSTATUS + `/${id}`, payload)
+}
+
+// ******** appointment services *********
+
+
+export function addAppointment(body: any) {
+  return axios.post(APPOINTMENT, body)
+}
+
+export function getAllAppointment(search: string, skip: number, limit: number,status:string) {
+  return axios.get(APPOINTMENT + `?search=${search}&skip=${skip}&limit=${limit}&status=${status}`, {})
+}
+
+export function getAppointment(id:any) {
+  return axios.get(APPOINTMENT + `/${id}`)
+}
+
+export function deleteAppointment(id:any) {
+  return axios.delete(APPOINTMENT + `/${id}`)
+}
+
+
+export function updateAppointment(id: string, payload) {
+  return axios.put(APPOINTMENT + `/${id}`, payload)
+}
+
+export function updateAppointmentStatus(id: string, payload) {
+  return axios.put(APPOINTMENT + `/status/${id}`, payload)
 }

@@ -16,6 +16,7 @@ import { SettingWrapper } from '../pages/setting/settingWrapper'
 import { BannerWrapper } from '../pages/banner/Banner'
 import { ShopWrapper } from '../pages/vendors/Vendor'
 import { StaffWrapper } from '../pages/staff/Staff'
+import { AvailabilityAppointment } from '../pages/appointment/availabilityAppoint,ment'
 
 const PrivateRoutes = () => {
   return (
@@ -36,6 +37,14 @@ const PrivateRoutes = () => {
           element={
             <SuspensedView>
               <AppointmentWrapper />
+            </SuspensedView>
+          }
+        />
+        <Route
+          path='/appointment/availability'
+          element={
+            <SuspensedView>
+              <AvailabilityAppointment/>
             </SuspensedView>
           }
         />

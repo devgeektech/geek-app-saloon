@@ -87,15 +87,12 @@ const ServiceWrapper = () => {
 
 
   const serviceSchema = Yup.object().shape({
-    name: Yup.string().required(REQUIRED),
-    image: Yup.string().required(REQUIRED),
-    category: Yup.string().required(REQUIRED),
-    gender: Yup.array().min(1).required(REQUIRED),
-    description: Yup.string()
-      .min(10, "Minimum 10 charectors")
-      .max(50, "Maximum 50 charectors")
-      .required(REQUIRED),
-    cost: Yup.number().required(REQUIRED),
+    name: Yup.string().required(REQUIRED_FIELD),
+    image: Yup.string().required(REQUIRED_FIELD),
+    category: Yup.string().required(REQUIRED_FIELD),
+    gender: Yup.array().min(1).required(REQUIRED_FIELD),
+    description: Yup.string().required(REQUIRED_FIELD),
+    cost: Yup.number().required(REQUIRED_FIELD),
   });
 
   const formik: any = useFormik({

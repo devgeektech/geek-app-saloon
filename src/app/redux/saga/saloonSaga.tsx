@@ -1,6 +1,7 @@
 import { call, put } from 'redux-saga/effects';
 import {
-addSaloonSuccess,addSaloonFailure,getSaloonListSuccess,getSaloonListFailure
+addSaloonSuccess,addSaloonFailure,getSaloonListSuccess,getSaloonListFailure,
+setSaloonId
 } from '../reducer/saloonSlice';
 import {  addSaloon, editSaloon, getVendors } from '../../services/_requests';
 
@@ -18,6 +19,7 @@ function* getSaloonSaga(action) {
     const { searchUser, skip, limit, lat, lng } = action.payload;
     const response = yield call(getVendors, lat, lng, skip, limit, searchUser);
     if (response && response.data) {
+      yield put(setSaloonId(response.data.data[0]?._id));
       yield put(getSaloonListSuccess({ data: { data: response.data.data }, totalRecord: response.data.totalRecord, skip, limit }));
     } else {
       throw new Error('Unexpected response format');

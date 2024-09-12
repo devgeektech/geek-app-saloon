@@ -16,7 +16,7 @@ import moment from "moment";
 import dummyImg from "../../../_metronic/images/dummy.webp";
 import { useDebounce } from "../../../_metronic/helpers";
 import DeleteModal from "../../components/common/modal/DeleteModal";
-import { getImageUrl } from "../../utils/common";
+import { capitalizeFirstLetter, getImageUrl } from "../../utils/common";
 import { useDispatch, useSelector } from "react-redux";
 import { addStaff, commonFileUpload, deleteBanner, deleteStaff, updateStaff, updateStaffStatus } from "../../services/_requests";
 import DeleteIcon from "../../components/common/Icons/DeleteIcon";
@@ -24,6 +24,7 @@ import { addBannerRequest, deleteBannerRequest, getBannerRequest, setBannerId } 
 import { REQUIRED, SUCCESS } from "../../utils/const";
 import { addStaffRequest, addStaffSuccess, getStaffRequest, setStaffId, updateStaffRequest, updateStaffSuccess } from "../../redux/reducer/staffSlice";
 import StaffModal from "./addStaffModal";
+import { REQUIRED_FIELD } from "../../utils/ErrorMessages";
 
 const StaffWrapper = () => {
   const dispatch = useDispatch();
@@ -53,12 +54,12 @@ const StaffWrapper = () => {
   }
 
   const staffSchema = Yup.object().shape({
-    name: Yup.string().required(REQUIRED),
+    name: Yup.string().required(REQUIRED_FIELD),
     image: Yup.mixed(),
-    gender: Yup.string().required(REQUIRED),
-    age: Yup.string().required(REQUIRED),
-    aboutUs: Yup.string().required(REQUIRED),
-    qualification: Yup.string().required(REQUIRED),
+    gender: Yup.string().required(REQUIRED_FIELD),
+    age: Yup.string().required(REQUIRED_FIELD),
+    aboutUs: Yup.string().required(REQUIRED_FIELD),
+    qualification: Yup.string().required(REQUIRED_FIELD),
   });
   const formik = useFormik({
     initialValues,
@@ -151,7 +152,7 @@ const StaffWrapper = () => {
     if (event === true) {
       await deleteStaff(staffId).then((res: any) => {
         if (res.data.responseCode === 200) {
-          toast.success(SUCCESS);
+          toast.success("Staff has been Deleted!");
           setShowDeleteModal(false);
           dispatch(getStaffRequest({ search: debounceSearch, skip, limit }));
         }
@@ -171,7 +172,8 @@ const StaffWrapper = () => {
       const res = await updateStaffStatus(id, updatedStaff);
       if (res.status === 200) {
         dispatch(getStaffRequest({ search: debounceSearch, skip, limit }));
-        toast.success("Status updated successfully");
+        const message = updatedStaff.onLeave ? "Staff is on leave" : "Staff is Available";
+        toast.success(message); 
       }
     } catch (error) {
       console.error(error);
@@ -234,7 +236,7 @@ const StaffWrapper = () => {
                   staffList.map((item: any, index: number) => (
                     <tr key={item?._id}>
                       <td>{index + 1}</td>
-                      <td>{item?.name || 'N/A'}</td>
+                      <td>{capitalizeFirstLetter( item?.name || 'N/A')}</td>
                       <td>
                         <img
                           className="profileImg"
@@ -244,8 +246,8 @@ const StaffWrapper = () => {
                       </td>
                       <td>{item?.gender || 'N/A'}</td>
                       <td>{item?.age || 'N/A'}</td>
-                      <td>{item?.aboutUs || 'N/A'}</td>
-                      <td>{item?.qualification || 'N/A'}</td>
+                      <td>{capitalizeFirstLetter(item?.aboutUs || 'N/A')}</td>
+                      <td>{capitalizeFirstLetter(item?.qualification || 'N/A')}</td>
                     
                         <td className={item?.onLeave ? 'inactive' : 'active'}>
                         <label className='switch' title={item?.onLeave ? 'On Leave' : ''}>

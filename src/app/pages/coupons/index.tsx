@@ -22,9 +22,10 @@ import * as Yup from "yup";
 import { REQUIRED, SUCCESS } from '../../utils/const'
 import { useFormik } from 'formik'
 import { toast } from 'react-toastify'
-import { addCoupon, commonFileUpload, deleteCoupon, updateCoupon } from '../../services/_requests'
+import { addCoupon, commonFileUpload, deleteCoupon, updateCoupon, updateCouponStatus } from '../../services/_requests'
 import { addCouponSuccess, getCouponRequest, setCouponId, updateCouponSuccess } from '../../redux/reducer/couponSlice'
 import { getCategoryRequest } from '../../redux/reducer/categorySlice'
+import { REQUIRED_FIELD } from '../../utils/ErrorMessages'
 
 const CouponsWrapper = () => {
   const intl = useIntl()
@@ -56,13 +57,13 @@ const CouponsWrapper = () => {
   }
 
   const couponSchema = Yup.object().shape({
-    offerName: Yup.string().required(REQUIRED),
-    status: Yup.string().required(REQUIRED),
-    service: Yup.string().required(REQUIRED),
-    category: Yup.string().required(REQUIRED),
-    subcategory: Yup.string().required(REQUIRED),
-    appliesToAllServices: Yup.bool().required(REQUIRED),
-    discount: Yup.number().min(0).max(100).required(REQUIRED),
+    offerName: Yup.string().required(REQUIRED_FIELD),
+    status: Yup.string().required(REQUIRED_FIELD),
+    service: Yup.string().required(REQUIRED_FIELD),
+    category: Yup.string().required(REQUIRED_FIELD),
+    subcategory: Yup.string().required(REQUIRED_FIELD),
+    appliesToAllServices: Yup.bool().required(REQUIRED_FIELD),
+    discount: Yup.number().min(0).max(100).required(REQUIRED_FIELD),
   });
   const formik = useFormik({
     initialValues,
@@ -148,6 +149,19 @@ const CouponsWrapper = () => {
     dispatch(getCategoryRequest({ search: searchValue, skip, limit }));
   }, [debounceSearch, skip, limit, dispatch, saloonId, selectedTab]);
 
+  const handleToggleChange = async (id: string, status: string) => {
+    try {
+      const updatedStaff = { status};
+      const res = await updateCouponStatus(id, updatedStaff);
+      if (res.status === 200) {
+        dispatch(getCouponRequest({ search: debounceSearch, skip, limit, status: selectedTab }));
+        toast.success("Status updated successfully");
+      }
+    } catch (error) {
+      console.error(error);
+      toast.error('Failed to update status');
+    }
+  };
   return (
     <>
       <PageTitle breadcrumbs={[]}>{intl.formatMessage({ id: 'MENU.DASHBOARD' })}</PageTitle>
@@ -198,8 +212,8 @@ const CouponsWrapper = () => {
                 </div>
               </div>
               <div className='tableWrapper mb-5'>
-                <ActiveTable coupons={couponList} deleteItem={deleteOpenModal} editItem={editCoupon} />
-                <div className='select-all mt-4 d-flex align-items-center'>
+              <ActiveTable coupons={couponList} deleteItem={deleteOpenModal} handleToggleChange={handleToggleChange} editItem={editCoupon} />
+              <div className='select-all mt-4 d-flex align-items-center'>
                   <label className='d-flex align-items-center gap-2'>
                     <input type='checkbox'></input>select-all
                   </label>
@@ -237,8 +251,8 @@ const CouponsWrapper = () => {
                 </div>
               </div>
               <div className='tableWrapper mb-5'>
-                <InActiveTable coupons={couponList} deleteItem={deleteOpenModal} editItem={editCoupon} />
-                <div className='select-all mt-4 d-flex align-items-center'>
+              <InActiveTable coupons={couponList} deleteItem={deleteOpenModal} editItem={editCoupon} handleToggleChange={handleToggleChange} />
+              <div className='select-all mt-4 d-flex align-items-center'>
                   <label className='d-flex align-items-center gap-2'>
                     <input type='checkbox'></input>select-all
                   </label>

@@ -1,57 +1,91 @@
 import {useIntl} from 'react-intl'
 import {PageTitle} from '../../../_metronic/layout/core'
 import appointmentBlackIcon from '../../../_metronic/images/appointmentBlackIcon.svg'
-import greenLineIcon from '../../../_metronic/images/greenLineIcon.svg'
-import redLineIcon from '../../../_metronic/images/redLineIcon.svg'
-import chart from '../../../_metronic/images/chart.jpg'
-import chartBar from '../../../_metronic/images/chartBar.jpg'
 import pencilEditIcon from '../../../_metronic/images/pencilEditIcon.svg'
 import deleteIcon from '../../../_metronic/images/deleteIcon.svg'
 import searchIcon from '../../../_metronic/images/searchIcon.svg'
-import {
-  ListsWidget1,
-  ListsWidget2,
-  ListsWidget3,
-  ListsWidget4,
-  ListsWidget5,
-  ListsWidget6,
-  MixedWidget10,
-  MixedWidget11,
-  MixedWidget2,
-  StatisticsWidget5,
-  TablesWidget10,
-  TablesWidget5,
-} from '../../../_metronic/partials/widgets'
 import './style.scss'
 import {Dropdown, Tab, Table, Tabs} from 'react-bootstrap'
-
-const AppointmentPage = () => (
-  <>
-    {/* begin::Row */}
-
-    {/* end::Row */}
-
-    {/* begin::Row */}
-
-    {/* end::Row */}
-
-    {/* begin::Row */}
-
-    {/* end::Row */}
-
-    {/* begin::Row */}
-
-    {/* end::Row */}
-
-    {/* begin::Row */}
-
-    {/* end::Row */}
-  </>
-)
+import { useFormik } from "formik";
+import * as Yup from "yup";
+import { REQUIRED } from '../../utils/const';
+import { toast } from "react-toastify";
+import { useState } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
+import { addAppointmentSuccess, setAppointmentId, updateAppointmentSuccess } from '../../redux/reducer/appointmentSlice'
+import { addAppointment, updateAppointment } from '../../services/_requests'
+import AppointmentModal from './appointmentModal'
+import { Link } from 'react-router-dom'
+import { REQUIRED_FIELD } from '../../utils/ErrorMessages'
 
 const AppointmentWrapper = () => {
-  const intl = useIntl()
+  const intl = useIntl();
+  const dispatch = useDispatch();
+  const [modalShow, setModalShow] = useState<boolean>(false);
+  const [id, setId] = useState<string>("");
+  const [showDeleteModal, setShowDeleteModal] = useState<boolean>(false);
+  const [pageNumber, setPageNumber] = useState<number>(1);
+  const [searchValue, setSearchValue] = useState<string>('');
+  const { appointmentList, totalRecord, loading, appointmentId } = useSelector((state: any) => state.appointment);
+  const { saloonId } = useSelector((state: any) => state.saloon);
+  const [editMode, setEditMode] = useState<boolean>(false);
+  const initialValues = {
+    name: '',
+    gender: '',
+    age: '',
+    aboutUs: '',
+    qualification: '',
+  }
 
+  const appointmentSchema = Yup.object().shape({
+    name: Yup.string().required(REQUIRED_FIELD),
+    gender: Yup.string().required(REQUIRED_FIELD),
+    age: Yup.string().required(REQUIRED_FIELD),
+    aboutUs: Yup.string().required(REQUIRED_FIELD),
+    qualification: Yup.string().required(REQUIRED_FIELD),
+  });
+  const formik = useFormik({
+    initialValues,
+    validationSchema: appointmentSchema,
+      // enableReinitialize: true, // important to reset form values when 'initialValues' change
+    onSubmit: async (values, { setStatus, setSubmitting }) => {
+      try {
+          if(!saloonId){
+            return toast.info("Select Saloon First!")
+          }
+          
+          const data = { ...values, saloonId };
+          if (editMode) {
+            let res=await updateAppointment(appointmentId, data);
+            if (res.status === 200) {
+                dispatch(updateAppointmentSuccess(res.data));
+            }
+          } else {
+            let res=await addAppointment(data);
+            dispatch(addAppointmentSuccess(res.data));
+          }
+          closeAppointmentModal();
+          setEditMode(false)
+      } catch (error: any) {
+        console.error(error);
+        toast.error(error.responseMessage || 'An error occurred');
+      } finally {
+        setSubmitting(false);
+      }
+    },
+  });
+  const editAppointment = (item:any) => {
+    console.log(item)
+    setEditMode(true);
+    dispatch(setAppointmentId(item?._id));
+    setModalShow(true);
+    formik.setValues(item);
+  };
+
+  const closeAppointmentModal = () => {
+    setModalShow(false);
+    formik.resetForm();
+  };
   return (
     <>
       <PageTitle breadcrumbs={[]}>{intl.formatMessage({id: 'MENU.DASHBOARD'})}</PageTitle>
@@ -67,7 +101,7 @@ const AppointmentWrapper = () => {
             </h2>
             <p>Empowers you to manage appointments efficiently</p>
           </div>
-          <button className='yellowBtn'>Availability</button>
+          <Link to={'/appointment/availability'}><button className='yellowBtn'>Availability</button></Link>
         </div>
         <div className='tabWrapper'>
           <p className='viewList'>viewing 2 of 6 of 6</p>
@@ -123,34 +157,6 @@ const AppointmentWrapper = () => {
                       <td>
                         <input type='checkbox' />
                       </td>
-                      <td>001</td>
-                      <td>545151511451</td>
-                      <td>Cleaned Salon</td>
-                      <td>Joe Doe</td>
-                      <td>Hair, Massage</td>
-                      <td>1 x Haircut(Spice)+1 x Shave(Normal) + 2 Body Massage(Thai)</td>
-                      <td>Tue, Sept 4, 11:30 am</td>
-                      <td>
-                        <span className='pending'>Pending</span>
-                      </td>
-                      <td>
-                        <span className='paidbadge'>Paid</span>
-                      </td>
-                      <td>
-                        <div className='d-flex'>
-                          <button className='editBtn'>
-                            <img src={pencilEditIcon} alt='pencilEditIcon' />
-                          </button>
-                          <button className='deleteBtn'>
-                            <img src={deleteIcon} alt='deleteIcon' />
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>
-                        <input type='checkbox' />
-                      </td>
                       <td>002</td>
                       <td>545151511451</td>
                       <td>Cleaned Salon</td>
@@ -166,7 +172,7 @@ const AppointmentWrapper = () => {
                       </td>
                       <td>
                         <div className='d-flex'>
-                          <button className='editBtn'>
+                          <button className='editBtn' onClick={()=>editAppointment({_id:1})}>
                             <img src={pencilEditIcon} alt='pencilEditIcon' />
                           </button>
                           <button className='deleteBtn'>
@@ -175,62 +181,7 @@ const AppointmentWrapper = () => {
                         </div>
                       </td>
                     </tr>
-                    <tr>
-                      <td>
-                        <input type='checkbox' />
-                      </td>
-                      <td>003</td>
-                      <td>545151511451</td>
-                      <td>Cleaned Salon</td>
-                      <td>Joe Doe</td>
-                      <td>Hair, Massage</td>
-                      <td>1 x Haircut(Spice)+1 x Shave(Normal) + 2 Body Massage(Thai)</td>
-                      <td>Tue, Sept 4, 11:30 am</td>
-                      <td>
-                        <span className='pending'>Pending</span>
-                      </td>
-                      <td>
-                        <span className='paidbadge'>Paid</span>
-                      </td>
-                      <td>
-                        <div className='d-flex'>
-                          <button className='editBtn'>
-                            <img src={pencilEditIcon} alt='pencilEditIcon' />
-                          </button>
-                          <button className='deleteBtn'>
-                            <img src={deleteIcon} alt='deleteIcon' />
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>
-                        <input type='checkbox' />
-                      </td>
-                      <td>004</td>
-                      <td>545151511451</td>
-                      <td>Cleaned Salon</td>
-                      <td>Joe Doe</td>
-                      <td>Hair, Massage</td>
-                      <td>1 x Haircut(Spice)+1 x Shave(Normal) + 2 Body Massage(Thai)</td>
-                      <td>Tue, Sept 4, 11:30 am</td>
-                      <td>
-                        <span className='pending'>Pending</span>
-                      </td>
-                      <td>
-                        <span className='paidbadge'>Paid</span>
-                      </td>
-                      <td>
-                        <div className='d-flex'>
-                          <button className='editBtn'>
-                            <img src={pencilEditIcon} alt='pencilEditIcon' />
-                          </button>
-                          <button className='deleteBtn'>
-                            <img src={deleteIcon} alt='deleteIcon' />
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
+                   
                     <tr>
                       <td>
                         <input type='checkbox' />
@@ -250,7 +201,7 @@ const AppointmentWrapper = () => {
                       </td>
                       <td>
                         <div className='d-flex'>
-                          <button className='editBtn'>
+                          <button className='editBtn' onClick={()=>editAppointment({_id:1})}>
                             <img src={pencilEditIcon} alt='pencilEditIcon' />
                           </button>
                           <button className='deleteBtn'>
@@ -259,34 +210,7 @@ const AppointmentWrapper = () => {
                         </div>
                       </td>
                     </tr>
-                    <tr>
-                      <td>
-                        <input type='checkbox' />
-                      </td>
-                      <td>006</td>
-                      <td>545151511451</td>
-                      <td>Cleaned Salon</td>
-                      <td>Joe Doe</td>
-                      <td>Hair, Massage</td>
-                      <td>1 x Haircut(Spice)+1 x Shave(Normal) + 2 Body Massage(Thai)</td>
-                      <td>Tue, Sept 4, 11:30 am</td>
-                      <td>
-                        <span className='pending'>Pending</span>
-                      </td>
-                      <td>
-                        <span className='paidbadge'>Paid</span>
-                      </td>
-                      <td>
-                        <div className='d-flex'>
-                          <button className='editBtn'>
-                            <img src={pencilEditIcon} alt='pencilEditIcon' />
-                          </button>
-                          <button className='deleteBtn'>
-                            <img src={deleteIcon} alt='deleteIcon' />
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
+                    
                   </tbody>
                 </Table>
               </div>
@@ -513,7 +437,15 @@ const AppointmentWrapper = () => {
           </Tabs>
         </div>
       </div>
-
+      {modalShow && (
+        <AppointmentModal
+          show={modalShow}
+          schema={appointmentSchema}
+          formik={formik}
+          cancelButton={closeAppointmentModal}
+          gender={["Male", "Female", "Other"]}
+        />
+      )}
       {/* Dashboard Page Html End */}
     </>
   )

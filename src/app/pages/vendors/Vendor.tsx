@@ -30,6 +30,7 @@ import { addSaloonRequest, editSaloonRequest, getSaloonRequest, setSaloonId } fr
 import { closeModalRequest } from '../../redux/reducer/modalSlice'
 import { resetServiceForm } from '../../redux/reducer/serviceSlice'
 import { ADD, EDIT, INVALID_PHONE_NUMBER, PHONE_REGEX, REQUIRED, SUCCESS } from '../../utils/const'
+import { REQUIRED_FIELD } from '../../utils/ErrorMessages'
 
 
 const ShopWrapper = () => {
@@ -42,7 +43,6 @@ const ShopWrapper = () => {
   const [lng, setLang] = useState(76.768066)
   const [limit, setLimit] = useState(10)
   const [skip, setSkip] = useState(0)
-  // const [totalRecord, setTotalRecord] = useState(0)
   const [modalShow, setModalShow] = useState(false);
   const [deleteUserId, setDeleteUserId] = useState("");
   const [searchUser, setSearchUser] = useState("");
@@ -50,11 +50,6 @@ const ShopWrapper = () => {
   const [modalType, setModalType] = useState('Add');
   const [debounceVal, setDebounceVal] = useState("");
 
-  // useEffect(() => {
-  //   // vendorsList()
-  // }, [skip, debounceVal])
-
-  // Fetch vendors on component mount and whenever skip or debounceVal changes
   useEffect(() => {
     dispatch(getSaloonRequest({ lat, lng, skip, limit, searchUser }));
   }, [skip, debounceVal]);
@@ -63,7 +58,6 @@ const ShopWrapper = () => {
   const initialValues = {
     name: '',
     image: '',
-    // description: '',
     location: '',
     latitude: '',
     longitude: '',
@@ -71,20 +65,13 @@ const ShopWrapper = () => {
   }
 
   const serviceSchema = Yup.object().shape({
-    name: Yup.string().required(REQUIRED),
-    // image: Yup.string().required('Image is required'),
-    // category: Yup.string().required('category is required'),
-    // subcategory: Yup.string().required('Sub category is required'),
-    // description: Yup.string() 
-    //   .min(10, 'Minimum 10 charectors')
-    //   .max(50, 'Maximum 50 charectors')
-    //   .required('Description is required'),
-    location: Yup.string().required(REQUIRED),
-    latitude: Yup.number().required(REQUIRED),
-    longitude: Yup.number().required(REQUIRED),
+    name: Yup.string().required(REQUIRED_FIELD),
+    location: Yup.string().required(REQUIRED_FIELD),
+    latitude: Yup.number().required(REQUIRED_FIELD),
+    longitude: Yup.number().required(REQUIRED_FIELD),
     phone: Yup.string()
       .matches(PHONE_REGEX, INVALID_PHONE_NUMBER)
-      .required(REQUIRED),
+      .required(REQUIRED_FIELD),
   })
 
   const formik = useFormik({
@@ -103,11 +90,11 @@ const ShopWrapper = () => {
           },
           phone: values?.phone
         }
-        if(modalType == ADD){
-          await dispatch(addSaloonRequest(reqObj));
-        }else {          
+        if (modalType == ADD) {
+           dispatch(addSaloonRequest(reqObj));
+        } else {
           reqObj['id'] = saloonId;
-          await dispatch(editSaloonRequest(reqObj));
+           dispatch(editSaloonRequest(reqObj));
         }
         setShow(false);
         dispatch(getSaloonRequest({ lat, lng, skip, limit, searchUser }));
@@ -119,7 +106,7 @@ const ShopWrapper = () => {
     },
   });
 
-  const deleteOpenModal = (id: string) => {    
+  const deleteOpenModal = (id: string) => {
     setModalShow(true);
     setDeleteUserId(id);
   };
@@ -137,7 +124,7 @@ const ShopWrapper = () => {
     if (event === true) {
       await deleteVender(deleteUserId).then((res: any) => {
         if (res.data.responseCode === 200) {
-          toast.success(SUCCESS);
+          toast.success("Saloon has been Deleted!");
           setModalShow(false);
           dispatch(getSaloonRequest({ lat, lng, skip, limit, searchUser }));
         }
@@ -168,7 +155,7 @@ const ShopWrapper = () => {
 
   useEffect(() => {
     setDebounceVal(searchUser);
-  }, [debounceValue,saloonList]);
+  }, [debounceValue, saloonList]);
 
 
   const cancelButton = () => {
@@ -212,7 +199,6 @@ const ShopWrapper = () => {
                   <th>Image</th>
                   <th>Phone</th>
                   <th>Location</th>
-
                   <th>Action</th>
                 </tr>
               </thead>
@@ -221,10 +207,7 @@ const ShopWrapper = () => {
                   saloonList.length > 0 &&
                   saloonList.map((item: any, index) => (
                     <tr key={index}>
-                      {/* <td>
-                  <input type='checkbox' />
-                </td> */}
-                      {/* <td>{`${index + 1}`}</td> */}
+
                       <td>{item?.name}</td>
                       <td>
                         <img className='profileImg' src={item?.photo ? getImageUrl(item?.photo) : dummyImg} alt='' />
@@ -240,7 +223,7 @@ const ShopWrapper = () => {
                             <img src={pencilEditIcon} alt='pencilEditIcon' onClick={() => openSaloonModal(EDIT, item._id)} />
                           </button>
                           <button className='deleteBtn'>
-                            <img src={deleteIcon} alt='deleteIcon'
+                            <img src={deleteIcon} className='cursor-pointer' alt='deleteIcon'
                               onClick={() => deleteOpenModal(item._id)}
                             />
                           </button>

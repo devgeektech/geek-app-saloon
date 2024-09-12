@@ -87,7 +87,7 @@ export default function Servicetable(props: any) {
     if (event === true) {
       await deleteService(deleteUserId).then((res: any) => {
         if (res.data.responseCode === 200) {
-          toast.success(SUCCESS);
+          toast.success("Service has been Deleted!");
           setModalShow(false);
           dispatch(fetchListRequest(0, 0, ''));
         }

@@ -311,7 +311,7 @@ export const AddServiceModal = (props) => {
                 className="blackBtn btn-sm w-250"
                 type="submit"
                 disabled={formik.isSubmitting && !formik.isValid}
-              >Save
+              >{formik.values._id ? 'Update Service' : 'Create Service'} 
                 {/* {!serviceState.loading && (
                   <span className="indicator-label">Save</span>
                 )} */}

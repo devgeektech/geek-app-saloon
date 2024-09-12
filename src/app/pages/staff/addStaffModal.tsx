@@ -189,7 +189,7 @@ const StaffModal = (props: any) => {
                 type="submit"
                 disabled={formik.isSubmitting || !formik.isValid}
               >
-                <span className="indicator-label">Save</span>
+                <span className="indicator-label">{staffId ? 'Update':'Add'}</span>
               </button>
             </div>
           </Modal.Footer>

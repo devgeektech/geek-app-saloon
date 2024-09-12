@@ -6,7 +6,7 @@ import searchIcon from '../../../_metronic/images/searchIcon.svg'
 import './style.scss'
 import moment from 'moment'
 
-export default function InActiveTable({coupons, deleteItem, editItem}) {
+export default function InActiveTable({coupons, deleteItem, editItem,handleToggleChange}) {
   return (
     <>
       <Table responsive className='table table-bordered coupons'>
@@ -40,8 +40,8 @@ export default function InActiveTable({coupons, deleteItem, editItem}) {
             <td>{moment(coupon?.createdAt).format('Do MMM YYYY')}</td>
             <td className='inactive'> {coupon.status}
               <label className='switch' >
-                <input type='checkbox' checked />
-                <span className='slider round'></span>
+              <input type='checkbox' checked onChange={() => handleToggleChange(coupon._id,'Active')}/>
+              <span className='slider round'></span>
               </label>
             </td>
             <td>

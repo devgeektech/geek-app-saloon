@@ -141,9 +141,19 @@
       }
     }
   }
+
 }
 .select-all{
     input{
         accent-color: #F6A941;
     }
 }
+
+.appointment-modal{
+  .profileImg{
+    height: 32px;
+    width: 32px;
+    border-radius: 16px;
+ }
+}
+
