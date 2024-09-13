@@ -28,9 +28,9 @@ function* addSubCategorySaga(action) {
 }
 
 function* updateSubCategorySaga(action) {
-  const { id, categoryId, name, image , description} = action.payload;
+  const { id, categoryId, name, image , description, saloonId} = action.payload;
   try {
-    const response = yield call(updateSubCategory, id, { id: categoryId, name, image, description });
+    const response = yield call(updateSubCategory, id, { id: categoryId, name, image, description, saloonId });
     yield put(updateSubCategorySuccess(response.data));
   } catch (error: any) {
     toast.error(error?.responseMessage || 'An error occurred');
