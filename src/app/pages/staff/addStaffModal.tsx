@@ -6,7 +6,7 @@ import FieldInputText from '../../components/common/inputs/FieldInputText';
 import FieldSelectInput from '../../components/common/inputs/FIeldSelectInput';
 import ReactCrop, { centerCrop, makeAspectCrop, type Crop } from 'react-image-crop'
 import { useEffect, useRef, useState } from 'react';
-import { getCroppedImg } from '../../utils/common';
+import { getCroppedImg, getImageUrl } from '../../utils/common';
 import 'react-image-crop/src/ReactCrop.scss'
 import 'react-image-crop/dist/ReactCrop.css'
 import FieldTextArea from '../../components/common/inputs/FieldTextArea';
@@ -59,7 +59,11 @@ const StaffModal = (props: any) => {
   };
 
   useEffect(() => {
-    setPreviewUrl('');
+    if(formik.values?.image){
+      setPreviewUrl(getImageUrl(formik.values?.image));
+    }else{
+      setPreviewUrl('');
+    }
   }, [show]);
 
   return (

@@ -18,9 +18,9 @@ import { useDebounce } from "../../../_metronic/helpers";
 import DeleteModal from "../../components/common/modal/DeleteModal";
 import { capitalizeFirstLetter, getImageUrl } from "../../utils/common";
 import { useDispatch, useSelector } from "react-redux";
-import { commonFileUpload, deleteBanner, updateBanner } from "../../services/_requests";
+import { addBanner, commonFileUpload, deleteBanner, updateBanner } from "../../services/_requests";
 import DeleteIcon from "../../components/common/Icons/DeleteIcon";
-import { addBannerRequest, deleteBannerRequest, getBannerRequest, setBannerId, updateBannerSuccess } from "../../redux/reducer/bannerSlice";
+import { addBannerRequest, addBannerSuccess, deleteBannerRequest, getBannerRequest, setBannerId, updateBannerSuccess } from "../../redux/reducer/bannerSlice";
 import { REQUIRED, SUCCESS } from "../../utils/const";
 import { REQUIRED_FIELD } from "../../utils/ErrorMessages";
 
@@ -50,39 +50,35 @@ const BannerWrapper = () => {
 
   const serviceSchema = Yup.object().shape({
     name: Yup.string().required(REQUIRED_FIELD),
-    image: Yup.mixed()
-      .required(REQUIRED_FIELD)
-      .test('fileSize', 'File size is too large', (value: any) => {
-        return !value || (value && value.size <= 2 * 1024 * 1024); 
-      })
-      .test('fileType', 'Unsupported file format', (value: any) => {
-        return !value || ['image/jpeg', 'image/png'].includes(value.type);
-      }),
+    image: Yup.mixed(),
     type: Yup.string().required(REQUIRED_FIELD),
   });
-
   const formik = useFormik({
     initialValues,
     validationSchema: serviceSchema,
+    // enableReinitialize: true, // important to reset form values when 'initialValues' change
     onSubmit: async (values, { setStatus, setSubmitting }) => {
       try {
-        if (file) {
-          const imageUrl = await upload(file);
-          const data = { ...values, image: imageUrl };
-          data['saloonId'] = saloonId;
-
-          if (editMode) {
-            let res=await updateBanner(bannerId, data);
-            if (res.status === 200) {
-                dispatch(updateBannerSuccess(res.data));
-            }
-          } else {
-            dispatch(addBannerRequest(data));
-          }
-
-          dispatch(addBannerRequest(data));
-          closeBannerModal();
+        if (!saloonId) {
+          return toast.info("Select Saloon First!")
         }
+        let imageUrl;
+        if (file) {
+          imageUrl = await upload(file);
+        }
+
+        const data = { ...values, image: imageUrl, saloonId };
+        if (editMode) {
+          let res = await updateBanner(bannerId, data);
+          if (res.status === 200) {
+            dispatch(updateBannerSuccess(res.data));
+          }
+        } else {
+          let res = await addBanner(data);
+          dispatch(addBannerSuccess(res.data));
+        }
+        closeBannerModal();
+        setEditMode(false)
       } catch (error: any) {
         console.error(error);
         toast.error(error.responseMessage || 'An error occurred');
@@ -114,12 +110,17 @@ const BannerWrapper = () => {
   };
 
 
-  const editStaff = (item:any) => {
+  const editBanner = (item: any) => {
     setEditMode(true);
-    formik.setValues(item);
+    formik.setValues({
+      ...item,
+      image: item?.image ? getImageUrl(item.image) : null,
+    });
+    // formik.setValues(item);
     dispatch(setBannerId(item?._id));
     setModalShow(true);
   };
+
   const closeBannerModal = () => {
     setModalShow(false);
     formik.resetForm();
@@ -143,8 +144,7 @@ const BannerWrapper = () => {
     dispatch(setBannerId(id))
   };
 
-
-  const deleteUser: any = async (event: any) => {
+  const deleteBAnner: any = async (event: any) => {
     if (event === true) {
       await deleteBanner(bannerId).then((res: any) => {
         if (res.data.responseCode === 200) {
@@ -157,6 +157,7 @@ const BannerWrapper = () => {
       setModalShow(false);
     }
   };
+  
 
   useEffect(() => {
     dispatch(getBannerRequest({ search: debounceSearch, skip, limit }));
@@ -222,7 +223,7 @@ const BannerWrapper = () => {
                       <td>{moment(item.createdAt).format("dddd, MMM DD, h:mm a")}</td>
                       <td>
                         <div className="d-flex">
-                        <button className='editBtn' onClick={() => editStaff(item)}>
+                        <button className='editBtn' onClick={() => editBanner(item)}>
                             <img src={pencilEditIcon} alt='pencilEditIcon' />
                           </button>
                           <button onClick={() => deleteOpenModal(item._id)} className="deleteBtn">
@@ -264,15 +265,9 @@ const BannerWrapper = () => {
         />
       )}
 
-      {/* <DeleteModal
-        deleteUserClbk={deleteBannerHandler}
-        openModal={showDeleteModal}
-        closeModal={closeDeleteModal}
-      /> */}
-
       <DeleteModal
         deleteUserClbk={(e: any) => {
-          deleteUser(e);
+          deleteBAnner(e);
         }}
         openModal={showDeleteModal}
         closeModal={closeDeleteModal}

@@ -49,7 +49,6 @@ export default function CategoryTabs() {
     validationSchema: categorySchema,
     onSubmit: async (values: any, { setStatus, setSubmitting }) => {
       values['saloonId'] = saloonId;
-      console.log('values++++++++++++++',values)
       if (values.id.trim() !== '') {
         dispatch(updateCategoryRequest({ id: values.id, ...values }));
       } else {

@@ -8,7 +8,8 @@ export function setupAxios(axios: any,store: any) {
       const auth = localStorage.getItem('token')
       const saloon:any = store.getState().saloon;
       if (auth) {
-        config.headers.Authorization = `${auth}`
+        config.headers.Authorization = `${auth}`;
+        console.log(store.getState())
         if(saloon.saloonId){
           config.headers.Saloon_id = `${saloon.saloonId}`
         }

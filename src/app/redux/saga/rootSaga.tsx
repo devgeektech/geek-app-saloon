@@ -5,7 +5,7 @@ import {addcategorySaga, deleteCategorySaga, getCategorySaga, updateCategorySaga
 import {addSubCategorySaga, deleteSubCategorySaga, getSubCategorySaga, updateSubCategorySaga} from './subCategorySaga'
 import {addServiceSaga, deleteServiceSaga, editServiceDataSaga, editServiceSaga, fetchDataSaga, getServiceSaga, selectedTabSaga} from './serviceSaga'
 import {closeModalSaga, openModalSaga} from './modalSaga'
-import { addBannerSaga, deleteBannerSaga, getBannerSaga } from './bannerSaga'
+import { addBannerSaga, deleteBannerSaga, getBannerSaga, updateBannerSaga } from './bannerSaga'
 import { addSaloonSaga, editSaloonSaga, getSaloonSaga } from './saloonSaga'
 import { FETCH_LIST_REQUEST } from '../actions/serviceAction'
 import { addStaffSaga, deleteStaffSaga, getStaffSaga, updateStaffSaga, updateStaffStatusSaga } from './staffSaga'
@@ -47,6 +47,8 @@ function* rootSaga() {
   yield takeLatest('banner/addBannerRequest', addBannerSaga)
   yield takeLatest('banner/getBannerRequest', getBannerSaga)
   yield takeLatest('banner/deleteBannerRequest', deleteBannerSaga);
+  yield takeLatest('banner/updateBannerRequest', updateBannerSaga);
+
 
   //Saloon Request
   yield takeLatest('saloon/addSaloonRequest', addSaloonSaga )
@@ -55,7 +57,7 @@ function* rootSaga() {
 
   yield takeEvery(FETCH_LIST_REQUEST, fetchDataSaga);
 
-   // Banner request 
+   // Staff request 
    yield takeLatest('staff/addStaffRequest', addStaffSaga)
    yield takeLatest('staff/getStaffRequest', getStaffSaga)
    yield takeLatest('staff/deleteStaffRequest', deleteStaffSaga);

@@ -95,8 +95,8 @@ export function updateCategory(id: string, payload) {
   return axios.put(CATEGORY_URL + `/${id}`, payload)
 }
 
-export function createSubCategory(id: string, name: string, image: string, description: string) {
-  return axios.post(SUB_CATEGORY_URL, { id, name, image, description })
+export function createSubCategory(id: string, name: string, image: string, description: string, saloonId: string) {
+  return axios.post(SUB_CATEGORY_URL, { id, name, image, description, saloonId })
 }
 
 export function getSubCreateCategory(search: string, skip: number, limit: number) {
@@ -217,6 +217,10 @@ export function getAllStaff(search: string, skip: number, limit: number) {
 
 export function getStaff(id:any) {
   return axios.get(STAFF + `/${id}`)
+}
+
+export function getStaffSlots(id:any) {
+  return axios.get(STAFF + `/slots/${id}`)
 }
 
 export function deleteStaff(id:any) {

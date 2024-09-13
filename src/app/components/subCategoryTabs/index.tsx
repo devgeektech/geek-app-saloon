@@ -20,6 +20,7 @@ export default function SubCategoryTabs() {
   const [file, setFile] = useState('');
   const categoryList = useSelector((state: any) => state.category.categoryList)
   const { initialValues } = useSelector((state: any) => state.subcategory);
+  const {saloonId} = useSelector((state: any) => state.saloon)
   const loading = false;
 
   useEffect(() => {
@@ -57,7 +58,8 @@ export default function SubCategoryTabs() {
         name:values?.name,
         id:values?.categoryId,
         description:values?.description,
-        image:values?.image
+        image:values?.image,
+        saloonId: saloonId
         }
       if (values.id) {
         obj['id'] = values?.id
@@ -118,7 +120,7 @@ export default function SubCategoryTabs() {
 
   useEffect(() => {
     getSubCategoryList();
-  }, [dispatch])
+  }, [dispatch, saloonId])
 
   const getSubCategoryList = () => {
     dispatch(getSubCategoryRequest(params))

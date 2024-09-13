@@ -5,6 +5,7 @@ import deleteIcon from '../../../_metronic/images/deleteIcon.svg'
 import searchIcon from '../../../_metronic/images/searchIcon.svg'
 import './style.scss'
 import moment from 'moment'
+import { capitalizeFirstLetter } from '../../utils/common'
 
 export default function ActiveTable({coupons, deleteItem, editItem,handleToggleChange}) {
   return (
@@ -33,10 +34,10 @@ export default function ActiveTable({coupons, deleteItem, editItem,handleToggleC
             <input type='checkbox' />
           </td>
           <td>{index+1}</td>
-          <td>{coupon?.offerName}</td>
-          <td>{coupon?.category?.name}</td>
-          <td>{coupon?.subcategory?.name}</td>
-          <td>{coupon?.service?.name}</td>
+          <td>{capitalizeFirstLetter(coupon?.offerName)}</td>
+          <td>{capitalizeFirstLetter(coupon?.category?.name)}</td>
+          <td>{capitalizeFirstLetter(coupon?.subcategory?.name)}</td>
+          <td>{capitalizeFirstLetter(coupon?.service?.name)}</td>
           <td>{moment(coupon?.createdAt).format('Do MMM YYYY')}</td>
           <td className='active'> {coupon.status}
             <label className='switch' >

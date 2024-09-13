@@ -22,7 +22,7 @@ import clsx from 'clsx'
 import { commonFileUpload } from '../../services/_requests'
 import NoDataFound from '../../components/common/noDataFound/NoDataFound'
 import { useDebounce } from '../../../_metronic/helpers'
-import { fetchLocationFromLatLng, getImageUrl } from '../../utils/common'
+import { capitalizeFirstLetter, fetchLocationFromLatLng, getImageUrl } from '../../utils/common'
 import ReactGoogleAutocomplete from 'react-google-autocomplete'
 import SaloonModal from './addSaloonModal'
 import { useDispatch, useSelector } from 'react-redux';
@@ -208,14 +208,14 @@ const ShopWrapper = () => {
                   saloonList.map((item: any, index) => (
                     <tr key={index}>
 
-                      <td>{item?.name}</td>
+                      <td>{capitalizeFirstLetter(item?.name)}</td>
                       <td>
                         <img className='profileImg' src={item?.photo ? getImageUrl(item?.photo) : dummyImg} alt='' />
                       </td>
 
                       <td>{item?.phone}</td>
                       <td>
-                        {item?.address?.city}{' '}
+                        {capitalizeFirstLetter(item?.address?.city)}{' '}
                       </td>
                       <td>
                         <div className='d-flex'>

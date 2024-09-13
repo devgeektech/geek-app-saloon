@@ -16,11 +16,11 @@ import { toast } from "react-toastify";
 const call: any = Effects.call
 
 function* addSubCategorySaga(action) {
-  const { id, name, image, description } = action.payload
+  const { id, name, image, description, saloonId } = action.payload
   console.log('?????????????',action.payload);
   
   try {
-    const createCategoryRes = yield call(createSubCategory, id, name, image, description)
+    const createCategoryRes = yield call(createSubCategory, id, name, image, description, saloonId)
     yield put(addSubCategorySuccess(createCategoryRes.data))
   } catch (error: any) {
     yield put(addSubCateogryFailure(error.response))

@@ -18,13 +18,14 @@ import { useDebounce } from "../../../_metronic/helpers";
 import DeleteModal from "../../components/common/modal/DeleteModal";
 import { capitalizeFirstLetter, getImageUrl } from "../../utils/common";
 import { useDispatch, useSelector } from "react-redux";
-import { addStaff, commonFileUpload, deleteBanner, deleteStaff, updateStaff, updateStaffStatus } from "../../services/_requests";
+import { addStaff, commonFileUpload, deleteStaff, getStaffSlots, updateStaff, updateStaffStatus } from "../../services/_requests";
 import DeleteIcon from "../../components/common/Icons/DeleteIcon";
 import { addBannerRequest, deleteBannerRequest, getBannerRequest, setBannerId } from "../../redux/reducer/bannerSlice";
 import { REQUIRED, SUCCESS } from "../../utils/const";
 import { addStaffRequest, addStaffSuccess, getStaffRequest, setStaffId, updateStaffRequest, updateStaffSuccess } from "../../redux/reducer/staffSlice";
 import StaffModal from "./addStaffModal";
 import { REQUIRED_FIELD } from "../../utils/ErrorMessages";
+import SlotsDrawer from "./slotsDrawer";
 
 const StaffWrapper = () => {
   const dispatch = useDispatch();
@@ -32,6 +33,7 @@ const StaffWrapper = () => {
   const [file, setFile] = useState<File | null>(null);
   const [modalShow, setModalShow] = useState<boolean>(false);
   const [id, setId] = useState<string>("");
+  const [selectedStaff, setSelectedStaff] = useState<any>();
   const [showDeleteModal, setShowDeleteModal] = useState<boolean>(false);
   const [pageNumber, setPageNumber] = useState<number>(1);
   const [searchValue, setSearchValue] = useState<string>('');
@@ -64,29 +66,29 @@ const StaffWrapper = () => {
   const formik = useFormik({
     initialValues,
     validationSchema: staffSchema,
-      // enableReinitialize: true, // important to reset form values when 'initialValues' change
+    // enableReinitialize: true, // important to reset form values when 'initialValues' change
     onSubmit: async (values, { setStatus, setSubmitting }) => {
       try {
-          if(!saloonId){
-            return toast.info("Select Saloon First!")
+        if (!saloonId) {
+          return toast.info("Select Saloon First!")
+        }
+        let imageUrl;
+        if (file) {
+          imageUrl = await upload(file);
+        }
+
+        const data = { ...values, image: imageUrl, saloonId };
+        if (editMode) {
+          let res = await updateStaff(staffId, data);
+          if (res.status === 200) {
+            dispatch(updateStaffSuccess(res.data));
           }
-          let imageUrl;
-          if (file) {
-            imageUrl = await upload(file);
-          }
-          
-          const data = { ...values, image: imageUrl, saloonId };
-          if (editMode) {
-            let res=await updateStaff(staffId, data);
-            if (res.status === 200) {
-                dispatch(updateStaffSuccess(res.data));
-            }
-          } else {
-            let res=await addStaff(data);
-            dispatch(addStaffSuccess(res.data));
-          }
-          closeStaffModal();
-          setEditMode(false)
+        } else {
+          let res = await addStaff(data);
+          dispatch(addStaffSuccess(res.data));
+        }
+        closeStaffModal();
+        setEditMode(false)
       } catch (error: any) {
         console.error(error);
         toast.error(error.responseMessage || 'An error occurred');
@@ -117,9 +119,13 @@ const StaffWrapper = () => {
     setFile(file);
   };
 
-  const editStaff = (item:any) => {
+  const editStaff = (item: any) => {
     setEditMode(true);
-    formik.setValues(item);
+    formik.setValues({
+      ...item,
+      image: item?.image ? getImageUrl(item.image) : null,
+    });
+    // formik.setValues(item);
     dispatch(setStaffId(item?._id));
     setModalShow(true);
   };
@@ -173,15 +179,23 @@ const StaffWrapper = () => {
       if (res.status === 200) {
         dispatch(getStaffRequest({ search: debounceSearch, skip, limit }));
         const message = updatedStaff.onLeave ? "Staff is on leave" : "Staff is Available";
-        toast.success(message); 
+        toast.success(message);
       }
     } catch (error) {
       console.error(error);
       toast.error('Failed to update status');
     }
   };
-  
-  
+
+  const openSlot=async(sf:any)=>{
+      const slot= (await getStaffSlots(sf?._id)).data||[];
+      setSelectedStaff({
+        staff: sf,
+        slot
+      });
+  }
+
+
   return (
     <>
       <PageTitle breadcrumbs={[]}>
@@ -236,7 +250,7 @@ const StaffWrapper = () => {
                   staffList.map((item: any, index: number) => (
                     <tr key={item?._id}>
                       <td>{index + 1}</td>
-                      <td>{capitalizeFirstLetter( item?.name || 'N/A')}</td>
+                      <td>{capitalizeFirstLetter(item?.name || 'N/A')}</td>
                       <td>
                         <img
                           className="profileImg"
@@ -248,8 +262,8 @@ const StaffWrapper = () => {
                       <td>{item?.age || 'N/A'}</td>
                       <td>{capitalizeFirstLetter(item?.aboutUs || 'N/A')}</td>
                       <td>{capitalizeFirstLetter(item?.qualification || 'N/A')}</td>
-                    
-                        <td className={item?.onLeave ? 'inactive' : 'active'}>
+
+                      <td className={item?.onLeave ? 'inactive' : 'active'}>
                         <label className='switch' title={item?.onLeave ? 'On Leave' : ''}>
                           <input
                             type='checkbox'
@@ -262,6 +276,13 @@ const StaffWrapper = () => {
 
                       <td>
                         <div className="d-flex">
+                          <button title="Slots" className="editBtn" onClick={()=>openSlot(item)}>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-clock-history" viewBox="0 0 16 16">
+                              <path d="M8.515 1.019A7 7 0 0 0 8 1V0a8 8 0 0 1 .589.022zm2.004.45a7 7 0 0 0-.985-.299l.219-.976q.576.129 1.126.342zm1.37.71a7 7 0 0 0-.439-.27l.493-.87a8 8 0 0 1 .979.654l-.615.789a7 7 0 0 0-.418-.302zm1.834 1.79a7 7 0 0 0-.653-.796l.724-.69q.406.429.747.91zm.744 1.352a7 7 0 0 0-.214-.468l.893-.45a8 8 0 0 1 .45 1.088l-.95.313a7 7 0 0 0-.179-.483m.53 2.507a7 7 0 0 0-.1-1.025l.985-.17q.1.58.116 1.17zm-.131 1.538q.05-.254.081-.51l.993.123a8 8 0 0 1-.23 1.155l-.964-.267q.069-.247.12-.501m-.952 2.379q.276-.436.486-.908l.914.405q-.24.54-.555 1.038zm-.964 1.205q.183-.183.35-.378l.758.653a8 8 0 0 1-.401.432z" />
+                              <path d="M8 1a7 7 0 1 0 4.95 11.95l.707.707A8.001 8.001 0 1 1 8 0z" />
+                              <path d="M7.5 3a.5.5 0 0 1 .5.5v5.21l3.248 1.856a.5.5 0 0 1-.496.868l-3.5-2A.5.5 0 0 1 7 9V3.5a.5.5 0 0 1 .5-.5" />
+                            </svg>
+                          </button>
                           <button className='editBtn' onClick={() => editStaff(item)}>
                             <img src={pencilEditIcon} alt='pencilEditIcon' />
                           </button>
@@ -303,6 +324,11 @@ const StaffWrapper = () => {
           gender={["Male", "Female", "Other"]}
         />
       )}
+
+      {
+        selectedStaff && 
+          <SlotsDrawer show={true} staff={selectedStaff?.staff} slot={selectedStaff?.slot} close={()=>setSelectedStaff(undefined)} />
+      }
 
       <DeleteModal
         deleteUserClbk={(e: any) => {

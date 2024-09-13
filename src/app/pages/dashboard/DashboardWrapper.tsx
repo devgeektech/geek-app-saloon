@@ -10,10 +10,7 @@ import deleteIcon from "../../../_metronic/images/deleteIcon.svg";
 import "./style.scss";
 import { Table } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
-import { useEffect, useState } from "react";
-import { toast } from "react-toastify";
-import { getSaloonRequest, setSaloonId } from "../../redux/reducer/saloonSlice";
-import { getVendors } from "../../services/_requests";
+import { useState } from "react";
 
 const DashboardWrapper = () => {
   const intl = useIntl();
@@ -24,19 +21,6 @@ const DashboardWrapper = () => {
   const [limit, setLimit] = useState(10)
   const [skip, setSkip] = useState(0)
   const [searchUser, setSearchUser] = useState("");
-
-useEffect(()=>{
-  dispatch(getSaloonRequest({ lat, lng, skip, limit, searchUser}));
-  // getSaloons()
-},[])
-
-// const getSaloons = async()=>{
-//   await getVendors(lat, lng, skip, limit, searchUser).then((res: any) => {
-//     if (res.data.responseCode === 200) {
-//       dispatch(setSaloonId(res?.data?.data[0]?._id))
-//     }
-//   });
-// }
 
   return (
     <>

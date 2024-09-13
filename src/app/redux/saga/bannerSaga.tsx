@@ -6,8 +6,10 @@ import {
   deleteBannerFailure,
   getBannerListSuccess,
   getBannerListFailure,
+  updateBannerSuccess,
+  updateBannerFailure,
 } from '../reducer/bannerSlice';
-import { addBanner, deleteBanner, getAdminBanners, getBanners } from '../../services/_requests';
+import { addBanner, deleteBanner, getAdminBanners, getBanners, updateBanner } from '../../services/_requests';
 
 function* addBannerSaga(action) {
   try {
@@ -37,4 +39,17 @@ function* getBannerSaga(action) {
   }
 }
 
-export {addBannerSaga, getBannerSaga, deleteBannerSaga};
+function* updateBannerSaga(action) {
+  try {
+    const values = action.payload;
+    const id = action.payload.id;
+    delete values.id;
+    const response = yield call(updateBanner, id, values);
+    yield put(updateBannerSuccess(response.data));
+  } catch (error: any) {
+    yield put(updateBannerFailure(error.response));
+  }
+}
+
+
+export {addBannerSaga, getBannerSaga, deleteBannerSaga, updateBannerSaga};

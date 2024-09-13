@@ -1,7 +1,16 @@
-import {FC} from 'react'
+import {FC, useEffect} from 'react'
 import {MenuInner} from './MenuInner'
+import { useDispatch } from 'react-redux';
+import { getSaloonRequest } from '../../../../app/redux/reducer/saloonSlice';
 
 const Header: FC = () => {
+  const defaultProps={
+    lat:30.741482, lng:76.768066, skip:0, limit:10, searchUser:""
+  }
+  const dispatch = useDispatch();
+  useEffect(()=>{
+    dispatch(getSaloonRequest(defaultProps));
+  },[])
   return (
     <div
       id='kt_header_menu'

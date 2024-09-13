@@ -6,9 +6,10 @@ import FieldInputText from '../../components/common/inputs/FieldInputText';
 import FieldSelectInput from '../../components/common/inputs/FIeldSelectInput';
 import ReactCrop, { centerCrop, makeAspectCrop, type Crop } from 'react-image-crop'
 import { useEffect, useRef, useState } from 'react';
-import { getCroppedImg } from '../../utils/common';
+import { getCroppedImg, getImageUrl } from '../../utils/common';
 import 'react-image-crop/src/ReactCrop.scss'
 import 'react-image-crop/dist/ReactCrop.css'
+
 
 const BannerModal = (props: any) => {
   const {
@@ -23,6 +24,7 @@ const BannerModal = (props: any) => {
   const imgRef = useRef<HTMLImageElement | null>(null);
   const [crop, setCrop] = useState<Crop>()
   const [previewUrl, setPreviewUrl] = useState('');
+  const { bannerId } = useSelector((state: any) => state.banner);
 
   const errorMessage = typeof formik.errors.image === 'string'
     ? formik.errors.image
@@ -58,7 +60,11 @@ const BannerModal = (props: any) => {
   };
 
   useEffect(() => {
-    setPreviewUrl('');
+    if(formik.values?.image){
+      setPreviewUrl(getImageUrl(formik.values?.image));
+    }else{
+      setPreviewUrl('');
+    }
   }, [show]);
 
   return (
@@ -153,8 +159,8 @@ const BannerModal = (props: any) => {
                 type="submit"
               disabled={formik.isSubmitting || !formik.isValid}
               >
-                <span className="indicator-label">{formik.values._id ? 'Update' : 'Add'}</span>
-              </button>
+                <span className="indicator-label">{bannerId ? 'Update':'Add'}</span>
+                </button>
             </div>
           </Modal.Footer>
         </form>
