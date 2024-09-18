@@ -23,7 +23,7 @@ function* deleteAppointmentSaga(action) {
 function* getAppointmentSaga(action) {
   try {
     const { search, skip, limit,status } = action.payload;
-    const response = yield call(getAllAppointment, search, skip, limit,status)
+    const response = yield call(getAllAppointment, search, skip, limit)
     yield put(getAppointmentListSuccess(response));
   } catch (error) {
     yield put(getAppointmentListFailure(error));

@@ -129,6 +129,7 @@ const ServiceWrapper = () => {
           dispatch(closeModalRequest({}));
           dispatch(resetServiceForm());
         }
+        dispatch(fetchListRequest(0, 0, ''));
       }
       catch (error) {
         console.error(error)

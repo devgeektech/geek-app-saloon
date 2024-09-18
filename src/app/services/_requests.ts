@@ -272,12 +272,12 @@ export function addAppointment(body: any) {
   return axios.post(APPOINTMENT, body)
 }
 
-export function getAllAppointment(search: string, skip: number, limit: number,status:string) {
-  return axios.get(APPOINTMENT + `?search=${search}&skip=${skip}&limit=${limit}&status=${status}`, {})
+export function getAllAppointment(search: string, skip: number, limit: number) {
+  return axios.get(APPOINTMENT + `?search=${search}&skip=${skip}&limit=${limit}`, {})
 }
 
-export function getAppointment(id:any) {
-  return axios.get(APPOINTMENT + `/${id}`)
+export function getAppointment(skip:any,limit:any,search:any) {
+  return axios.get(APPOINTMENT + `?search=${search}&skip=${skip}&limit=${limit}`,{})
 }
 
 export function deleteAppointment(id:any) {

@@ -59,7 +59,7 @@ export default function SubCategoryTabs() {
         id:values?.categoryId,
         description:values?.description,
         image:values?.image,
-        saloonId: saloonId
+        // saloonId: saloonId
         }
       if (values.id) {
         obj['id'] = values?.id
