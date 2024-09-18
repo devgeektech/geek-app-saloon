@@ -28,7 +28,7 @@ export default function ActiveTable({coupons, deleteItem, editItem,handleToggleC
         </thead>
         <tbody>
          {
-          coupons?.map((coupon:any,index:number)=>
+           coupons?.length? coupons?.map((coupon:any,index:number)=>
             <tr key={index}>
           <td>
             <input type='checkbox' />
@@ -56,7 +56,12 @@ export default function ActiveTable({coupons, deleteItem, editItem,handleToggleC
             </div>
           </td>
         </tr>
-          )
+          ):
+            <tr className='w-100 mx-auto'>
+              <td colSpan={9} className='text-center p-5'>
+                No Coupon Found
+              </td>
+            </tr>
          }
 
           

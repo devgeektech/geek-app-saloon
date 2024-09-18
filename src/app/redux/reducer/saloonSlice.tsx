@@ -30,16 +30,17 @@ export const saloonSlice = createSlice({
         addSaloonRequest: (state, action) => {
             // state.loading = true;
             // state.error = null;
-            return { ...state, loading: true, error: null }
+            return { ...state, loading: true, error: null };
         },
         addSaloonSuccess: (state: any, action) => {
-            toast.success(action.payload.responseMessage);
+            toast.success(action.payload?.responseMessage);
             state.loading = false;
             state.error = null;
-            state.saloonList = [...state.saloonList, action.payload.data];
+            console.log(action.payload)
+            state.saloonList = [action.payload.data,...state.saloonList];
         },
         addSaloonFailure: (state, action) => {
-            toast.error(action.payload.responseMessage);
+            toast.error(action.payload?.responseMessage);
             state.error = action.payload;
             state.loading = false;
         },
@@ -50,6 +51,9 @@ export const saloonSlice = createSlice({
             return { ...state, loading: true, error: null }
         },
         editSaloonSuccess: (state: any, action) => {
+            console.log(action.payload)
+            const index= state.saloonList.findIndex((s:any)=>s?._id===action.payload?.data?._id);
+            if(index>-1) state.saloonList.splice(index,1,action.payload.data);
             toast.success(action.payload.responseMessage);
             state.loading = false;
             state.error = null;
@@ -70,7 +74,7 @@ export const saloonSlice = createSlice({
             state.totalRecord = action.payload.totalRecord;
             state.skip = action.payload.skip;
             state.limit = action.payload.limit;
-            state.totalRecord = action.payload?.totalRecord
+            state.totalRecord = action.payload?.totalRecord 
         },
 
         getSaloonListFailure: (state, action) => {

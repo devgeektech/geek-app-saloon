@@ -14,7 +14,8 @@ const SaloonModal = (props: any) => {
     formik,
     show,
     schema,
-    cancelButton
+    cancelButton,
+    modalType
   } = props;
   const [location, setLocation] = useState('');
   
@@ -23,8 +24,8 @@ const SaloonModal = (props: any) => {
       <FormikProvider value={formik}>
         <form onSubmit={formik.handleSubmit}>
           <Modal.Header>
-            <Modal.Title>{formik.values._id ? 'Update' : 'Add'} Saloon</Modal.Title>
-            <button type='button' className='bg-transparent border-0' onClick={cancelButton}
+          <Modal.Title>{modalType === 'Add' ? 'Add Saloon' : 'Update Saloon'}</Modal.Title>
+          <button type='button' className='bg-transparent border-0' onClick={cancelButton}
             >
               <svg
                 xmlns='http://www.w3.org/2000/svg'
@@ -120,7 +121,8 @@ const SaloonModal = (props: any) => {
                 type="submit"
                 disabled={formik.isSubmitting && formik.isValid}
               >
-                <span className="indicator-label">{formik.values._id ? 'Update' : 'Add'}</span>
+                  {modalType === 'Add' ? 'Add' : 'Update'}
+                {/* <span className="indicator-label">{formik.values._id ? 'Update' : 'Add'}</span> */}
               </button>
             </div>
           </Modal.Footer>

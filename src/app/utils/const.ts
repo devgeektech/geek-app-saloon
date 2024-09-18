@@ -20,6 +20,7 @@ export const REQUIRED = "Required";
 export const SUCCESS = "Success.";
 export const ADD = "Add";
 export const EDIT = "Edit";
+export const UPDATE = "Update"
 export const SALOON_ID_REQUIRED = "Saloon id required.";
 export const DASHBOARD = "/dashboard";
 export const USERS = "/users";

@@ -1,7 +1,8 @@
 import { call, put } from 'redux-saga/effects';
 import {
 addSaloonSuccess,addSaloonFailure,getSaloonListSuccess,getSaloonListFailure,
-setSaloonId
+setSaloonId,
+editSaloonSuccess
 } from '../reducer/saloonSlice';
 import {  addSaloon, editSaloon, getVendors } from '../../services/_requests';
 
@@ -33,6 +34,7 @@ function* getSaloonSaga(action) {
 function* editSaloonSaga(action) {
   try {
     const response = yield call(editSaloon, action.payload);
+    yield put(editSaloonSuccess(response.data));
     return response.data;
   } catch (error: any) {
     yield put(addSaloonFailure(error.response));

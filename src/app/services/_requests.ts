@@ -29,7 +29,7 @@ export const STAFFStatus = `${API_URL}/staff/status`;
 export const COUPON = `${API_URL}/coupon`;
 export const COUPONSTATUS = `${API_URL}/coupon/status`;
 export const APPOINTMENT = `${API_URL}/booking`;
-
+export const BOOKING = `${API_URL}/booking`;
 
 
 // Server should return AuthModel
@@ -193,7 +193,7 @@ export function deleteVender(id: string) {
 }
 
 export function getSaloonById(id: string) {
-  return axios.get(GET_SALOON, {})
+  return axios.get(GET_SALOON+`/${id}`, {})
 }
 
 export function editSaloon(body: any) {
@@ -220,7 +220,9 @@ export function getStaff(id:any) {
 }
 
 export function getStaffSlots(id:any) {
-  return axios.get(STAFF + `/slots/${id}`)
+  return axios.get(BOOKING+ `/slotByStaff`,{params:{
+    staff: id
+  }})
 }
 
 export function deleteStaff(id:any) {

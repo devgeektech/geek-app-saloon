@@ -26,17 +26,17 @@ import { capitalizeFirstLetter, fetchLocationFromLatLng, getImageUrl } from '../
 import ReactGoogleAutocomplete from 'react-google-autocomplete'
 import SaloonModal from './addSaloonModal'
 import { useDispatch, useSelector } from 'react-redux';
-import { addSaloonRequest, editSaloonRequest, getSaloonRequest, setSaloonId } from '../../redux/reducer/saloonSlice'
+import { addSaloonRequest, editSaloonRequest, getSaloonRequest } from '../../redux/reducer/saloonSlice'
 import { closeModalRequest } from '../../redux/reducer/modalSlice'
 import { resetServiceForm } from '../../redux/reducer/serviceSlice'
-import { ADD, EDIT, INVALID_PHONE_NUMBER, PHONE_REGEX, REQUIRED, SUCCESS } from '../../utils/const'
+import { ADD, EDIT, INVALID_PHONE_NUMBER, PHONE_REGEX } from '../../utils/const'
 import { REQUIRED_FIELD } from '../../utils/ErrorMessages'
 
 
 const ShopWrapper = () => {
   const dispatch = useDispatch();
-  const { saloonList, loading, totalRecord, saloonId } = useSelector((state: any) => state.saloon);
-
+  const { saloonList, loading, totalRecord} = useSelector((state: any) => state.saloon);
+  const [saloonId, setSaloonId]= useState('');
   const intl = useIntl()
   const [vendors, setVendors] = useState([])
   const [lat, setLat] = useState(30.741482)
@@ -94,10 +94,9 @@ const ShopWrapper = () => {
            dispatch(addSaloonRequest(reqObj));
         } else {
           reqObj['id'] = saloonId;
-           dispatch(editSaloonRequest(reqObj));
+          dispatch(editSaloonRequest(reqObj));
         }
         setShow(false);
-        dispatch(getSaloonRequest({ lat, lng, skip, limit, searchUser }));
         formik.resetForm();
       } catch (error: any) {
         setStatus(error.message);
@@ -120,7 +119,7 @@ const ShopWrapper = () => {
     setSkip(skip1)
   }
 
-  const deleteUser: any = async (event: any) => {
+  const deleteSaloon: any = async (event: any) => {
     if (event === true) {
       await deleteVender(deleteUserId).then((res: any) => {
         if (res.data.responseCode === 200) {
@@ -137,7 +136,7 @@ const ShopWrapper = () => {
   const openSaloonModal = async (type: any, id: any) => {
     setShow(true);
     if (type == EDIT) {
-      dispatch(setSaloonId(id))
+      setSaloonId(id)
       await getSaloonById(id).then((res: any) => {
         if (res.data.responseCode === 200) {
           formik.setFieldValue('name', res.data.data.name)
@@ -161,7 +160,7 @@ const ShopWrapper = () => {
   const cancelButton = () => {
     dispatch(closeModalRequest({}));
     dispatch(resetServiceForm());
-    dispatch(setSaloonId(''))
+    setSaloonId('');
     setShow(false);
     formik.resetForm();
   };
@@ -260,13 +259,15 @@ const ShopWrapper = () => {
             schema={serviceSchema}
             formik={formik}
             cancelButton={cancelButton}
+            modalType={modalType}
+
           ></SaloonModal>
         )}
       </>
 
       <DeleteModal
         deleteUserClbk={(e: any) => {
-          deleteUser(e);
+          deleteSaloon(e);
         }}
         openModal={modalShow}
         closeModal={deleteCloseModal}
