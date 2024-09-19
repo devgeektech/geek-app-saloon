@@ -135,12 +135,12 @@ export default function SubCategoryTabs() {
 
   useEffect(() => {    
     if(initialValues) {
-      formik.setFieldValue('categoryId', initialValues.categoryId)
-      formik.setFieldValue('name', initialValues.name)
-      formik.setFieldValue('description', initialValues.description)
-      formik.setFieldValue('image', initialValues.image)
-      formik.setFieldValue('id', initialValues.id)
-      setFile(getImageUrl(initialValues.image))
+      formik.setFieldValue('categoryId', initialValues?.categoryId)
+      formik.setFieldValue('name', initialValues?.name)
+      formik.setFieldValue('description', initialValues?.description)
+      formik.setFieldValue('image', initialValues?.image)
+      formik.setFieldValue('id', initialValues?.id)
+      setFile(getImageUrl(initialValues?.image))
     }
     else {
       setFile("");
@@ -161,7 +161,7 @@ export default function SubCategoryTabs() {
             <Row>
               <Col md={12}>
                 <div className='add-category'>
-                  <h2 className='page_title'>{initialValues.id ? 'Update' : 'Add'} Sub Category</h2>
+                  <h2 className='page_title'>{initialValues?.id ? 'Update' : 'Add'} Sub Category</h2>
                 </div>
               </Col>
               <Col md={4}>

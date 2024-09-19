@@ -83,7 +83,7 @@ const ShopWrapper = () => {
           name: values?.name,
           loc: {
             type: 'Point',
-            coordinates: [values?.longitude, values.latitude]
+            coordinates: [values.latitude, values?.longitude]
           },
           address: {
             city: values?.location
