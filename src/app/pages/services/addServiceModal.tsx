@@ -10,6 +10,7 @@ import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { getImageUrl } from "../../utils/common";
 import { getVendors } from "../../services/_requests";
+import { MyDropzone } from "../../helper/Dropzone";
 
 export const AddServiceModal = (props) => {
   const {
@@ -20,7 +21,9 @@ export const AddServiceModal = (props) => {
     handleFileChange,
     genders,
     cancelButton,
-    file
+    file,
+    changeDropImages,
+    coverImages
   } = props;
   const [subCategories, setSubcategories] = useState([]);
   const [disablesubCategory, setDisablesubCategory] = useState(true);
@@ -46,6 +49,10 @@ export const AddServiceModal = (props) => {
       fetchVendors(lat,lng,limit,skip,searchUser);
     }
   }, [show]);
+
+  const handleDataFromChild = (data) => {
+    changeDropImages(data);
+  };
 
   const handleVendorChange = (e) => {
     const vendorId = e.target.value;
@@ -103,26 +110,31 @@ export const AddServiceModal = (props) => {
   return (
     <Modal className="addServicesModal" show={show} onHide={cancelButton}>
       <FormikProvider value={formik}>
-      <form
+        <form
           onSubmit={(e) => {
             e.preventDefault();
-            formik.handleSubmit(); 
+            formik.handleSubmit();
           }}
         >
           <Modal.Header>
-            <Modal.Title>{formik.values._id ? 'Update Service' : 'Create Service'} </Modal.Title>
-            <button type='button' className='bg-transparent border-0' onClick={cancelButton}
+            <Modal.Title>
+              {formik.values._id ? "Update Service" : "Create Service"}{" "}
+            </Modal.Title>
+            <button
+              type="button"
+              className="bg-transparent border-0"
+              onClick={cancelButton}
             >
               <svg
-                xmlns='http://www.w3.org/2000/svg'
-                width='19'
-                height='19'
-                viewBox='0 0 19 19'
-                fill='none'
+                xmlns="http://www.w3.org/2000/svg"
+                width="19"
+                height="19"
+                viewBox="0 0 19 19"
+                fill="none"
               >
                 <path
-                  d='M7.9193 9.49993L0.327318 17.0919C-0.109199 17.5285 -0.109013 18.2361 0.327318 18.6726C0.763836 19.1091 1.47148 19.1091 1.90798 18.6726L9.49997 11.0806L17.092 18.6726C17.5285 19.1091 18.2361 19.1091 18.6726 18.6726C19.1091 18.2361 19.1091 17.5284 18.6726 17.0919L11.0806 9.49993L18.6726 1.90792C19.1089 1.4714 19.1089 0.763754 18.6726 0.32725C18.2361 -0.109081 17.5285 -0.109081 17.092 0.32725L9.49997 7.91926L1.90798 0.32725C1.47147 -0.109081 0.763821 -0.109081 0.327318 0.32725C-0.109013 0.763769 -0.109013 1.47142 0.327318 1.90792L7.9193 9.49993Z'
-                  fill='#778CA2'
+                  d="M7.9193 9.49993L0.327318 17.0919C-0.109199 17.5285 -0.109013 18.2361 0.327318 18.6726C0.763836 19.1091 1.47148 19.1091 1.90798 18.6726L9.49997 11.0806L17.092 18.6726C17.5285 19.1091 18.2361 19.1091 18.6726 18.6726C19.1091 18.2361 19.1091 17.5284 18.6726 17.0919L11.0806 9.49993L18.6726 1.90792C19.1089 1.4714 19.1089 0.763754 18.6726 0.32725C18.2361 -0.109081 17.5285 -0.109081 17.092 0.32725L9.49997 7.91926L1.90798 0.32725C1.47147 -0.109081 0.763821 -0.109081 0.327318 0.32725C-0.109013 0.763769 -0.109013 1.47142 0.327318 1.90792L7.9193 9.49993Z"
+                  fill="#778CA2"
                 />
               </svg>
             </button>
@@ -131,7 +143,6 @@ export const AddServiceModal = (props) => {
             <div>
               <Row>
                 <Col sm={6}>
-                
                   <div className="fv-row mb-4">
                     <Field
                       name="name"
@@ -142,12 +153,10 @@ export const AddServiceModal = (props) => {
                       component={FieldInputText}
                     />
                   </div>
-                
                   <div className="fv-row mb-4">
-                
                     <Field
                       as="select"
-                      name="category" 
+                      name="category"
                       validate={schema}
                       label="Category"
                       required={true}
@@ -168,11 +177,7 @@ export const AddServiceModal = (props) => {
                       component={FieldSelectInput}
                     />
                   </div>
-              
                 </Col>
-               
-               
-                 
                 <Col sm={6}>
                   <div>
                     <label className="form-label">
@@ -221,7 +226,7 @@ export const AddServiceModal = (props) => {
                       {(file || formik.values.image) && (
                         <img
                           className="w-100 h-100 rounded-2"
-                          src={file ? file: getImageUrl(formik.values.image)}
+                          src={file ? file : getImageUrl(formik.values.image)}
                           alt="UploadImage"
                         />
                       )}
@@ -296,6 +301,29 @@ export const AddServiceModal = (props) => {
                   </div>
                 </Col>
               </Row>
+              <Row>
+                <Col>
+                  <label className="form-label">
+                    <small>Cover Images</small>
+                  </label>
+                  <MyDropzone onSendData={handleDataFromChild} />
+                </Col>
+              </Row>
+              <Row>
+                {coverImages.length > 0 &&
+                  coverImages.map((coverItem: any, index: any) => (
+                    <Col sm={4}>
+                      <div>
+                        <img
+                          // key={index}
+                          className="w-100 h-100 rounded-2"
+                          src={getImageUrl(coverItem)}
+                          alt={`UploadImage-${index}`}
+                        />
+                      </div>
+                    </Col>
+                  ))}
+              </Row>
             </div>
           </Modal.Body>
           <Modal.Footer>
@@ -311,7 +339,8 @@ export const AddServiceModal = (props) => {
                 className="blackBtn btn-sm w-250"
                 type="submit"
                 disabled={formik.isSubmitting && !formik.isValid}
-              >{formik.values._id ? 'Update Service' : 'Create Service'} 
+              >
+                {formik.values._id ? "Update Service" : "Create Service"}
                 {/* {!serviceState.loading && (
                   <span className="indicator-label">Save</span>
                 )} */}

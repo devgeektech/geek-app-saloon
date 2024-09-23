@@ -40,6 +40,7 @@ import { REQUIRED, SALOON_ID_REQUIRED } from "../../utils/const";
 const ServiceWrapper = () => {
   const dispatch = useDispatch();
   const intl = useIntl();
+  const [coverImages ,setCoverImages] = useState([])
   const [show, setShow] = useState(false);
   const [file, setFile] = useState("");
   const [searchValue, setSearchValue] = useState('');
@@ -106,12 +107,11 @@ const ServiceWrapper = () => {
         if(!saloonId) {
           toast.success(SALOON_ID_REQUIRED);
         }
-        const serviceForm = {
+        const serviceForm:any = {
           name: values.name,
           image: values.image,
           category: values.category,
           subcategory: values.subcategory,
-          // saloon: values.saloon,
           gender: values.gender,
           description: values.description,
           cost: values.cost,
@@ -119,6 +119,9 @@ const ServiceWrapper = () => {
           minutes: values.minutes,
           saloonId: saloonId
         };
+        if(coverImages.length) {
+          serviceForm.coverImages = coverImages
+        } 
         if (values._id) {
           dispatch(editServiceRequest({ ...serviceForm, _id: values._id }));
           dispatch(closeModalRequest({}));
@@ -139,6 +142,10 @@ const ServiceWrapper = () => {
       }
     },
   });
+
+  const onChangeDropImages = (value) => {
+    setCoverImages(value)
+  }
 
   const handleFileChange = async (e) => {
     if (e.target?.files && e.target?.files.length > 0) {
@@ -257,6 +264,8 @@ const ServiceWrapper = () => {
             cancelButton={cancelButton}
             handleFileChange={handleFileChange}
             genders={tags}
+            changeDropImages={onChangeDropImages}
+            coverImages = {coverImages}
           ></AddServiceModal>
         )}
       </>

@@ -49,7 +49,7 @@
     const { REACT_APP_IMAGE_URL } = process.env;
     if (imageUrl.startsWith('/')) {
       return REACT_APP_IMAGE_URL + imageUrl.substring(1);
-      } else if (imageUrl.startsWith('upload')) {
+      } else if (imageUrl.startsWith('upload')) {  
       return REACT_APP_IMAGE_URL + imageUrl;
     } 
     else {
