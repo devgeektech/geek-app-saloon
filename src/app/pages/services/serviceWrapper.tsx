@@ -89,7 +89,7 @@ const ServiceWrapper = () => {
 
   const serviceSchema = Yup.object().shape({
     name: Yup.string().required(REQUIRED_FIELD),
-    image: Yup.string().required(REQUIRED_FIELD),
+    image: Yup.string().optional(),
     category: Yup.string().required(REQUIRED_FIELD),
     gender: Yup.array().min(1).required(REQUIRED_FIELD),
     description: Yup.string().required(REQUIRED_FIELD),
