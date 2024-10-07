@@ -26,18 +26,22 @@ import { addStaffRequest, addStaffSuccess, getStaffRequest, setStaffId, updateSt
 import StaffModal from "./addStaffModal";
 import { REQUIRED_FIELD } from "../../utils/ErrorMessages";
 import SlotsDrawer from "./slotsDrawer";
+import EditAppointment from "./editAppointmentModal";
+import EditLeave from "./editLeaveModal";
 
 const StaffWrapper = () => {
   const dispatch = useDispatch();
   const intl = useIntl();
   const [file, setFile] = useState<File | null>(null);
   const [modalShow, setModalShow] = useState<boolean>(false);
+  const [editAppointmentModalShow, setEditAppointmentModalShow] = useState<boolean>(false);
+  const [editLeaveModalShow, setEditLeaveModalShow] = useState<boolean>(false);
   const [id, setId] = useState<string>("");
   const [selectedStaff, setSelectedStaff] = useState<any>();
   const [showDeleteModal, setShowDeleteModal] = useState<boolean>(false);
   const [pageNumber, setPageNumber] = useState<number>(1);
   const [searchValue, setSearchValue] = useState<string>('');
-  const { staffList, totalRecord, loading, staffId } = useSelector((state: any) => state.staff);
+  let { staffList, totalRecord, loading, staffId, staffSlots } = useSelector((state: any) => state.staff);
   const { saloonId } = useSelector((state: any) => state.saloon);
   const [editMode, setEditMode] = useState<boolean>(false);
 
@@ -55,6 +59,25 @@ const StaffWrapper = () => {
     qualification: '',
   }
 
+  const initialLeaveValues = {
+    leaveType: '',
+  }
+
+  const LeavesEnums = [
+    { value: "full", label: "Full Day" },
+    { value: "first", label: "First Half" },
+    { value: "second", label: "Second Half" },
+    { value: "custom", label: "Custom"}
+  ];
+
+  if(staffSlots.length > 0){
+    staffSlots = staffSlots.map(item => ({
+      ...item,
+      label: item.start,
+      name: item.start
+    }));
+  }
+  
   const staffSchema = Yup.object().shape({
     name: Yup.string().required(REQUIRED_FIELD),
     image: Yup.mixed(),
@@ -98,6 +121,34 @@ const StaffWrapper = () => {
     },
   });
 
+  const leaveSchema = Yup.object().shape({
+    leaveType: Yup.string().required(REQUIRED_FIELD),
+    start: Yup.string().optional(),
+    end: Yup.string().optional()
+  });
+
+  const leaveFormik: any = useFormik({
+    initialValues,
+    enableReinitialize: true,
+    validationSchema: leaveSchema,
+    validateOnChange: false,
+    validateOnBlur: false,
+    onSubmit: async (values, { setStatus, setSubmitting }) => {
+      try {
+       console.log(values,'>>> Formik on Submit  >>>')
+      }
+      catch (error) {
+        console.log(error,">>>> Formik on Error >>>>")
+        console.error(error)
+      }
+      finally {
+        console.log(">>>> Formik on Finally >>>>")
+
+        setSubmitting(false);
+      }
+    },
+  });
+
   const upload = async (file: File): Promise<string> => {
     try {
       const formData = new FormData();
@@ -134,6 +185,14 @@ const StaffWrapper = () => {
     setModalShow(false);
     formik.resetForm();
   };
+
+  const closeEditAppointment = () => {
+    setEditAppointmentModalShow(false);
+  }
+
+  const closeEditLeave = () => {
+    setEditLeaveModalShow(false);
+  }
 
   const closeDeleteModal = () => {
     setShowDeleteModal(false);
@@ -209,10 +268,13 @@ const StaffWrapper = () => {
               Staff
             </h2>
           </div>
-          <button onClick={() => {
-            setModalShow(true);
-            dispatch(setStaffId(null));
-          }} className="yellowBtn">
+          <button
+            onClick={() => {
+              setModalShow(true);
+              dispatch(setStaffId(null));
+            }}
+            className="yellowBtn"
+          >
             Add
           </button>
         </div>
@@ -241,7 +303,8 @@ const StaffWrapper = () => {
                   <th>Age</th>
                   <th>About us</th>
                   <th>Qualification</th>
-                  <th>Leave Status</th>
+                  {/* <th>Leave Status</th> */}
+                  <th>Leave</th>
                   <th>Action</th>
                 </tr>
               </thead>
@@ -250,43 +313,80 @@ const StaffWrapper = () => {
                   staffList.map((item: any, index: number) => (
                     <tr key={item?._id}>
                       <td>{index + 1}</td>
-                      <td>{capitalizeFirstLetter(item?.name || 'N/A')}</td>
+                      <td>{capitalizeFirstLetter(item?.name || "N/A")}</td>
                       <td>
                         <img
                           className="profileImg"
-                          src={item.image ? getImageUrl(item.image) : dummyImg}
+                          src={
+                            item && item.image
+                              ? getImageUrl(item.image)
+                              : dummyImg
+                          }
                           alt=""
                         />
                       </td>
-                      <td>{item?.gender || 'N/A'}</td>
-                      <td>{item?.age || 'N/A'}</td>
-                      <td>{capitalizeFirstLetter(item?.aboutUs || 'N/A')}</td>
-                      <td>{capitalizeFirstLetter(item?.qualification || 'N/A')}</td>
-
-                      <td className={item?.onLeave ? 'inactive' : 'active'}>
-                        <label className='switch' title={item?.onLeave ? 'On Leave' : ''}>
-                          <input
-                            type='checkbox'
-                            checked={item?.onLeave}
-                            onChange={() => handleToggleChange(item._id, item?.onLeave)}
-                          />
-                          <span className='slider round'></span>
-                        </label>
+                      <td>{item?.gender || "N/A"}</td>
+                      <td>{item?.age || "N/A"}</td>
+                      <td>{capitalizeFirstLetter(item?.aboutUs || "N/A")}</td>
+                      <td>
+                        {capitalizeFirstLetter(item?.qualification || "N/A")}
                       </td>
+
+                      {/* <td className={item?.onLeave ? "inactive" : "active"}>
+                        <label
+                          className="switch"
+                          title={item?.onLeave ? "On Leave" : ""}
+                        >
+                          <input
+                            type="checkbox"
+                            checked={item?.onLeave}
+                            onChange={() =>
+                              handleToggleChange(item._id, item?.onLeave)
+                            }
+                          />
+                          <span className="slider round"></span>
+                        </label>
+                      </td> */}
+
+                      <td>
+                      <button
+                            className="editBtn"
+                            onClick={() => setEditLeaveModalShow(true)}
+                          >
+                            <img src={pencilEditIcon} alt="pencilEditIcon" />
+                          </button>
+                      </td>        
 
                       <td>
                         <div className="d-flex">
-                          <button title="Slots" className="editBtn" onClick={()=>openSlot(item)}>
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-clock-history" viewBox="0 0 16 16">
+                          <button
+                            title="Slots"
+                            className="editBtn"
+                            onClick={() => setEditAppointmentModalShow(true)}
+                          >
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              width="16"
+                              height="16"
+                              fill="currentColor"
+                              className="bi bi-clock-history"
+                              viewBox="0 0 16 16"
+                            >
                               <path d="M8.515 1.019A7 7 0 0 0 8 1V0a8 8 0 0 1 .589.022zm2.004.45a7 7 0 0 0-.985-.299l.219-.976q.576.129 1.126.342zm1.37.71a7 7 0 0 0-.439-.27l.493-.87a8 8 0 0 1 .979.654l-.615.789a7 7 0 0 0-.418-.302zm1.834 1.79a7 7 0 0 0-.653-.796l.724-.69q.406.429.747.91zm.744 1.352a7 7 0 0 0-.214-.468l.893-.45a8 8 0 0 1 .45 1.088l-.95.313a7 7 0 0 0-.179-.483m.53 2.507a7 7 0 0 0-.1-1.025l.985-.17q.1.58.116 1.17zm-.131 1.538q.05-.254.081-.51l.993.123a8 8 0 0 1-.23 1.155l-.964-.267q.069-.247.12-.501m-.952 2.379q.276-.436.486-.908l.914.405q-.24.54-.555 1.038zm-.964 1.205q.183-.183.35-.378l.758.653a8 8 0 0 1-.401.432z" />
                               <path d="M8 1a7 7 0 1 0 4.95 11.95l.707.707A8.001 8.001 0 1 1 8 0z" />
                               <path d="M7.5 3a.5.5 0 0 1 .5.5v5.21l3.248 1.856a.5.5 0 0 1-.496.868l-3.5-2A.5.5 0 0 1 7 9V3.5a.5.5 0 0 1 .5-.5" />
                             </svg>
                           </button>
-                          <button className='editBtn' onClick={() => editStaff(item)}>
-                            <img src={pencilEditIcon} alt='pencilEditIcon' />
+                          <button
+                            className="editBtn"
+                            onClick={() => editStaff(item)}
+                          >
+                            <img src={pencilEditIcon} alt="pencilEditIcon" />
                           </button>
-                          <button onClick={() => deleteOpenModal(item._id)} className="deleteBtn">
+                          <button
+                            onClick={() => deleteOpenModal(item._id)}
+                            className="deleteBtn"
+                          >
                             <DeleteIcon />
                           </button>
                         </div>
@@ -294,7 +394,7 @@ const StaffWrapper = () => {
                     </tr>
                   ))
                 ) : (
-                  <tr >
+                  <tr>
                     <td colSpan={12}>
                       <NoDataFound />
                     </td>
@@ -325,10 +425,34 @@ const StaffWrapper = () => {
         />
       )}
 
-      {
-        selectedStaff && 
-          <SlotsDrawer show={true} staff={selectedStaff?.staff} slot={selectedStaff?.slot} close={()=>setSelectedStaff(undefined)} />
-      }
+      {editAppointmentModalShow && (
+        <EditAppointment 
+         show = {editAppointmentModalShow}
+         cancelButton={closeEditAppointment}> 
+        </EditAppointment>
+      )}
+
+      {editLeaveModalShow && (
+        <EditLeave
+         show = {editLeaveModalShow}
+         cancelButton={closeEditLeave}
+         schema={leaveSchema}
+         formik={leaveFormik}
+         leaveType = {LeavesEnums}
+         staffList = {staffList}
+         defaultSlots = {staffSlots}
+         > 
+        </EditLeave>
+      )}
+
+      {selectedStaff && (
+        <SlotsDrawer
+          show={true}
+          staff={selectedStaff?.staff}
+          slot={selectedStaff?.slot}
+          close={() => setSelectedStaff(undefined)}
+        />
+      )}
 
       <DeleteModal
         deleteUserClbk={(e: any) => {

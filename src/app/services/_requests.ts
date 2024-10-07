@@ -30,7 +30,7 @@ export const COUPON = `${API_URL}/coupon`;
 export const COUPONSTATUS = `${API_URL}/coupon/status`;
 export const APPOINTMENT = `${API_URL}/booking`;
 export const BOOKING = `${API_URL}/booking`;
-
+export const DEFAULTSLOTS = `${API_URL}/booking/admin/getDefaultSlots`
 
 // Server should return AuthModel
 export function login(email: any, password: any) {
@@ -213,6 +213,10 @@ export function addStaff(body: any) {
 
 export function getAllStaff(search: string, skip: number, limit: number) {
   return axios.get(STAFF + `?search=${search}&skip=${skip}&limit=${limit}`, {})
+}
+
+export function getDefaultStaffSlots(data:string) {
+  return axios.get(DEFAULTSLOTS, {})
 }
 
 export function getStaff(id:any) {

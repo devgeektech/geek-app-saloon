@@ -8,7 +8,7 @@ import {closeModalSaga, openModalSaga} from './modalSaga'
 import { addBannerSaga, deleteBannerSaga, getBannerSaga, updateBannerSaga } from './bannerSaga'
 import { addSaloonSaga, editSaloonSaga, getSaloonSaga } from './saloonSaga'
 import { FETCH_LIST_REQUEST } from '../actions/serviceAction'
-import { addStaffSaga, deleteStaffSaga, getStaffSaga, updateStaffSaga, updateStaffStatusSaga } from './staffSaga'
+import { addStaffSaga, deleteStaffSaga, getStaffSaga, updateStaffSaga, updateStaffStatusSaga, getDefaultSlotsSaga } from './staffSaga'
 import { addCouponSaga, deleteCouponSaga, getCouponSaga, updateCouponSaga, updateCouponStatusSaga } from './couponSaga'
 import { addAppointmentSaga, deleteAppointmentSaga, getAppointmentSaga, updateAppointmentSaga, updateAppointmentStatusSaga } from './appointmentSaga'
 
@@ -63,6 +63,7 @@ function* rootSaga() {
    yield takeLatest('staff/deleteStaffRequest', deleteStaffSaga);
    yield takeLatest('staff/updateStaffRequest', updateStaffSaga);
    yield takeLatest('staff/updateStaffStatusRequest', updateStaffStatusSaga);
+   yield takeLatest('staff/getDefaultStaffRequest', getDefaultSlotsSaga)
 
    // Coupon request
 

@@ -3,6 +3,7 @@ import { toast } from "react-toastify";
 
 const initialState = {
     staffList: [],
+    staffSlots: [],
     error: null,
     loading: false,
     skip: 0,
@@ -75,6 +76,17 @@ const staffSlice = createSlice({
             state.error = action.payload;
             state.loading = false;
         },
+        getDefaultStaffRequest: (state, action) => {
+            return { ...state, loading: true, error: null };
+        },
+        getDefaultStaffSlotsSuccess: (state, action) => {
+            state.loading = false;
+            state.staffSlots = action.payload.data.data;
+        },
+        getDefaultStaffSlotsFailure: (state, action) => {
+            state.error = action.payload;
+            state.loading = false;
+        },
         updateStaffRequest: (state) => {
             state.loading = true;
             state.error = null;
@@ -132,7 +144,10 @@ export const {
     updateStaffStatusRequest,
     updateStaffStatusSuccess,
     updateStaffStatusFailure,
-    setStaffId
+    setStaffId,
+    getDefaultStaffRequest,
+    getDefaultStaffSlotsSuccess,
+    getDefaultStaffSlotsFailure
 } = staffSlice.actions;
 
 export default staffSlice.reducer;

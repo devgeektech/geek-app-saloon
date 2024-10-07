@@ -1,0 +1,37 @@
+.apply-leave-form {
+    max-width: 600px;
+    margin: 0 auto;
+    border: 1px solid #ebebeb;
+    border-radius: 10px;
+    background-color: #fff;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  .apply-leave-form h4 {
+    margin-bottom: 20px;
+  }
+  
+  .apply-leave-form .form-group {
+    margin-bottom: 20px;
+  }
+  
+  .time-slots {
+    max-height: 150px;
+    overflow-y: auto;
+  }
+  
+  .time-slot-btn {
+    min-width: 100px;
+    border-radius: 8px;
+  }
+  
+  .button-group {
+    display: flex;
+    justify-content: flex-end;
+  }
+  
+  .button-group button {
+    width: 120px;
+    height: 45px;
+    border-radius: 8px;
+  }

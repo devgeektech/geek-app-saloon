@@ -28,3 +28,43 @@
     }
    
 }
+
+
+.time-slot {
+    border: 1px solid #e0e0e0;
+    border-radius: 5px;
+    padding: 10px;
+    text-align: center;
+    background-color: #fdfdfd;
+    position: relative;
+  }
+  
+  .time-slot.available {
+    background-color: #fffaf0;
+  }
+  
+  .time-slot.cancelled {
+    background-color: #ffe4e1;
+  }
+  
+  .time-header {
+    font-weight: bold;
+    font-size: 1.1rem;
+  }
+  
+  .edit-icon {
+    color: #f0ad4e;
+    cursor: pointer;
+  }
+  
+  .status {
+    font-size: 0.9rem;
+    color: #555;
+    margin-top: 5px;
+  }
+  
+  @media (max-width: 768px) {
+    .time-slot {
+      font-size: 0.9rem;
+    }
+  }
