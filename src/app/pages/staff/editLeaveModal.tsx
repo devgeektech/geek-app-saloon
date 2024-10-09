@@ -22,7 +22,6 @@ import { getDefaultStaffRequest } from "../../redux/reducer/staffSlice";
 
 const EditLeave = (props: any) => {
   const { show, cancelButton, categories, formik, schema, leaveType, staffList, defaultSlots } = props;
-  console.log(defaultSlots,">>> defaul  ")
   const dispatch = useDispatch();
   useEffect(()=>{
     dispatch(getDefaultStaffRequest({}));
@@ -39,26 +38,40 @@ const EditLeave = (props: any) => {
     end : ''
   })
 
+  useEffect(()=>{
+    formik.setFieldValue('date', moment(dateState.date).format('YY-MM-DD'))
+  },[dateState])
+
   const handleChangeDate = (date, event) => {
-    setDateState({ date: new Date(date) });
+    setDateState({ date:new Date(date)});
+    formik.setFieldValue('date', moment(date).format('YY-MM-DD'))
   };
 
   const handleLeaveTypeChange = (e) => {
     setSelectedLeaveType(e.target.value)
+    if(e.target.value != 'custom') {
+      formik.setFieldValue('start', '');
+      formik.setFieldValue('end', '');
+      formik.setFieldValue('startIndex', -1)
+      formik.setFieldValue('endIndex', -1)
+    }
+
+    formik.setFieldValue('leaveType', e.target.value);
   };
 
   const handleStartSlotChange = (e) => {
-    setCustomSlotsDuration({...customeSlotsDuration,start:e.target.value})
-    console.log(customeSlotsDuration, ">>> End Slot Value value >>>>");
-    formik.setFieldValue('start', e.target.value);
+    setCustomSlotsDuration({...customeSlotsDuration, start: e.target.value})
+    const index = defaultSlots.findIndex(item => item._id === e.target.value);
+    console.log(defaultSlots,">> default")
+    formik.setFieldValue('start', defaultSlots[index].start);
+    formik.setFieldValue('startIndex', index);
   };
 
-
   const handleEndSlotChange = (e) => {
-
-    setCustomSlotsDuration({...customeSlotsDuration,end:e.target.value})
-    console.log(customeSlotsDuration, ">>> End Slot Value value >>>>");
-    formik.setFieldValue('end', e.target.value);
+    setCustomSlotsDuration({...customeSlotsDuration, end: e.target.value})
+    const index = defaultSlots.findIndex(item => item._id === e.target.value);
+    formik.setFieldValue('end', defaultSlots[index].start);
+    formik.setFieldValue('endIndex', index);
   };
 
   return (

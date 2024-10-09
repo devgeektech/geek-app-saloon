@@ -91,6 +91,20 @@ const staffSlice = createSlice({
             state.loading = true;
             state.error = null;
         },
+        updateLeaveStaffRequest: (state) => {
+            state.loading = true;
+            state.error = null;
+        },
+        updateLeaveStaffSuccess: (state: any, action) => {
+            toast.success(action.payload.responseMessage);
+            state.loading = false;
+            state.error = null;
+        },
+        updateLeaveStaffFailure: (state, action) => {
+            toast.error(action.payload.responseMessage);
+            state.error = action.payload;
+            state.loading = false;
+        },
         updateStaffSuccess: (state: any, action) => {
             toast.success(action.payload.responseMessage);
             state.loading = false;
@@ -147,7 +161,10 @@ export const {
     setStaffId,
     getDefaultStaffRequest,
     getDefaultStaffSlotsSuccess,
-    getDefaultStaffSlotsFailure
+    getDefaultStaffSlotsFailure,
+    updateLeaveStaffRequest,
+    updateLeaveStaffSuccess,
+    updateLeaveStaffFailure
 } = staffSlice.actions;
 
 export default staffSlice.reducer;

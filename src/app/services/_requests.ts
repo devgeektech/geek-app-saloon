@@ -2,6 +2,7 @@ import axios from 'axios'
 import { AuthModel, UserModel, CategoryModel } from './_models'
 import { setSelectedTab } from '../redux/reducer/serviceSlice'
 const API_URL = process.env.REACT_APP_API_URL
+const APPOINTMNET_API_URL = process.env.REACT_APP_APPOINTMENT_API_URL
 export const GET_USER_BY_ACCESSTOKEN_URL = `${API_URL}/auth/verify_token`
 export const LOGIN_URL = `${API_URL}/login`
 export const REGISTER_URL = `${API_URL}/register`
@@ -26,6 +27,7 @@ export const DELETE_SERVICE = `${API_URL}/product`;
 export const DELETE_BANNER = `${API_URL}/banner`;
 export const STAFF = `${API_URL}/staff`;
 export const STAFFStatus = `${API_URL}/staff/status`;
+export const STAFFLEAVE = `${APPOINTMNET_API_URL}/booking/admin/updateStaffLeaves`
 export const COUPON = `${API_URL}/coupon`;
 export const COUPONSTATUS = `${API_URL}/coupon/status`;
 export const APPOINTMENT = `${API_URL}/booking`;
@@ -240,6 +242,10 @@ export function updateStaff(id: string, payload) {
 
 export function updateStaffStatus(id: string, payload) {
   return axios.put(STAFFStatus + `/${id}`, payload)
+}
+
+export function updateLeaveStaff(payload){
+  return axios.put(STAFFLEAVE, payload)
 }
 
 // ***** coupon services *********

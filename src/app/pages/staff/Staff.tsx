@@ -22,7 +22,7 @@ import { addStaff, commonFileUpload, deleteStaff, getStaffSlots, updateStaff, up
 import DeleteIcon from "../../components/common/Icons/DeleteIcon";
 import { addBannerRequest, deleteBannerRequest, getBannerRequest, setBannerId } from "../../redux/reducer/bannerSlice";
 import { REQUIRED, SUCCESS } from "../../utils/const";
-import { addStaffRequest, addStaffSuccess, getStaffRequest, setStaffId, updateStaffRequest, updateStaffSuccess } from "../../redux/reducer/staffSlice";
+import { addStaffRequest, addStaffSuccess, getStaffRequest, setStaffId, updateLeaveStaffRequest, updateStaffRequest, updateStaffSuccess } from "../../redux/reducer/staffSlice";
 import StaffModal from "./addStaffModal";
 import { REQUIRED_FIELD } from "../../utils/ErrorMessages";
 import SlotsDrawer from "./slotsDrawer";
@@ -44,7 +44,7 @@ const StaffWrapper = () => {
   let { staffList, totalRecord, loading, staffId, staffSlots } = useSelector((state: any) => state.staff);
   const { saloonId } = useSelector((state: any) => state.saloon);
   const [editMode, setEditMode] = useState<boolean>(false);
-
+  const [selectedStaffId, setSelectedStaffId] = useState('');
   const limit = 10;
   const skip = (pageNumber - 1) * limit;
 
@@ -61,6 +61,11 @@ const StaffWrapper = () => {
 
   const initialLeaveValues = {
     leaveType: '',
+    start: '',
+    end:'',
+    startIndex: -1,
+    endIndex: -1,
+    date: ''
   }
 
   const LeavesEnums = [
@@ -74,7 +79,8 @@ const StaffWrapper = () => {
     staffSlots = staffSlots.map(item => ({
       ...item,
       label: item.start,
-      name: item.start
+      name: item.start,
+      _id: item.start
     }));
   }
   
@@ -124,21 +130,42 @@ const StaffWrapper = () => {
   const leaveSchema = Yup.object().shape({
     leaveType: Yup.string().required(REQUIRED_FIELD),
     start: Yup.string().optional(),
-    end: Yup.string().optional()
+    end: Yup.string().optional(),
+    startIndex: Yup.number().optional(),
+    endIndex: Yup.number().optional(),
+    date: Yup.string().optional()
   });
 
   const leaveFormik: any = useFormik({
-    initialValues,
+    initialValues: initialLeaveValues,
     enableReinitialize: true,
     validationSchema: leaveSchema,
     validateOnChange: false,
     validateOnBlur: false,
     onSubmit: async (values, { setStatus, setSubmitting }) => {
       try {
-       console.log(values,'>>> Formik on Submit  >>>')
+       if(values.leaveType == '' && selectedStaffId == '') return
+        if(values.leaveType == 'custom' && values.start != '' && values.end != '' && values.startIndex >= 0 && values.endIndex >= 0 ){
+        let payload:any = {
+          date: values.date,
+          staff: selectedStaffId,
+          type: values.leaveType,
+          start: values.startIndex,
+          end: values.endIndex,
+        }
+        console.log(payload, " payload >>>>")          
+          dispatch(updateLeaveStaffRequest(payload));
+        }
+        else {
+          let payload:any = {
+            date: values.date,
+            staff: selectedStaffId,
+            type: values.leaveType,
+          }
+          dispatch(updateLeaveStaffRequest(payload));
+        }
       }
       catch (error) {
-        console.log(error,">>>> Formik on Error >>>>")
         console.error(error)
       }
       finally {
@@ -351,7 +378,7 @@ const StaffWrapper = () => {
                       <td>
                       <button
                             className="editBtn"
-                            onClick={() => setEditLeaveModalShow(true)}
+                            onClick={() => {setEditLeaveModalShow(true); setSelectedStaffId(item._id)}}
                           >
                             <img src={pencilEditIcon} alt="pencilEditIcon" />
                           </button>
