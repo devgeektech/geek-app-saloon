@@ -75,7 +75,7 @@ const StaffWrapper = () => {
     { value: "custom", label: "Custom"}
   ];
 
-  if(staffSlots.length > 0){
+  if(staffSlots && staffSlots.length > 0){
     staffSlots = staffSlots.map(item => ({
       ...item,
       label: item.start,
