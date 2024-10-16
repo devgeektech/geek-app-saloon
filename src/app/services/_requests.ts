@@ -26,6 +26,7 @@ export const Edit_SALOON = `${API_URL}/vendor`;
 export const DELETE_SERVICE = `${API_URL}/product`;
 export const DELETE_BANNER = `${API_URL}/banner`;
 export const STAFF = `${API_URL}/staff`;
+export const STAFFAPPOINTMENT = `${APPOINTMNET_API_URL}/staff`
 export const STAFFStatus = `${API_URL}/staff/status`;
 export const STAFFLEAVE = `${APPOINTMNET_API_URL}/booking/admin/updateStaffLeaves`
 export const COUPON = `${API_URL}/coupon`;
@@ -210,7 +211,7 @@ export function deleteService(id: string) {
 
 // ========= staff request
 export function addStaff(body: any) {
-  return axios.post(STAFF, body)
+  return axios.post(STAFFAPPOINTMENT, body)
 }
 
 export function getAllStaff(search: string, skip: number, limit: number) {
