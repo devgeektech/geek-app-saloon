@@ -33,7 +33,7 @@ export const COUPON = `${API_URL}/coupon`;
 export const COUPONSTATUS = `${API_URL}/coupon/status`;
 export const APPOINTMENT = `${API_URL}/booking`;
 export const BOOKING = `${API_URL}/booking`;
-export const DEFAULTSLOTS = `${API_URL}/booking/admin/getDefaultSlots`
+export const DEFAULTSLOTS = `http://122.180.29.167:3002/appointment/api/v1/booking/admin/getDefaultSlots`
 
 // Server should return AuthModel
 export function login(email: any, password: any) {
