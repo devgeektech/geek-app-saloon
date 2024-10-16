@@ -2,7 +2,7 @@ import axios from 'axios'
 import { AuthModel, UserModel, CategoryModel } from './_models'
 import { setSelectedTab } from '../redux/reducer/serviceSlice'
 const API_URL = process.env.REACT_APP_API_URL
-const APPOINTMNET_API_URL = process.env.REACT_APP_APPOINTMENT_API_URL
+const APPOINTMNET_API_URL = process.env.REACT_APPOINTMENT_APP_API_URL
 export const GET_USER_BY_ACCESSTOKEN_URL = `${API_URL}/auth/verify_token`
 export const LOGIN_URL = `${API_URL}/login`
 export const REGISTER_URL = `${API_URL}/register`
