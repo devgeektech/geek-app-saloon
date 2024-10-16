@@ -1,68 +1,83 @@
-import { useIntl } from 'react-intl'
-import { PageTitle } from '../../../_metronic/layout/core'
-import coupon from '../../../_metronic/images/coupon.svg'
-import searchIcon from '../../../_metronic/images/searchIcon.svg'
-import dummyImg from '../../../_metronic/images/dummy.webp'
-import { addSaloon, deleteVender, getSaloonById, getVendors } from '../../services/_requests'
-import Pagination from '../../components/common/pagination'
-import React, { useEffect, useState } from 'react'
-import pencilEditIcon from '../../../_metronic/images/pencilEditIcon.svg'
-import deleteIcon from '../../../_metronic/images/deleteIcon.svg'
-import './style.scss'
-import DeleteModal from '../../components/common/modal/DeleteModal'
-import './style.scss'
-import Form from 'react-bootstrap/Form'
-import '../appointment/style.scss'
-import { Col, Row, Table, } from 'react-bootstrap'
-import Modal from 'react-bootstrap/Modal'
-import { toast } from 'react-toastify'
-import { useFormik } from 'formik'
-import * as Yup from 'yup'
-import clsx from 'clsx'
-import { commonFileUpload } from '../../services/_requests'
-import NoDataFound from '../../components/common/noDataFound/NoDataFound'
-import { useDebounce } from '../../../_metronic/helpers'
-import { capitalizeFirstLetter, fetchLocationFromLatLng, getImageUrl } from '../../utils/common'
-import ReactGoogleAutocomplete from 'react-google-autocomplete'
-import SaloonModal from './addSaloonModal'
-import { useDispatch, useSelector } from 'react-redux';
-import { addSaloonRequest, editSaloonRequest, getSaloonRequest } from '../../redux/reducer/saloonSlice'
-import { closeModalRequest } from '../../redux/reducer/modalSlice'
-import { resetServiceForm } from '../../redux/reducer/serviceSlice'
-import { ADD, EDIT, INVALID_PHONE_NUMBER, PHONE_REGEX } from '../../utils/const'
-import { REQUIRED_FIELD } from '../../utils/ErrorMessages'
-
+import { useIntl } from "react-intl";
+import { PageTitle } from "../../../_metronic/layout/core";
+import coupon from "../../../_metronic/images/coupon.svg";
+import searchIcon from "../../../_metronic/images/searchIcon.svg";
+import dummyImg from "../../../_metronic/images/dummy.webp";
+import {
+  deleteVender,
+  getSaloonById,
+} from "../../services/_requests";
+import Pagination from "../../components/common/pagination";
+import React, { useEffect, useState } from "react";
+import pencilEditIcon from "../../../_metronic/images/pencilEditIcon.svg";
+import deleteIcon from "../../../_metronic/images/deleteIcon.svg";
+import "./style.scss";
+import DeleteModal from "../../components/common/modal/DeleteModal";
+import "./style.scss";
+import "../appointment/style.scss";
+import { Table } from "react-bootstrap";
+import { toast } from "react-toastify";
+import { useFormik } from "formik";
+import * as Yup from "yup";
+import NoDataFound from "../../components/common/noDataFound/NoDataFound";
+import { useDebounce } from "../../../_metronic/helpers";
+import {
+  capitalizeFirstLetter,
+  getImageUrl,
+} from "../../utils/common";
+import SaloonModal from "./addSaloonModal";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  addSaloonRequest,
+  editSaloonRequest,
+  getSaloonRequest,
+  setSaloonId,
+} from "../../redux/reducer/saloonSlice";
+import { closeModalRequest } from "../../redux/reducer/modalSlice";
+import { resetServiceForm } from "../../redux/reducer/serviceSlice";
+import {
+  ADD,
+  EDIT,
+  INVALID_PHONE_NUMBER,
+  PHONE_REGEX,
+} from "../../utils/const";
+import { REQUIRED_FIELD } from "../../utils/ErrorMessages";
+import { setRequestStatus } from "../../redux/reducer/helperSlice";
 
 const ShopWrapper = () => {
   const dispatch = useDispatch();
-  const { saloonList, loading, totalRecord} = useSelector((state: any) => state.saloon);
-  const [saloonId, setSaloonId]= useState('');
-  const intl = useIntl()
-  const [vendors, setVendors] = useState([])
-  const [lat, setLat] = useState(30.741482)
-  const [lng, setLang] = useState(76.768066)
-  const [limit, setLimit] = useState(10)
-  const [skip, setSkip] = useState(0)
+  const { saloonList, loading, totalRecord, saloonId } = useSelector(
+    (state: any) => state.saloon
+  );
+  const {requestStatus} = useSelector(
+    (state: any) => state.helper
+  );
+  const intl = useIntl();
+  const [vendors, setVendors] = useState([]);
+  const [lat, setLat] = useState(30.741482);
+  const [lng, setLang] = useState(76.768066);
+  const [limit, setLimit] = useState(10);
+  const [skip, setSkip] = useState(0);
   const [modalShow, setModalShow] = useState(false);
   const [deleteUserId, setDeleteUserId] = useState("");
   const [searchUser, setSearchUser] = useState("");
   const [show, setShow] = useState(false);
-  const [modalType, setModalType] = useState('Add');
+  const [modalType, setModalType] = useState("Add");
   const [debounceVal, setDebounceVal] = useState("");
-
+  const debounceValue = useDebounce(searchUser, 1000);
+  
   useEffect(() => {
-    dispatch(getSaloonRequest({ lat, lng, skip, limit, searchUser }));
+      dispatch(getSaloonRequest({ lat, lng, skip, limit, searchUser }));
   }, [skip, debounceVal]);
 
-
   const initialValues = {
-    name: '',
-    image: '',
-    location: '',
-    latitude: '',
-    longitude: '',
-    phone: ''
-  }
+    name: "",
+    image: "",
+    location: "",
+    latitude: "",
+    longitude: "",
+    phone: "",
+  };
 
   const serviceSchema = Yup.object().shape({
     name: Yup.string().required(REQUIRED_FIELD),
@@ -72,7 +87,7 @@ const ShopWrapper = () => {
     phone: Yup.string()
       .matches(PHONE_REGEX, INVALID_PHONE_NUMBER)
       .required(REQUIRED_FIELD),
-  })
+  });
 
   const formik = useFormik({
     initialValues,
@@ -82,21 +97,25 @@ const ShopWrapper = () => {
         let reqObj: any = {
           name: values?.name,
           loc: {
-            type: 'Point',
-            coordinates: [values.latitude, values?.longitude]
+            type: "Point",
+            coordinates: [values.latitude, values?.longitude],
           },
           address: {
-            city: values?.location
+            city: values?.location,
           },
-          phone: values?.phone
-        }
+          phone: values?.phone,
+        };
         if (modalType == ADD) {
-           dispatch(addSaloonRequest(reqObj));
+          dispatch(addSaloonRequest(reqObj));
         } else {
-          reqObj['id'] = saloonId;
+          reqObj["id"] = saloonId;
           dispatch(editSaloonRequest(reqObj));
         }
+        setTimeout(()=>{
+          dispatch(getSaloonRequest({ lat, lng, skip, limit, searchUser }));
+        },1000)       
         setShow(false);
+        dispatch(setRequestStatus(false))
         formik.resetForm();
       } catch (error: any) {
         setStatus(error.message);
@@ -115,9 +134,9 @@ const ShopWrapper = () => {
   };
 
   const paginitionClbk = (val?: any) => {
-    let skip1 = (val - 1) * limit
-    setSkip(skip1)
-  }
+    let skip1 = (val - 1) * limit;
+    setSkip(skip1);
+  };
 
   const deleteSaloon: any = async (event: any) => {
     if (event === true) {
@@ -128,7 +147,7 @@ const ShopWrapper = () => {
           dispatch(getSaloonRequest({ lat, lng, skip, limit, searchUser }));
         }
       });
-      setDeleteUserId('');
+      setDeleteUserId("");
       setModalShow(false);
     }
   };
@@ -136,64 +155,78 @@ const ShopWrapper = () => {
   const openSaloonModal = async (type: any, id: any) => {
     setShow(true);
     if (type == EDIT) {
-      setSaloonId(id)
+      dispatch(setSaloonId(id));
       await getSaloonById(id).then((res: any) => {
         if (res.data.responseCode === 200) {
-          formik.setFieldValue('name', res.data.data.name)
-          formik.setFieldValue('phone', res.data.data.phone)
-          formik.setFieldValue('location', res.data.data.address.city)
-          formik.setFieldValue('latitude', res.data.data.loc.coordinates[0])
-          formik.setFieldValue('longitude', res.data.data.loc.coordinates[1])
+          formik.setFieldValue("name", res.data.data.name);
+          formik.setFieldValue("phone", res.data.data.phone);
+          formik.setFieldValue("location", res.data.data.address.city);
+          formik.setFieldValue("latitude", res.data.data.loc.coordinates[0]);
+          formik.setFieldValue("longitude", res.data.data.loc.coordinates[1]);
         }
       });
     }
-    setModalType(type)
+    setModalType(type);
   };
-
-  const debounceValue = useDebounce(searchUser, 1000);
 
   useEffect(() => {
     setDebounceVal(searchUser);
   }, [debounceValue, saloonList]);
 
-
   const cancelButton = () => {
     dispatch(closeModalRequest({}));
     dispatch(resetServiceForm());
-    setSaloonId('');
+    dispatch(setSaloonId(""));
     setShow(false);
     formik.resetForm();
   };
+
+  useEffect(()=>{
+    if(requestStatus){
+      dispatch(getSaloonRequest({ lat, lng, skip, limit, searchUser }));
+    }
+  },[requestStatus])
+
   return (
     <>
-      <PageTitle breadcrumbs={[]}>{intl.formatMessage({ id: 'MENU.DASHBOARD' })}</PageTitle>
-      <div className='appointmentContent'>
-        <div className='title_text d-flex justify-content-between align-items-center'>
-          <div className=''>
-            <h2 className='page_title'>
-              <img src={coupon} alt='coupon' />
+      <PageTitle breadcrumbs={[]}>
+        {intl.formatMessage({ id: "MENU.DASHBOARD" })}
+      </PageTitle>
+      <div className="appointmentContent">
+        <div className="title_text d-flex justify-content-between align-items-center">
+          <div className="">
+            <h2 className="page_title">
+              <img src={coupon} alt="coupon" />
               Saloon
             </h2>
           </div>
-          <button onClick={() => { openSaloonModal(ADD, '') }} className='yellowBtn'>Add</button>
+          <button
+            onClick={() => {
+              openSaloonModal(ADD, "");
+            }}
+            className="yellowBtn"
+          >
+            Add
+          </button>
         </div>
-        <div className='tabWrapper'>
-          <div className='searchbar_filter d-flex justify-content-end mb-5'>
-            <div className='searchbar'>
+        <div className="tabWrapper">
+          <div className="searchbar_filter d-flex justify-content-end mb-5">
+            <div className="searchbar">
               <input
                 onChange={(e) => setSearchUser(e.target.value)}
-                type='text' className='form-control' placeholder='Search...' />
+                type="text"
+                className="form-control"
+                placeholder="Search..."
+              />
               <button>
-                <img src={searchIcon} alt='searchIcon' />
+                <img src={searchIcon} alt="searchIcon" />
               </button>
             </div>
-
           </div>
-          <div className='tableWrapper mb-5'>
-            <Table responsive className='table table-bordered coupons'>
+          <div className="tableWrapper mb-5">
+            <Table responsive className="table table-bordered coupons">
               <thead>
                 <tr>
-
                   <th>Saloon's Name</th>
                   <th>Image</th>
                   <th>Phone</th>
@@ -206,23 +239,33 @@ const ShopWrapper = () => {
                   saloonList.length > 0 &&
                   saloonList.map((item: any, index) => (
                     <tr key={index}>
-
                       <td>{capitalizeFirstLetter(item?.name)}</td>
                       <td>
-                        <img className='profileImg' src={item?.photo ? getImageUrl(item?.photo) : dummyImg} alt='' />
+                        <img
+                          className="profileImg"
+                          src={
+                            item?.photo ? getImageUrl(item?.photo) : dummyImg
+                          }
+                          alt=""
+                        />
                       </td>
 
                       <td>{item?.phone}</td>
+                      <td>{capitalizeFirstLetter(item?.address?.city)} </td>
                       <td>
-                        {capitalizeFirstLetter(item?.address?.city)}{' '}
-                      </td>
-                      <td>
-                        <div className='d-flex'>
-                          <button className='editBtn'>
-                            <img src={pencilEditIcon} alt='pencilEditIcon' onClick={() => openSaloonModal(EDIT, item._id)} />
+                        <div className="d-flex">
+                          <button className="editBtn">
+                            <img
+                              src={pencilEditIcon}
+                              alt="pencilEditIcon"
+                              onClick={() => openSaloonModal(EDIT, item._id)}
+                            />
                           </button>
-                          <button className='deleteBtn'>
-                            <img src={deleteIcon} className='cursor-pointer' alt='deleteIcon'
+                          <button className="deleteBtn">
+                            <img
+                              src={deleteIcon}
+                              className="cursor-pointer"
+                              alt="deleteIcon"
                               onClick={() => deleteOpenModal(item._id)}
                             />
                           </button>
@@ -231,24 +274,25 @@ const ShopWrapper = () => {
                     </tr>
                   ))}
               </tbody>
-
             </Table>
-            {saloonList.length === 0 && <>
-              <NoDataFound />
-            </>}
-            <div className='select-all mt-4 d-flex align-items-center'>
-              <label className='d-flex align-items-center gap-2'>
-                {/* <input type='checkbox'></input>select-all */}
-              </label>
+            {saloonList.length === 0 && (
+              <>
+                <NoDataFound />
+              </>
+            )}
+            <div className="select-all mt-4 d-flex align-items-center">
+              <label className="d-flex align-items-center gap-2"></label>
             </div>
-            {totalRecord > 10 && <Pagination
-              data={vendors}
-              limit={limit}
-              totalRecord={totalRecord}
-              paginitionClbk={(e: any) => {
-                paginitionClbk(e)
-              }}
-            />}
+            {totalRecord > 10 && (
+              <Pagination
+                data={vendors}
+                limit={limit}
+                totalRecord={totalRecord}
+                paginitionClbk={(e: any) => {
+                  paginitionClbk(e);
+                }}
+              />
+            )}
           </div>
         </div>
       </div>
@@ -260,7 +304,6 @@ const ShopWrapper = () => {
             formik={formik}
             cancelButton={cancelButton}
             modalType={modalType}
-
           ></SaloonModal>
         )}
       </>
@@ -272,12 +315,8 @@ const ShopWrapper = () => {
         openModal={modalShow}
         closeModal={deleteCloseModal}
       />
-
-      <>
-
-      </>
     </>
-  )
-}
+  );
+};
 
-export { ShopWrapper }
+export { ShopWrapper };

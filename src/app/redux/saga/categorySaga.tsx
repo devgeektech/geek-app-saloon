@@ -14,7 +14,7 @@ import { createCategory, deleteCategory, getCategory, updateCategory } from '../
 
 const call: any = Effects.call
 
-function* addcategorySaga(action) {
+function* addcategorySaga(action) {  
   const values = action.payload;
   delete values.id;
   if(!values.photo) delete values.photo;

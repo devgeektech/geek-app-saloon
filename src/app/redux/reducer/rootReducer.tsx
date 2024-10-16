@@ -12,6 +12,7 @@ import { saloonSlice } from './saloonSlice'
 import staffReducer from './staffSlice';
 import couponReducer from './couponSlice';
 import appointmentReducer from './appointmentSlice';
+import { helperSlice } from './helperSlice'
 
 
 
@@ -29,6 +30,7 @@ export const rootReducer = combineReducers({
   serviceSlice: services.reducer,
   staff:  staffReducer,
   coupon: couponReducer,
-  appointment: appointmentReducer
+  appointment: appointmentReducer,
+  helper: helperSlice.reducer
 
 })

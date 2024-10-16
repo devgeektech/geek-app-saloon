@@ -7,27 +7,50 @@
     <meta name="description" content="Cleaned BarberShop" />
     <title>Cleaned | BarberShop</title>
     <link rel="shortcut icon" href="%PUBLIC_URL%/media/logos/favicon.ico" />
-    <link rel="stylesheet" id="layout-styles-anchor" href="%PUBLIC_URL%/splash-screen.css" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link
+      rel="stylesheet"
+      id="layout-styles-anchor"
+      href="%PUBLIC_URL%/splash-screen.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
+      integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
+    />
   </head>
 
   <body id="kt_body" class="page-loading">
     <noscript>You need to enable JavaScript to run this app.</noscript>
     <!--begin::Theme mode setup on page load-->
     <script>
-      let themeMode = 'system'
+      let themeMode = "system";
 
-      if (localStorage.getItem('kt_theme_mode_value')) {
-        themeMode = localStorage.getItem('kt_theme_mode_value')
+      if (localStorage.getItem("kt_theme_mode_value")) {
+        themeMode = localStorage.getItem("kt_theme_mode_value");
       }
 
-      if (themeMode === 'system') {
-        themeMode = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
+      if (themeMode === "system") {
+        themeMode = window.matchMedia("(prefers-color-scheme: dark)").matches
+          ? "dark"
+          : "light";
       }
 
-      document.documentElement.setAttribute('data-bs-theme', themeMode)
+      document.documentElement.setAttribute("data-bs-theme", themeMode);
     </script>
+
+    <script
+      async
+      defer
+      type="text/javascript"
+      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAIkNfQlM2dYsCTc7ut66ztA7osmBt1JgY&libraries=places"
+    ></script>
+
     <!--end::Theme mode setup on page load-->
 
     <div id="root"></div>

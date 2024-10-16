@@ -29,7 +29,8 @@ const StaffModal = (props: any) => {
     ? formik.errors.image
     : '';
 
-  function onImageLoad(e: any) {
+    console.log('formik---->>>>',formik.errors)
+  function onImageLoad(e: any) {    
     const { naturalWidth: width, naturalHeight: height } = e.currentTarget
     const crop = centerCrop(
       makeAspectCrop(
@@ -50,10 +51,12 @@ const StaffModal = (props: any) => {
   const handleFile = async (event: any) => {
     let file = event?.target?.files[0];
     let url = URL.createObjectURL(file);
+    const blob = new Blob([file], { type: file.type });
+    handleFileChange(blob);
     setPreviewUrl(url);
   }
 
-  const handleCropComplete = async (crop: any) => {
+  const handleCropComplete = async (crop: any) => {    
     const blobImg: any = await getCroppedImg(imgRef.current, crop, 'thumbnail.jpeg');
     handleFileChange(blobImg);
   };
@@ -94,7 +97,6 @@ const StaffModal = (props: any) => {
                 <Col sm={6}>
                   <Field
                     name="name"
-                    required={true}
                     validate={schema}
                     label="Name"
                     component={FieldInputText}
@@ -104,7 +106,6 @@ const StaffModal = (props: any) => {
                 <Col sm={6}>
                   <Field
                     name="age"
-                    required={true}
                     validate={schema}
                     label="Age"
                     type="number"
@@ -116,7 +117,6 @@ const StaffModal = (props: any) => {
                   <Field
                     name="qualification"
                     validate={schema}
-                    required={true}
                     label="Qualification"
                     component={FieldInputText}
                     placeholder="Enter Qualification"
@@ -127,9 +127,7 @@ const StaffModal = (props: any) => {
                  
                  <Field
                    name="aboutUs"
-                   required={true}
                    label="About us"
-              
                    component={FieldTextArea}
                  />
               

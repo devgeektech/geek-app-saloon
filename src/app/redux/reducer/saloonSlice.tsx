@@ -21,15 +21,18 @@ export const saloonSlice = createSlice({
         limit: 10,
         search: '',
         totalRecord: 0,
-        saloonId: null
+        saloonId: null,
+        address:'',
+        requestStatus:false
     },
     reducers: {
         setSaloonId: (state, action) => {
             state.saloonId = action.payload;
         },
+        setAddress: (state, action) => {
+            state.address = action.payload;
+        },
         addSaloonRequest: (state, action) => {
-            // state.loading = true;
-            // state.error = null;
             return { ...state, loading: true, error: null };
         },
         addSaloonSuccess: (state: any, action) => {
@@ -46,8 +49,6 @@ export const saloonSlice = createSlice({
         },
 
         editSaloonRequest: (state, action) => {
-            // state.loading = true;
-            // state.error = null;
             return { ...state, loading: true, error: null }
         },
         editSaloonSuccess: (state: any, action) => {
@@ -115,7 +116,7 @@ export const selectServiceSlice = createSlice({
 
 
 export const {
-    addSaloonFailure, addSaloonRequest, addSaloonSuccess, getSaloonRequest, getSaloonListSuccess, getSaloonListFailure, setSaloonId, editSaloonRequest, editSaloonFailure, editSaloonSuccess
+    addSaloonFailure, addSaloonRequest, addSaloonSuccess, getSaloonRequest, getSaloonListSuccess, getSaloonListFailure, setSaloonId, editSaloonRequest, editSaloonFailure, editSaloonSuccess, setAddress
 } = saloonSlice.actions;
 
 

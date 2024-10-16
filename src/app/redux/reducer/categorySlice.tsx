@@ -20,14 +20,14 @@ const categorySlice = createSlice({
   name: "category",
   initialState,
   reducers: {
-    addCategoryRequest: (state, action) => {
+    addCategoryRequest: (state, action) => {      
       return { ...state, loading: true, error: null };
     },
-    addCategorySuccess: (state: any, action) => {
+    addCategorySuccess: (state: any, action) => {      
       toast.success(action.payload.responseMessage);
       state.loading = false;
       state.error = null;
-      state.categoryList = [...state.categoryList, ...action.payload.data];
+      // state.categoryList = [...state.categoryList, ...action.payload.data];
     },
     addCateogryFailure: (state, action) => {
       toast.error(action.payload.data.responseMessage);

@@ -5,14 +5,11 @@ import searchIcon from "../../../_metronic/images/searchIcon.svg";
 import { Table } from "react-bootstrap";
 import Pagination from "../../components/common/pagination";
 import pencilEditIcon from '../../../_metronic/images/pencilEditIcon.svg'
-
 import { useEffect, useState } from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { toast } from "react-toastify";
 import NoDataFound from "../../components/common/noDataFound/NoDataFound";
-import BannerModal from "./addStaffModal";
-import moment from "moment";
 import dummyImg from "../../../_metronic/images/dummy.webp";
 import { useDebounce } from "../../../_metronic/helpers";
 import DeleteModal from "../../components/common/modal/DeleteModal";
@@ -20,9 +17,7 @@ import { capitalizeFirstLetter, getImageUrl } from "../../utils/common";
 import { useDispatch, useSelector } from "react-redux";
 import { addStaff, commonFileUpload, deleteStaff, getStaffSlots, updateStaff, updateStaffStatus } from "../../services/_requests";
 import DeleteIcon from "../../components/common/Icons/DeleteIcon";
-import { addBannerRequest, deleteBannerRequest, getBannerRequest, setBannerId } from "../../redux/reducer/bannerSlice";
-import { REQUIRED, SUCCESS } from "../../utils/const";
-import { addStaffRequest, addStaffSuccess, getStaffRequest, setStaffId, updateLeaveStaffRequest, updateStaffRequest, updateStaffSuccess } from "../../redux/reducer/staffSlice";
+import { addStaffSuccess, getStaffRequest, setStaffId, updateLeaveStaffRequest, updateStaffSuccess } from "../../redux/reducer/staffSlice";
 import StaffModal from "./addStaffModal";
 import { REQUIRED_FIELD } from "../../utils/ErrorMessages";
 import SlotsDrawer from "./slotsDrawer";
@@ -36,7 +31,6 @@ const StaffWrapper = () => {
   const [modalShow, setModalShow] = useState<boolean>(false);
   const [editAppointmentModalShow, setEditAppointmentModalShow] = useState<boolean>(false);
   const [editLeaveModalShow, setEditLeaveModalShow] = useState<boolean>(false);
-  const [id, setId] = useState<string>("");
   const [selectedStaff, setSelectedStaff] = useState<any>();
   const [showDeleteModal, setShowDeleteModal] = useState<boolean>(false);
   const [pageNumber, setPageNumber] = useState<number>(1);
@@ -113,8 +107,10 @@ const StaffWrapper = () => {
             dispatch(updateStaffSuccess(res.data));
           }
         } else {
+          console.log('ADD STAFF',data);
           let res = await addStaff(data);
           dispatch(addStaffSuccess(res.data));
+          dispatch(getStaffRequest({ search: debounceSearch, skip, limit }));
         }
         closeStaffModal();
         setEditMode(false)
@@ -281,6 +277,7 @@ const StaffWrapper = () => {
       });
   }
 
+  console.log('staffList--->',staffList)
 
   return (
     <>
@@ -358,7 +355,6 @@ const StaffWrapper = () => {
                       <td>
                         {capitalizeFirstLetter(item?.qualification || "N/A")}
                       </td>
-
                       {/* <td className={item?.onLeave ? "inactive" : "active"}>
                         <label
                           className="switch"
@@ -374,7 +370,6 @@ const StaffWrapper = () => {
                           <span className="slider round"></span>
                         </label>
                       </td> */}
-
                       <td>
                       <button
                             className="editBtn"
@@ -386,7 +381,7 @@ const StaffWrapper = () => {
 
                       <td>
                         <div className="d-flex">
-                          <button
+                          {/* <button
                             title="Slots"
                             className="editBtn"
                             onClick={() => setEditAppointmentModalShow(true)}
@@ -403,7 +398,7 @@ const StaffWrapper = () => {
                               <path d="M8 1a7 7 0 1 0 4.95 11.95l.707.707A8.001 8.001 0 1 1 8 0z" />
                               <path d="M7.5 3a.5.5 0 0 1 .5.5v5.21l3.248 1.856a.5.5 0 0 1-.496.868l-3.5-2A.5.5 0 0 1 7 9V3.5a.5.5 0 0 1 .5-.5" />
                             </svg>
-                          </button>
+                          </button> */}
                           <button
                             className="editBtn"
                             onClick={() => editStaff(item)}

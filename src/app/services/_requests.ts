@@ -196,7 +196,7 @@ export function deleteVender(id: string) {
 }
 
 export function getSaloonById(id: string) {
-  return axios.get(GET_SALOON+`/${id}`, {})
+  return axios.get(GET_SALOON, {})
 }
 
 export function editSaloon(body: any) {

@@ -27,7 +27,7 @@ const subCategorySlice = createSlice({
       toast.success("Subcategory Added Successfully");
       state.loading = false;
       state.error = null;
-      state.subCategoryList = [...action.payload.data]
+      // state.subCategoryList = [...action.payload.data]
     },
     addSubCateogryFailure: (state, action) => {
       toast.error(action.payload.data?.responseMessage);

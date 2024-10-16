@@ -5,13 +5,16 @@ setSaloonId,
 editSaloonSuccess
 } from '../reducer/saloonSlice';
 import {  addSaloon, editSaloon, getVendors } from '../../services/_requests';
+import { setRequestStatus } from '../reducer/helperSlice';
 
 function* addSaloonSaga(action) {
   try {
     const response = yield call(addSaloon, action.payload);
     yield put(addSaloonSuccess(response.data));
+    yield put(setRequestStatus(true));
   } catch (error: any) {
-    yield put(addSaloonFailure(error.response));
+    yield put(setRequestStatus(false));
+    yield put(addSaloonFailure(error));
   }
 }
 
@@ -22,6 +25,7 @@ function* getSaloonSaga(action) {
     if (response && response.data) {
       yield put(setSaloonId(response.data.data[0]?._id));
       yield put(getSaloonListSuccess({ data: { data: response.data.data }, totalRecord: response.data.totalRecord, skip, limit }));
+      yield put(setRequestStatus(false));
     } else {
       throw new Error('Unexpected response format');
     }
