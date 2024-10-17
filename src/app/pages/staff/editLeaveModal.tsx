@@ -39,12 +39,12 @@ const EditLeave = (props: any) => {
   })
 
   useEffect(()=>{
-    formik.setFieldValue('date', moment(dateState.date).format('YY-MM-DD'))
+    formik.setFieldValue('date', moment(dateState.date).format('YYYY-MM-DD'))
   },[dateState])
 
   const handleChangeDate = (date, event) => {
     setDateState({ date:new Date(date)});
-    formik.setFieldValue('date', moment(date).format('YY-MM-DD'))
+    formik.setFieldValue('date', moment(date).format('YYYY-MM-DD'))
   };
 
   const handleLeaveTypeChange = (e) => {
