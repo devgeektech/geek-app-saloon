@@ -14,6 +14,7 @@ import { fileTypeMap } from '../../utils/const'
 import UploadIcon from '../common/Icons/UploadIcon'
 import FieldInputText from '../common/inputs/FieldInputText'
 import FieldTextArea from '../common/inputs/FieldTextArea'
+import { setRequestStatus } from '../../redux/reducer/helperSlice'
 
 export default function SubCategoryTabs() {
   const dispatch = useDispatch();
@@ -22,6 +23,11 @@ export default function SubCategoryTabs() {
   const { initialValues } = useSelector((state: any) => state.subcategory);
   const {saloonId} = useSelector((state: any) => state.saloon)
   const loading = false;
+  const {requestStatus} = useSelector(
+    (state: any) => state.helper
+  );
+  const limit = 10;
+  const skip = 0;
 
   useEffect(() => {
     getCategoryList();
@@ -68,6 +74,7 @@ export default function SubCategoryTabs() {
         } else {
         dispatch(addSubCategoryRequest(obj));
       }
+      dispatch(setRequestStatus(false))
       formik.resetForm();  
       setFile('');
       getSubCategoryList();
@@ -152,6 +159,13 @@ export default function SubCategoryTabs() {
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
   }, [formik.values.id]);
+
+  
+  useEffect(()=>{
+    if(requestStatus){
+      dispatch(getSubCategoryRequest({ search : '', skip, limit }));
+    }
+  },[requestStatus])
 
   return (
     <>

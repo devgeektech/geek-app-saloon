@@ -23,6 +23,7 @@ import {
 } from '../reducer/serviceSlice'
 import { deleteSubCategoryFailure } from '../reducer/subCategorySlice'
 import { FETCH_LIST_REQUEST, fetchListFailure, fetchListSuccess } from '../actions/serviceAction'
+import { setRequestStatus } from '../reducer/helperSlice'
 
 const call: any = Effects.call
 
@@ -36,7 +37,9 @@ function* addServiceSaga(action) {
   try {
     const createCategoryRes = yield call(addService, action.payload)
     yield put(addServiceSuccess(createCategoryRes.data))
+    yield put(setRequestStatus(true))
   } catch (error: any) {
+    yield put(setRequestStatus(false))
     yield put(addServiceFailure(error))
   }
 }
@@ -61,8 +64,10 @@ function* editServiceSaga(action) {
       minutes: payload.minutes,
     });
     yield put(editServiceSuccess(res.data));
+    yield put(setRequestStatus(true))
   } catch (error) {
     yield put(editServiceFailure(error));
+    yield put(setRequestStatus(false))
   }
 }
 

@@ -15,6 +15,7 @@ import { deleteService } from '../../services/_requests'
 import { toast } from 'react-toastify'
 import { SUCCESS } from '../../utils/const'
 import { fetchListRequest } from '../../redux/actions/serviceAction'
+import { setRequestStatus } from '../../redux/reducer/helperSlice'
 
 export default function Servicetable(props: any) {
 
@@ -25,10 +26,12 @@ export default function Servicetable(props: any) {
   const [modalShow, setModalShow] = useState<Boolean>(false);
   const [pageNumber, setPageNumber] = useState<number>(1);
   const limit = 10;
+  const skip = 0;
   const totalRecord: any = serviceList?.length;
-  const { saloonId } = useSelector((state: any) => state.saloon);
+  const { saloonId, } = useSelector((state: any) => state.saloon);
   const [deleteUserId, setDeleteUserId] = useState("");
-
+  const {requestStatus} = useSelector((state: any) => state.helper);
+  const data = useSelector((state: any) => state.saloonService)
 
   const editService = (serviceObj: any) => {
     dispatch(openModalRequest())
@@ -38,11 +41,6 @@ export default function Servicetable(props: any) {
       subcategory: serviceObj?.subcategory?._id,
     }));
     // dispatch(editServiceRequestData({ ...serviceObj }))
-  }
-
-  const openModal = (id: string) => {
-    setModalShow(true);
-    setId(id);
   }
 
   const deleteItem = (event: Boolean) => {
@@ -88,14 +86,22 @@ export default function Servicetable(props: any) {
       await deleteService(deleteUserId).then((res: any) => {
         if (res.data.responseCode === 200) {
           toast.success("Service has been Deleted!");
+          dispatch(setRequestStatus(true))
           setModalShow(false);
-          dispatch(fetchListRequest(0, 0, ''));
+          // dispatch(fetchListRequest(0, 0, ''));
         }
       });
       setDeleteUserId('');
       setModalShow(false);
     }
   };
+
+  useEffect(()=>{
+    if(requestStatus){
+      dispatch(fetchListRequest(skip, limit, ''));
+      dispatch(setRequestStatus(false))
+    }
+  },[requestStatus])
 
   return (
     <>

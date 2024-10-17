@@ -43,7 +43,7 @@ const serviceSlice = createSlice({
         ...state,
         loading: false,
         error: null,
-        serviceList: [...state.serviceList, action.payload.data],
+        // serviceList: [...state.serviceList, action.payload.data],
       }
     },
     addServiceFailure: (state, action) => {

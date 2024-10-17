@@ -1,22 +1,20 @@
 import { useIntl } from "react-intl";
 import { PageTitle } from "../../../_metronic/layout/core";
 import settingIcon from "../../../_metronic/images/setting.svg";
-import Pagination from "../../components/common/pagination/index";
 import "./styles.scss";
 import "../appointment/style.scss";
-import { Dropdown, Tab, Tabs } from "react-bootstrap";
+import { Tab, Tabs } from "react-bootstrap";
 import CategoryTabs from "../../components/categoryTabs/index";
 import TableCategory from "../../components/categoryTabs/table";
 import SubCategoryTabs from "../../components/subCategoryTabs/index";
 import TableSubCategory from "../../components/subCategoryTabs/table";
 import { useEffect, useState } from "react";
-import { Field, useFormik } from "formik";
+import { useFormik } from "formik";
 import * as Yup from "yup";
 import { commonFileUpload, selectTab } from "../../services/_requests";
 import { useDispatch, useSelector } from "react-redux";
 import {
   serviceRequest,
-  getServiceRequest,
   resetServiceForm,
   editServiceRequest,
 } from "../../redux/reducer/serviceSlice";
@@ -30,32 +28,23 @@ import Servicetable from "../../components/serviceTable/index";
 import { REQUIRED_FIELD } from "../../utils/ErrorMessages";
 import { AddServiceModal } from "./addServiceModal";
 import { useDebounce } from "../../../_metronic/helpers";
-import { getSaloonRequest, setSaloonId } from "../../redux/reducer/saloonSlice";
-import { fetchDataSaga } from "../../redux/saga/serviceSaga";
 import { fetchListRequest } from "../../redux/actions/serviceAction";
 import { toast } from 'react-toastify'
-import { REQUIRED, SALOON_ID_REQUIRED } from "../../utils/const";
+import { GENDER_TAGS, SALOON_ID_REQUIRED } from "../../utils/const";
+import { setRequestStatus } from "../../redux/reducer/helperSlice";
 
 
 const ServiceWrapper = () => {
   const dispatch = useDispatch();
   const intl = useIntl();
-  const [coverImages ,setCoverImages] = useState([])
+  const [coverImages, setCoverImages] = useState([])
   const [show, setShow] = useState(false);
   const [file, setFile] = useState("");
   const [searchValue, setSearchValue] = useState('');
   const state: any = useSelector((state) => state);
   const categoriesState: [] = useSelector((state: any) => state.category.categoryList);
-  const totalCategory = useSelector((state: any) => state.category.totalRecord);
-  const totalSubCategory = useSelector((state: any) => state.subcategory.totalRecord);
-  const subCategriesState: [] = useSelector((state: any) => state.subcategory.subCategoryList);
-  const [lat, setLat] = useState(30.741482)
-  const [lng, setLang] = useState(76.768066)
-  const [searchUser, setSearchUser] = useState("");
-
-  const { initialValues, totalRecord } = useSelector((state: any) => state.service)
+  const { initialValues } = useSelector((state: any) => state.service)
   const [selectedTab, setSelectedTab] = useState(state.service.selectedTab);
-  const [pageNumber, setPageNumber] = useState<number>(1);
   const { saloonList, saloonId } = useSelector((state: any) => state.saloon);
   const [search, setSearch] = useState("");
   const limit = 10;
@@ -74,24 +63,20 @@ const ServiceWrapper = () => {
     if (selectedTab === "category") {
       dispatch(getCategoryRequest({ search: searchValue, skip, limit }));
     }
-  }, [dispatch, debounceVal, skip, limit]);
-
-  useEffect(() => {
     if (selectedTab === "subcategory") {
       dispatch(getSubCategoryRequest({ search, skip, limit }));
     }
-  }, [dispatch, search, skip, limit]);
+  }, [dispatch, search, debounceVal, skip, limit]);
 
   useEffect(() => {
     setShow(isOpen);
   }, [isOpen]);
 
-
   const serviceSchema = Yup.object().shape({
     name: Yup.string().required(REQUIRED_FIELD),
     image: Yup.string().optional(),
     category: Yup.string().required(REQUIRED_FIELD),
-    gender: Yup.array().min(1).required(REQUIRED_FIELD),
+    gender: Yup.array().required(REQUIRED_FIELD),
     description: Yup.string().required(REQUIRED_FIELD),
     cost: Yup.number().required(REQUIRED_FIELD),
   });
@@ -104,10 +89,10 @@ const ServiceWrapper = () => {
     validateOnBlur: false,
     onSubmit: async (values, { setStatus, setSubmitting }) => {
       try {
-        if(!saloonId) {
+        if (!saloonId) {
           toast.success(SALOON_ID_REQUIRED);
         }
-        const serviceForm:any = {
+        const serviceForm: any = {
           name: values.name,
           image: values.image,
           category: values.category,
@@ -121,7 +106,7 @@ const ServiceWrapper = () => {
         };
         if(coverImages.length) {
           serviceForm.coverImages = coverImages
-        } 
+        }
         if (values._id) {
           dispatch(editServiceRequest({ ...serviceForm, _id: values._id }));
           dispatch(closeModalRequest({}));
@@ -132,7 +117,7 @@ const ServiceWrapper = () => {
           dispatch(closeModalRequest({}));
           dispatch(resetServiceForm());
         }
-        dispatch(fetchListRequest(0, 0, ''));
+        dispatch(setRequestStatus(false))
       }
       catch (error) {
         console.error(error)
@@ -160,8 +145,6 @@ const ServiceWrapper = () => {
     }
   };
 
-  const tags = ["Male", "Female"];
-
   const cancelButton = () => {
     dispatch(closeModalRequest({}));
     dispatch(resetServiceForm());
@@ -169,16 +152,12 @@ const ServiceWrapper = () => {
     setShow(false);
   };
 
-  const modalClose = () => {
-    dispatch(closeModalRequest({}));
-  };
-
   const onChangeTab = (key) => {
     setSelectedTab(key);
     dispatch(selectTab(key));
     switch (key) {
       case "service":
-        dispatch(getServiceRequest({ search, skip, limit }));
+        dispatch(fetchListRequest({ search, skip, limit }));
         break;
       case "category":
         dispatch(getCategoryRequest({ search, skip, limit }));
@@ -192,7 +171,6 @@ const ServiceWrapper = () => {
         break;
     }
   };
-
 
   return (
     <>
@@ -218,7 +196,6 @@ const ServiceWrapper = () => {
           </button>
         </div>
         <div className="tabWrapper">
-          {/* <p className='viewList'>viewing 2 of 6 of 6</p> */}
           <Tabs
             activeKey={selectedTab}
             onSelect={(k: any) => onChangeTab(k)}
@@ -263,9 +240,9 @@ const ServiceWrapper = () => {
             formik={formik}
             cancelButton={cancelButton}
             handleFileChange={handleFileChange}
-            genders={tags}
+            genders={GENDER_TAGS}
             changeDropImages={onChangeDropImages}
-            coverImages = {coverImages}
+            coverImages={coverImages}
           ></AddServiceModal>
         )}
       </>

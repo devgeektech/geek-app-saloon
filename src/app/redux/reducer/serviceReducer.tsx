@@ -5,6 +5,8 @@ const initialState = {
   data: null,
   loading: false,
   error: null,
+  skip:0,
+  limit:10
 };
 
 const saloonServiceReducer = (state = initialState, action) => {

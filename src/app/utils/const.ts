@@ -13,6 +13,7 @@ export const fileTypeMap: { [key: string]: string } = {
   "66747970": "image/heif"   
 };
 
+export const GENDER_TAGS = ["Male", "Female"];
 export const IMAGE_BASE_URL = 'http://localhost:3000/';
 export const PHONE_REGEX = /^(?:(?:\+|0{0,2})91(\s*[\-]\s*)?|[0]?)?[6789]\d{9}$/;
 export const INVALID_PHONE_NUMBER = "Please enter valid contact number";

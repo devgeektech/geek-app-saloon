@@ -7,7 +7,6 @@ import clsx from "clsx";
 import FieldCheckBox from "../../components/common/inputs/FieldCheckBox";
 import FieldTextArea from "../../components/common/inputs/FieldTextArea";
 import { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
 import { getImageUrl } from "../../utils/common";
 import { getVendors } from "../../services/_requests";
 import { MyDropzone } from "../../helper/Dropzone";
@@ -53,12 +52,6 @@ export const AddServiceModal = (props) => {
   const handleDataFromChild = (data) => {
     changeDropImages(data);
   };
-
-  const handleVendorChange = (e) => {
-    const vendorId = e.target.value;
-    setSelectedVendor(vendorId);
-    formik.setFieldValue('vendor', vendorId);
-  };
  
   useEffect(() => {
     if (formik.values.category) {
@@ -102,11 +95,6 @@ export const AddServiceModal = (props) => {
     }
   };
 
-  const handleServiceChange = (e) => {
-    formik.setFieldValue(e.target.id, e.target.value);
-  };
-
-
   return (
     <Modal className="addServicesModal" show={show} onHide={cancelButton}>
       <FormikProvider value={formik}>
@@ -149,7 +137,6 @@ export const AddServiceModal = (props) => {
                       validate={schema}
                       type="text"
                       label="Name"
-                      required={true}
                       component={FieldInputText}
                     />
                   </div>
@@ -159,7 +146,6 @@ export const AddServiceModal = (props) => {
                       name="category"
                       validate={schema}
                       label="Category"
-                      required={true}
                       options={categories}
                       handleCategoryChange={handleCategoryChange}
                       component={FieldSelectInput}
@@ -240,7 +226,6 @@ export const AddServiceModal = (props) => {
                     <Field
                       name="gender"
                       validate={schema}
-                      required={true}
                       label="Select Gender"
                       options={genders}
                       handleChange={handleChange}
@@ -255,7 +240,6 @@ export const AddServiceModal = (props) => {
                     <Field
                       name="description"
                       validate={disablesubCategory ? null : schema}
-                      required={true}
                       label="Description"
                       options={subCategories}
                       component={FieldTextArea}
@@ -269,7 +253,6 @@ export const AddServiceModal = (props) => {
                     <Field
                       name="cost"
                       validate={schema}
-                      required={true}
                       type="number"
                       label="Cost"
                       component={FieldInputText}
