@@ -26,4 +26,7 @@ export const SALOON_ID_REQUIRED = "Saloon id required.";
 export const DASHBOARD = "/dashboard";
 export const USERS = "/users";
 export const VENDOR = "/vendor";
+export const SERVICE = "service";
+export const CATEGORY = "category";
+export const SUBCATEGORY = "subcategory";
 

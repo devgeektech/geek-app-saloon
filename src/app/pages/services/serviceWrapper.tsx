@@ -30,7 +30,7 @@ import { AddServiceModal } from "./addServiceModal";
 import { useDebounce } from "../../../_metronic/helpers";
 import { fetchListRequest } from "../../redux/actions/serviceAction";
 import { toast } from 'react-toastify'
-import { GENDER_TAGS, SALOON_ID_REQUIRED } from "../../utils/const";
+import { CATEGORY, GENDER_TAGS, SALOON_ID_REQUIRED, SERVICE, SUBCATEGORY } from "../../utils/const";
 import { setRequestStatus } from "../../redux/reducer/helperSlice";
 
 
@@ -43,8 +43,8 @@ const ServiceWrapper = () => {
   const [searchValue, setSearchValue] = useState('');
   const state: any = useSelector((state) => state);
   const categoriesState: [] = useSelector((state: any) => state.category.categoryList);
-  const { initialValues } = useSelector((state: any) => state.service)
-  const [selectedTab, setSelectedTab] = useState(state.service.selectedTab);
+  const { initialValues, selectedTab } = useSelector((state: any) => state.service)
+  // const [selectedTab, setSelectedTab] = useState(state.service.selectedTab);
   const { saloonList, saloonId } = useSelector((state: any) => state.saloon);
   const [search, setSearch] = useState("");
   const limit = 10;
@@ -153,7 +153,7 @@ const ServiceWrapper = () => {
   };
 
   const onChangeTab = (key) => {
-    setSelectedTab(key);
+    // setSelectedTab(key);
     dispatch(selectTab(key));
     switch (key) {
       case "service":
@@ -204,7 +204,7 @@ const ServiceWrapper = () => {
           >
 
             {/* Category Tab Started */}
-            <Tab eventKey="category" title="Category">
+            <Tab eventKey={CATEGORY} title="Category">
               <CategoryTabs />
 
               <div className="tableWrapper my-5">
@@ -213,14 +213,14 @@ const ServiceWrapper = () => {
             </Tab>
 
             {/*Sub Category Tab Started */}
-            <Tab eventKey="subcategory" title="Subcategory">
+            <Tab eventKey={SUBCATEGORY} title="Subcategory">
               <SubCategoryTabs />
 
               <div className="tableWrapper my-5">
                 <TableSubCategory />
               </div>
             </Tab>
-            <Tab eventKey="service" title="Services">
+            <Tab eventKey={SERVICE} title="Services">
 
               <div className="tableWrapper my-5">
                 <Servicetable />

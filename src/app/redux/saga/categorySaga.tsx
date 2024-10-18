@@ -11,6 +11,7 @@ import {
   updateCategorySuccess,
 } from '../reducer/categorySlice'
 import { createCategory, deleteCategory, getCategory, updateCategory } from '../../services/_requests'
+import { setRequestStatus } from '../reducer/helperSlice'
 
 const call: any = Effects.call
 
@@ -41,7 +42,9 @@ function* deleteCategorySaga(action) {
     const { id } = action.payload;
     const response = yield call(deleteCategory, id);
     yield put(deleteCategorySuccess(response.data));
+    yield put(setRequestStatus(true))
   } catch (error: any) {
+    yield put(setRequestStatus(false))
     yield put(deleteCategoryFailure(error.response));
   }
 }

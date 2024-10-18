@@ -13,7 +13,7 @@ import SaloonIdNotFound from '../common/saloonIDNotFound/SaloonIdNotFound'
 import NoDataFound from '../common/noDataFound/NoDataFound'
 import { deleteService } from '../../services/_requests'
 import { toast } from 'react-toastify'
-import { SUCCESS } from '../../utils/const'
+import { SERVICE, SUCCESS } from '../../utils/const'
 import { fetchListRequest } from '../../redux/actions/serviceAction'
 import { setRequestStatus } from '../../redux/reducer/helperSlice'
 
@@ -32,6 +32,7 @@ export default function Servicetable(props: any) {
   const [deleteUserId, setDeleteUserId] = useState("");
   const {requestStatus} = useSelector((state: any) => state.helper);
   const data = useSelector((state: any) => state.saloonService)
+  const { selectedTab } = useSelector((state: any) => state.service)
 
   const editService = (serviceObj: any) => {
     dispatch(openModalRequest())
@@ -97,7 +98,7 @@ export default function Servicetable(props: any) {
   };
 
   useEffect(()=>{
-    if(requestStatus){
+    if(requestStatus && (selectedTab == SERVICE)){
       dispatch(fetchListRequest(skip, limit, ''));
       dispatch(setRequestStatus(false))
     }

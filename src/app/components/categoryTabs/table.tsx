@@ -8,22 +8,26 @@ import { closeDeleteModal, deleteCategoryRequest, getCategoryRequest, resetCateg
 import dummyImg from '../../../_metronic/images/dummy.webp'
 import { getImageUrl } from '../../utils/common'
 import Pagination from '../common/pagination'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import ArrowRightIcon from '../common/Icons/ArrowRightIcon'
 import NoDataFound from '../common/noDataFound/NoDataFound'
+import { setRequestStatus } from '../../redux/reducer/helperSlice'
+import { CATEGORY } from '../../utils/const'
 
 export default function TableCategory() {
   const dispatch = useDispatch();
   const { categoryList, selectedCategoryId, showDeleteModal, totalRecord } = useSelector((state: any) => state.category);
   const [pageNumber, setPageNumber] = useState(1);
   const limit = 10;
+  const {requestStatus} = useSelector((state: any) => state.helper);
+  const { selectedTab } = useSelector((state: any) => state.service)
 
   const deleteItem = (event: any) => {
     if (event && selectedCategoryId !== "") {
       dispatch(deleteCategoryRequest({ id: selectedCategoryId }));
       dispatch(resetCategoryForm());
       setPageNumber(1);
-      dispatch(getCategoryRequest({ skip: 0, limit }))
+      // dispatch(getCategoryRequest({ skip: 0, limit }))
     }
   }
 
@@ -41,6 +45,13 @@ export default function TableCategory() {
     const skip = (pageNumber - 1) * limit;
     dispatch(getCategoryRequest({ skip, limit }))
   };
+
+  useEffect(()=>{
+    if(requestStatus && (selectedTab == CATEGORY)){
+      dispatch(getCategoryRequest({ skip: 0, limit }))
+      dispatch(setRequestStatus(false))
+    }
+  },[requestStatus])
 
   return (
     <>

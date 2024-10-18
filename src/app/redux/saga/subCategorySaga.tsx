@@ -53,7 +53,9 @@ function* deleteSubCategorySaga(action) {
     const { id } = action.payload;
     const response = yield call(deleteSubCategory, id);
     yield put(deleteSubCategorySuccess(response.data));
+    yield put(setRequestStatus(true))
   } catch (error: any) {
+    yield put(setRequestStatus(false))
     yield put(deleteSubCategoryFailure(error.response));
   }
 }

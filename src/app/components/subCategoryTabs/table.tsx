@@ -10,6 +10,8 @@ import { closeDeleteModal, deleteSubCategoryRequest, getSubCategoryRequest, rese
 import DeleteIcon from '../common/Icons/DeleteIcon'
 import Pagination from '../common/pagination'
 import ArrowRightIcon from '../common/Icons/ArrowRightIcon'
+import { setRequestStatus } from '../../redux/reducer/helperSlice'
+import { SUBCATEGORY } from '../../utils/const'
 
 // Interface for Category
 interface SubCategory {
@@ -35,15 +37,16 @@ export default function TableSubCategory() {
   const dispatch = useDispatch();
   const { subCategoryList, showDeleteModal, selectedId, totalRecord  } = useSelector((state: any) => state.subcategory);
   const [pageNumber, setPageNumber] = useState<number>(1);
-
+  const {requestStatus} = useSelector((state: any) => state.helper);
   const limit = 10;
+  const { selectedTab } = useSelector((state: any) => state.service)
 
   const deleteItem = (event: Boolean) => {
     if (event && selectedId !== "") {
       dispatch(deleteSubCategoryRequest({ id: selectedId }));
       dispatch(resetSubCategoryForm());
       setPageNumber(1);
-      dispatch(getSubCategoryRequest({ search : '', skip: 0, limit }));
+      // dispatch(getSubCategoryRequest({ search : '', skip: 0, limit }));
     }
   }
 
@@ -62,6 +65,13 @@ export default function TableSubCategory() {
     const skip = (pageNumber - 1) * limit;
     dispatch(getSubCategoryRequest({ search : '', skip, limit }));
   };
+
+  useEffect(()=>{
+    if(requestStatus && (selectedTab == SUBCATEGORY)){
+      dispatch(getSubCategoryRequest({ search : '', skip: 0, limit }));
+      dispatch(setRequestStatus(false))
+    }
+  },[requestStatus])
 
   return (
     <div>
