@@ -4,16 +4,21 @@ import { toast } from "react-toastify";
 export const helperSlice = createSlice({
     name: "helper",
     initialState: {
-        requestStatus:false
+        requestStatus:false,
+        modalStatus:false,
     },
     reducers: {
         setRequestStatus: (state, action) => {
             state.requestStatus = action.payload;
+        },
+        setModalStatus: (state, action) => {
+            state.modalStatus = action.payload;
         }
     },
 });
 
 export const {
-    setRequestStatus
+    setRequestStatus,
+    setModalStatus
 } = helperSlice.actions;
 

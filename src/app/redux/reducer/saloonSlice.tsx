@@ -23,7 +23,7 @@ export const saloonSlice = createSlice({
         totalRecord: 0,
         saloonId: null,
         address:'',
-        requestStatus:false
+        requestStatus:false,
     },
     reducers: {
         setSaloonId: (state, action) => {

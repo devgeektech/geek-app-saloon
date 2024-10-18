@@ -9,9 +9,11 @@ import {Content} from './components/Content'
 import {PageDataProvider} from './core'
 import {ActivityDrawer, DrawerMessenger, InviteUsers, UpgradePlan} from '../partials'
 import {MenuComponent} from '../assets/ts/components'
+import { useSelector } from 'react-redux'
 
 const MasterLayout = () => {
   const location = useLocation()
+  const { saloonId } = useSelector((state: any) => state.saloon);
 
   useEffect(() => {
     setTimeout(() => {
@@ -22,7 +24,7 @@ const MasterLayout = () => {
   return (
     <PageDataProvider>
       <div className='page d-flex flex-row flex-column-fluid'>
-        <AsideDefault />
+        {saloonId && (<AsideDefault />)}
         <div className='wrapper d-flex flex-column flex-row-fluid' id='kt_wrapper'>
           <HeaderWrapper />
 

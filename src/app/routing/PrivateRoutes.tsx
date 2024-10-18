@@ -17,12 +17,13 @@ import { BannerWrapper } from '../pages/banner/Banner'
 import { ShopWrapper } from '../pages/vendors/Vendor'
 import { StaffWrapper } from '../pages/staff/Staff'
 import { AvailabilityAppointment } from '../pages/appointment/availabilityAppoint,ment'
+import { SaloonWrapper } from '../pages/saloon'
 
 const PrivateRoutes = () => {
   return (
     <Routes>
       <Route element={<MasterLayout />}>
-        <Route path='auth/*' element={<Navigate to='/dashboard' />} />
+        <Route path='auth/*' element={<Navigate to='/saloon' />} />
         <Route path='dashboard' element={<DashboardWrapper />} />
         <Route
           path='builder'
@@ -75,6 +76,14 @@ const PrivateRoutes = () => {
           element={
             <SuspensedView>
               <CouponsWrapper />
+            </SuspensedView>
+          }
+        />
+        <Route
+          path='saloon'
+          element={
+            <SuspensedView>
+              <SaloonWrapper />
             </SuspensedView>
           }
         />
