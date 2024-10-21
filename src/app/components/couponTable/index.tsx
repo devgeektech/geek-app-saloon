@@ -6,8 +6,16 @@ import searchIcon from '../../../_metronic/images/searchIcon.svg'
 import './style.scss'
 import moment from 'moment'
 import { capitalizeFirstLetter } from '../../utils/common'
+import { useSelector } from 'react-redux'
 
 export default function ActiveTable({coupons, deleteItem, editItem,handleToggleChange}) {
+  const { serviceMultipSelectArr } = useSelector((state: any) => state.service);
+
+  const getServiceName = (id:any)=>{
+    let res = serviceMultipSelectArr?.filter((data)=>{return data?.value == id});
+    return res[0]?.label;
+  }
+
   return (
     <>
       <Table responsive className='table table-bordered coupons'>
@@ -18,8 +26,6 @@ export default function ActiveTable({coupons, deleteItem, editItem,handleToggleC
             </th>
             <th>Sr no</th>
             <th>Offer Name</th>
-            <th>Category</th>
-            <th>Sub Category</th>
             <th>Service</th>
             <th>Start Date</th>
             <th>Status</th>
@@ -35,9 +41,7 @@ export default function ActiveTable({coupons, deleteItem, editItem,handleToggleC
           </td>
           <td>{index+1}</td>
           <td>{capitalizeFirstLetter(coupon?.offerName)}</td>
-          <td>{capitalizeFirstLetter(coupon?.category?.name)}</td>
-          <td>{capitalizeFirstLetter(coupon?.subcategory?.name)}</td>
-          <td>{capitalizeFirstLetter(coupon?.service?.name)}</td>
+          <td>{coupon?.service ? getServiceName(coupon?.service) : ''}</td>
           <td>{moment(coupon?.createdAt).format('Do MMM YYYY')}</td>
           <td className='active'> {coupon.status}
             <label className='switch' >

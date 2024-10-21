@@ -1,17 +1,15 @@
 import { Field, FormikProvider } from 'formik';
 import { Button, Col, Modal, Row } from 'react-bootstrap';
-import clsx from 'clsx';
 import { useDispatch, useSelector } from 'react-redux';
 import FieldInputText from '../../components/common/inputs/FieldInputText';
 import FieldSelectInput from '../../components/common/inputs/FIeldSelectInput';
-
 import 'react-image-crop/src/ReactCrop.scss'
 import 'react-image-crop/dist/ReactCrop.css'
-import FieldTextArea from '../../components/common/inputs/FieldTextArea';
 import { useEffect, useState } from 'react';
 import { fetchListRequest } from '../../redux/actions/serviceAction';
 import { MultiSelect } from 'react-multi-select-component';
-import { setSelectedService } from '../../redux/reducer/serviceSlice';
+import DatePickerInput from '../../components/common/inputs/datePickerInput';
+import { setSelectedSaloon } from '../../redux/reducer/saloonSlice';
 
 const CouponModal = (props: any) => {
   const {
@@ -23,12 +21,12 @@ const CouponModal = (props: any) => {
   } = props;
   const { couponId } = useSelector((state: any) => state.coupon);
   const serviceList = useSelector((state: any) => state.saloonService?.data?.data)
-  const { serviceMultipSelectArr, selectedServicesArr } = useSelector((state: any) => state.service)
+  const { serviceMultipSelectArr } = useSelector((state: any) => state.service)
+  const { saloonList, saloonSelectArr, selectedSaloonArr } = useSelector((state: any) => state.saloon)
   const [subCategories, setSubcategories] = useState([]);
   const [disablesubCategory, setDisablesubCategory] = useState(true);
   const dispatch = useDispatch();
   const [selected, setSelected] = useState([]);
-console.log('formik---->',formik)
 
   useEffect(() => {
     dispatch(fetchListRequest(0, 0, ''));
@@ -37,27 +35,10 @@ console.log('formik---->',formik)
     }
   }, [])
 
-  const handleChange = (selectedOptions:any) => {
-    console.log('selectedOptions--->',selectedOptions);
-    dispatch(setSelectedService(selectedOptions?.value));
-    formik.setFieldValue("service", selectedServicesArr)
-};
-
-  const handleCategoryChange = (e) => {
-    formik.setFieldValue(e.target.id, e.target.value);
-    if (e.target.id === "subcategory") {
-      return formik.setFieldValue(e.target.id, e.target.value);
-    }
-    let index = categories.findIndex(
-      (item: any) => e.target.value === item._id
-    );
-    if (index === -1) {
-      setSubcategories([]);
-      setDisablesubCategory(true);
-    } else {
-      setSubcategories(categories[index].subCategory);
-      setDisablesubCategory(false);
-    }
+  const handleChange = (selectedOptions) => {
+    dispatch(setSelectedSaloon(selectedOptions));
+    const valuesArray = selectedOptions.map(option => option.value);
+    formik.setFieldValue("saloon", valuesArray);
   };
 
   const setSelectedSubCategories = (cid: string) => {
@@ -98,12 +79,68 @@ console.log('formik---->',formik)
                 <Col sm={6}>
                   <Field
                     name="offerName"
-                    required={true}
                     validate={schema}
                     label="Offer Name"
                     component={FieldInputText}
                     placeholder="Enter Offer Name"
                   />
+                </Col>
+                <Col sm={6}>
+                  <label>Saloon</label>
+                  <MultiSelect
+                    options={saloonSelectArr}
+                    value={selectedSaloonArr || formik?.values?.saloon}
+                    onChange={handleChange}
+                    labelledBy={"Select"}
+                    isCreatable={true}
+                  />
+                  {formik.errors.saloon && (
+                    <div style={{ color: 'red' }}>{formik.errors.saloon}</div>
+                  )}
+                </Col>
+
+                <Col sm={6}>
+                  <Field
+                    as="select"
+                    name="service"
+                    validate={schema}
+                    label="Service"
+                    component={FieldSelectInput}
+                    options={serviceMultipSelectArr}
+                    onChange={formik.handleChange}
+                    value={formik.values.service}
+                  />
+                </Col>
+
+                <Col sm={6}>
+                  <Field
+                    name="discount"
+                    validate={schema}
+                    label="Discount %"
+                    type="number"
+                    component={FieldInputText}
+                    placeholder="Enter discount"
+                  />
+                </Col>
+
+                <Col sm={6} className="mt-4">
+                  <label>Saloon</label><br />
+                  <Field
+                    name="offerStart"
+                    validate={schema}
+                    component={DatePickerInput}
+                    placeholderText="Select a start date"
+                  />
+
+                </Col>
+                <Col sm={6} className="mt-4">
+                  <label>Saloon</label><br />
+                  <Field
+                    name="offerClose"
+                    component={DatePickerInput}
+                    placeholderText="Select an end date"
+                  />
+
                 </Col>
                 <Col sm={6}>
                   <Field
@@ -115,81 +152,7 @@ console.log('formik---->',formik)
                     options={['Active', 'InActive'].map(t => ({ label: t, value: t }))}
                     onChange={formik.handleChange}
                     value={formik.values.status}
-
                   />
-                </Col>
-                <Col sm={6}>
-                  <label>Service</label>
-                 
-                  {/* <MultiSelect
-                    options={serviceMultipSelectArr}
-                    value={selectedServicesArr}
-                    onChange={handleChange}
-                    labelledBy={"Select"}
-                    isCreatable={true}
-                  /> */}
-
-                  {/* <Field
-                    as="select"
-                    name="service"
-                    validate={schema}
-                    label="Service"
-                    component={FieldSelectInput}
-                    options={serviceList}
-                    onChange={formik.handleChange}
-                    value={formik.values.service}
-                  /> */}
-
-                </Col>
-                <Col sm={6}>
-                  <Field
-                    name="discount"
-                    required={true}
-                    validate={schema}
-                    label="Discount %"
-                    type="number"
-                    component={FieldInputText}
-                    placeholder="Enter discount"
-                  />
-                </Col>
-
-                <Col sm={6} className="mt-4">
-                  <Field
-                    as="select"
-                    name="category"
-                    validate={schema}
-                    label="Category"
-                    component={FieldSelectInput}
-                    options={categories}
-                    handleCategoryChange={handleCategoryChange}
-                    value={formik.values.category}
-
-                  />
-                </Col>
-                <Col sm={6} className="mt-4">
-                  <Field
-                    as="select"
-                    name="subcategory"
-                    validate={schema}
-                    label="Sub Category"
-                    component={FieldSelectInput}
-                    disabled={formik.values.category ? false : true}
-                    options={subCategories}
-                    handleCategoryChange={handleCategoryChange}
-                    value={formik.values.subcategory}
-                  />
-                </Col>
-                <Col sm={12} className='coupons d-flex align-items-center my-2'>
-                  <span className='me-2 fs-5 fw-bold'>
-                    Applies To All Services
-                  </span>
-                  <td className={'active'}>
-                    <label className='switch'>
-                      <input type='checkbox' checked={formik.values.appliesToAllServices}
-                        onChange={(e) => formik.setFieldValue('appliesToAllServices', e.target.checked)} />
-                      <span className='slider round'></span>
-                    </label>
-                  </td>
                 </Col>
               </Row>
             </div>

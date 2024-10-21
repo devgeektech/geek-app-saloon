@@ -9,11 +9,12 @@ import { REQUIRED } from '../../utils/const';
 import FieldSelectInput from '../common/inputs/FIeldSelectInput';
 import { setSaloonId } from '../../redux/reducer/saloonSlice';
 import { useNavigate } from 'react-router-dom';
+import {useEffect} from 'react'
 
 const SelectSaloonModal = (props: any) => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
-    const { saloonList } = useSelector((state: any) => state.saloon);
+    const { saloonList, saloonId } = useSelector((state: any) => state.saloon);
 
     const initialValues = {
         saloon: '',
@@ -34,12 +35,28 @@ const SelectSaloonModal = (props: any) => {
         },
     });
 
+    const closeModal =()=>{
+        dispatch(setModalStatus(false))
+        navigate('/dashboard');
+    }
+
+    useEffect(()=>{
+        if((saloonList?.length > 0) && saloonId){
+            console.log('saloonList',saloonList)
+          let saloonValue = saloonList.filter((item:any)=> {return (item?._id == saloonId)});
+          if(saloonValue){
+            formik.setFieldValue('saloon', saloonValue[0]._id)
+          }
+        }
+    },[saloonId])
+
     return (
         <>
             <Modal show={props?.show} onHide={() => dispatch(setModalStatus(false))} backdrop="static">
                 <FormikProvider value={formik}>
                     <form onSubmit={formik.handleSubmit}>
                         <Modal.Header>
+                            {saloonId && <Button variant="close" onClick={closeModal} />}
                             {/* <Modal.Title>Select Saloon</Modal.Title> */}
                         </Modal.Header>
                         <Modal.Body>
@@ -47,7 +64,7 @@ const SelectSaloonModal = (props: any) => {
                                 as="select"
                                 name="saloon"
                                 validate={validationSchema}
-                                label="Select Saloon"
+                                label="Saloon"
                                 component={FieldSelectInput}
                                 options={saloonList}
                                 onChange={formik.handleChange}
@@ -56,9 +73,6 @@ const SelectSaloonModal = (props: any) => {
 
                         </Modal.Body>
                         <Modal.Footer>
-                            {/* <Button variant="secondary" onClick={() => dispatch(setModalStatus(false))}>
-                                Close
-                            </Button> */}
                             <Button variant="primary" type="submit">
                                 Save Changes
                             </Button>

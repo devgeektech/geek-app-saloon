@@ -27,7 +27,7 @@ const couponSlice = createSlice({
             toast.success(action.payload.responseMessage);
             state.loading = false;
             state.error = null;
-            state.couponList = [...state.couponList, action.payload.data];
+            state.couponList = [action.payload.data, ...state.couponList];
             state.totalRecord+=1; 
         },
         addCouponFailure: (state, action) => {
@@ -76,8 +76,7 @@ const couponSlice = createSlice({
             state.loading = false;
         },
         updateCouponRequest: (state) => {
-            state.loading = true;
-            state.error = null;
+            return { ...state, loading: true, error: null };
         },
         updateCouponSuccess: (state: any, action) => {
             toast.success(action.payload.responseMessage);

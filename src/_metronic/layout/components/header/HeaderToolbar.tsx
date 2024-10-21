@@ -19,6 +19,7 @@ const HeaderToolbar = () => {
   const logOut = () => {
     dispatch(logout())
     dispatch(setToken(''))
+    dispatch(setSaloonId(''))
     localStorage.clear()
   }
 
