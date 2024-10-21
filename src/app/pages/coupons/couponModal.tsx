@@ -10,6 +10,8 @@ import 'react-image-crop/dist/ReactCrop.css'
 import FieldTextArea from '../../components/common/inputs/FieldTextArea';
 import { useEffect, useState } from 'react';
 import { fetchListRequest } from '../../redux/actions/serviceAction';
+import { MultiSelect } from 'react-multi-select-component';
+import { setSelectedService } from '../../redux/reducer/serviceSlice';
 
 const CouponModal = (props: any) => {
   const {
@@ -21,15 +23,26 @@ const CouponModal = (props: any) => {
   } = props;
   const { couponId } = useSelector((state: any) => state.coupon);
   const serviceList = useSelector((state: any) => state.saloonService?.data?.data)
+  const { serviceMultipSelectArr, selectedServicesArr } = useSelector((state: any) => state.service)
   const [subCategories, setSubcategories] = useState([]);
   const [disablesubCategory, setDisablesubCategory] = useState(true);
   const dispatch = useDispatch();
+  const [selected, setSelected] = useState([]);
+console.log('formik---->',formik)
+
   useEffect(() => {
     dispatch(fetchListRequest(0, 0, ''));
     if (couponId) {
       setSelectedSubCategories(formik.values?.category);
     }
   }, [])
+
+  const handleChange = (selectedOptions:any) => {
+    console.log('selectedOptions--->',selectedOptions);
+    dispatch(setSelectedService(selectedOptions?.value));
+    formik.setFieldValue("service", selectedServicesArr)
+};
+
   const handleCategoryChange = (e) => {
     formik.setFieldValue(e.target.id, e.target.value);
     if (e.target.id === "subcategory") {
@@ -56,6 +69,7 @@ const CouponModal = (props: any) => {
       setDisablesubCategory(false);
     }
   }
+
   return (
     <Modal show={show} size='lg' onHide={cancelButton}>
       <FormikProvider value={formik}>
@@ -105,7 +119,17 @@ const CouponModal = (props: any) => {
                   />
                 </Col>
                 <Col sm={6}>
-                  <Field
+                  <label>Service</label>
+                 
+                  {/* <MultiSelect
+                    options={serviceMultipSelectArr}
+                    value={selectedServicesArr}
+                    onChange={handleChange}
+                    labelledBy={"Select"}
+                    isCreatable={true}
+                  /> */}
+
+                  {/* <Field
                     as="select"
                     name="service"
                     validate={schema}
@@ -114,12 +138,11 @@ const CouponModal = (props: any) => {
                     options={serviceList}
                     onChange={formik.handleChange}
                     value={formik.values.service}
-
-                  />
+                  /> */}
 
                 </Col>
                 <Col sm={6}>
-                <Field
+                  <Field
                     name="discount"
                     required={true}
                     validate={schema}

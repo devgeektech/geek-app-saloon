@@ -88,3 +88,10 @@
       return '';
     }
   };
+
+  export const transformArr = (data:any) => {
+    return data.map(item => ({
+        label: item.name,
+        value: item._id 
+    }));
+}

@@ -59,17 +59,18 @@ const CouponsWrapper = () => {
   const couponSchema = Yup.object().shape({
     offerName: Yup.string().required(REQUIRED_FIELD),
     status: Yup.string().required(REQUIRED_FIELD),
-    service: Yup.string().required(REQUIRED_FIELD),
+    // service: Yup.array().required(REQUIRED_FIELD),
     category: Yup.string().required(REQUIRED_FIELD),
-    subcategory: Yup.string().required(REQUIRED_FIELD),
+    // subcategory: Yup.string().required(REQUIRED_FIELD),
     appliesToAllServices: Yup.bool().required(REQUIRED_FIELD),
     discount: Yup.number().min(0).max(100).required(REQUIRED_FIELD),
   });
   const formik = useFormik({
     initialValues,
     validationSchema: couponSchema,
-    enableReinitialize: true, 
+    // enableReinitialize: true, 
     onSubmit: async (values, { setStatus, setSubmitting }) => {
+      console.log('values---------',values)
       try {
         if (!saloonId) {
           return toast.info("Select Saloon First!")

@@ -28,11 +28,19 @@ const serviceSlice = createSlice({
     skip: 0,
     limit: 10,
     search: '',
-    totalRecord: 0
+    totalRecord: 0,
+    serviceMultipSelectArr: [],
+    selectedServicesArr:[]
   },
   reducers: {
     setSelectedTab: (state: any, action) => {
       state.selectedTab = action.payload;
+    },
+    setServiceForMultiSelect: (state: any, action) => {
+      state.serviceMultipSelectArr = action.payload;
+    },
+    setSelectedService: (state: any, action) => {
+      state.selectedServicesArr = action.payload;
     },
     serviceRequest: (state, action) => {
       return { ...state, loading: true, error: null }
@@ -152,7 +160,9 @@ export const {
   deleteServiceRequest,
   deleteServiceSuccess,
   setServiceForm,
-  resetServiceForm
+  resetServiceForm,
+  setServiceForMultiSelect,
+  setSelectedService
 } = serviceSlice.actions
 
 export const serviceReducer = serviceSlice.reducer

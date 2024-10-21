@@ -41,6 +41,7 @@
     "react-image-crop": "^11.0.6",
     "react-inlinesvg": "3.0.0",
     "react-intl": "6.4.4",
+    "react-multi-select-component": "^4.3.4",
     "react-places-autocomplete": "^7.3.0",
     "react-query": "3.38.0",
     "react-redux": "^8.1.3",
