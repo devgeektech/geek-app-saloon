@@ -6,6 +6,7 @@ export const helperSlice = createSlice({
     initialState: {
         requestStatus:false,
         modalStatus:false,
+        token:''
     },
     reducers: {
         setRequestStatus: (state, action) => {
@@ -13,12 +14,16 @@ export const helperSlice = createSlice({
         },
         setModalStatus: (state, action) => {
             state.modalStatus = action.payload;
+        },
+        setToken: (state, action) => {
+            state.token = action.payload;
         }
     },
 });
 
 export const {
     setRequestStatus,
-    setModalStatus
+    setModalStatus,
+    setToken
 } = helperSlice.actions;
 

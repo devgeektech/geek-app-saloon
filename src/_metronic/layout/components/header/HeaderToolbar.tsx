@@ -1,46 +1,43 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import { useEffect, useState } from 'react'
-import noUiSlider, { target } from 'nouislider'
-import { useLayout } from '../../core'
-// import { KTIcon } from "../../../helpers";
-// import { DefaultTitle } from "./page-title/DefaultTitle";
-// import { ThemeModeSwitcher } from "../../../partials";
 import Dropdown from 'react-bootstrap/Dropdown'
 import '../../components/aside/AsideToolbar.scss'
 import LoginIcon from '../../../images/M1_S3_3.png'
 import { useDispatch, useSelector } from 'react-redux'
 import { logout } from '../../../../app/redux/reducer/authSlice'
-import { toast } from 'react-toastify'
 import { setSaloonId } from '../../../../app/redux/reducer/saloonSlice'
-import { fetchListRequest } from '../../../../app/redux/actions/serviceAction'
 import Form from 'react-bootstrap/Form';
-import { useLocation } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 import { DASHBOARD, USERS, VENDOR } from '../../../../app/utils/const'
+import { setModalStatus, setToken } from '../../../../app/redux/reducer/helperSlice'
 
 const HeaderToolbar = () => {
   const dispatch = useDispatch()
   const { saloonList, saloonId } = useSelector((state: any) => state.saloon);
   const location = useLocation()
+  const navigate = useNavigate();
 
   const logOut = () => {
     dispatch(logout())
+    dispatch(setToken(''))
     localStorage.clear()
   }
 
-  const handleSelect = (event: any) => {
-    const saloonID = event.target.value;
-    dispatch(setSaloonId(saloonID))
-    localStorage.setItem('saloonId', saloonID);
-  };
+  const changeSaloon = () => {
+    navigate('/saloon')
+    dispatch(setModalStatus(true))
+  }
 
-
-
+  // const handleSelect = (event: any) => {
+  //   const saloonID = event.target.value;
+  //   dispatch(setSaloonId(saloonID))
+  //   localStorage.setItem('saloonId', saloonID);
+  // };
 
   return (
     <div className='toolbar d-flex align-items-center justify-content-end w-100'>
       <div className='inr-dropdown-location me-4'>
 
-        {((location?.pathname !== DASHBOARD) && (location?.pathname !== USERS) && ((location?.pathname !== VENDOR))) &&
+        {/* {((location?.pathname !== DASHBOARD) && (location?.pathname !== USERS) && ((location?.pathname !== VENDOR))) &&
           (<Form.Select className='' size="sm" value={saloonId} onChange={handleSelect}>
             <option value="">Select Saloon</option>
             {saloonList?.length > 0 && (
@@ -51,7 +48,7 @@ const HeaderToolbar = () => {
               ))
             )}
           </Form.Select>)
-        }
+        } */}
 
       </div>
       <div className='inr-dropdown-login'>
@@ -75,6 +72,7 @@ const HeaderToolbar = () => {
 
           <Dropdown.Menu>
             <Dropdown.Item >Profile</Dropdown.Item>
+            <Dropdown.Item onClick={changeSaloon}>Change Saloon</Dropdown.Item>
             <Dropdown.Item onClick={logOut}>Log out</Dropdown.Item>
           </Dropdown.Menu>
         </Dropdown>

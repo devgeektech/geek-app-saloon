@@ -40,14 +40,14 @@ const SelectSaloonModal = (props: any) => {
                 <FormikProvider value={formik}>
                     <form onSubmit={formik.handleSubmit}>
                         <Modal.Header>
-                            <Modal.Title>Select Saloon</Modal.Title>
+                            {/* <Modal.Title>Select Saloon</Modal.Title> */}
                         </Modal.Header>
                         <Modal.Body>
                             <Field
                                 as="select"
                                 name="saloon"
                                 validate={validationSchema}
-                                label="Saloon"
+                                label="Select Saloon"
                                 component={FieldSelectInput}
                                 options={saloonList}
                                 onChange={formik.handleChange}
