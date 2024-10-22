@@ -27,7 +27,6 @@ export const AddServiceModal = (props) => {
   const [subCategories, setSubcategories] = useState([]);
   const [disablesubCategory, setDisablesubCategory] = useState(true);
   const [vendors, setVendors] = useState([]);
-  const [selectedVendor, setSelectedVendor] = useState('');
   const [lat, setLat] = useState(30.741482)
   const [lng, setLang] = useState(76.768066)
   const [limit, setLimit] = useState(10)

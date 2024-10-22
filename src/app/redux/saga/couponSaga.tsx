@@ -1,13 +1,17 @@
 import { call, put } from 'redux-saga/effects';
 import { addCoupon, deleteCoupon, getAllCoupon, updateCoupon, updateCouponStatus } from '../../services/_requests';
 import { addCouponFailure, addCouponSuccess, deleteCouponFailure, deleteCouponSuccess, getCouponListFailure, getCouponListSuccess, updateCouponFailure, updateCouponStatusFailure, updateCouponStatusSuccess, updateCouponSuccess } from '../reducer/couponSlice';
+import { setRequestStatus } from '../reducer/helperSlice';
+import { setSelectedSaloon } from '../reducer/saloonSlice';
 
 function* addCouponSaga(action) {
   try {
     const response = yield call(addCoupon, action.payload);
     yield put(addCouponSuccess(response.data));
+    yield put(setRequestStatus(true));
+    yield put(setSelectedSaloon([]));
   } catch (error: any) {
-    yield put(addCouponFailure(error.response));
+    yield put(addCouponFailure(error));
   }
 }
 
@@ -34,12 +38,13 @@ function* getCouponSaga(action) {
 function* updateCouponSaga(action) {
     try {
       const values = action.payload;
-      const id = action.payload.id;
+      const id = action.payload.couponId;
       delete values.id;
       const response = yield call(updateCoupon, id, values);
       yield put(updateCouponSuccess(response.data));
+      yield put(setSelectedSaloon([]));
     } catch (error: any) {
-      yield put(updateCouponFailure(error.response));
+      yield put(updateCouponFailure(error));
     }
   }
 

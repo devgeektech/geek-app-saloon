@@ -6,6 +6,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { loginRequest } from "../../../redux/reducer/authSlice";
 import FieldInputText from "../../../components/common/inputs/FieldInputText";
 import { INVALID_EMAIL } from "../../../utils/ErrorMessages";
+import { getSaloonRequest } from "../../../redux/reducer/saloonSlice";
+import { useEffect } from "react";
 
 const loginSchema = Yup.object().shape({
   email: Yup.string()
@@ -25,15 +27,27 @@ const initialValues = {
 };
 export function Login() {
   const authState = useSelector((authState: any) => authState.auth);
+  const {token} = useSelector((state: any) => state.helper);
   const dispatch = useDispatch();
+  const defaultProps={
+    lat:30.741482, lng:76.768066, skip:0, limit:10, searchUser:""
+  }
+
 
   const formik = useFormik({
     initialValues,
     validationSchema: loginSchema,
     onSubmit: async (values, { setStatus, setSubmitting }) => {
       dispatch(loginRequest(values));
+      // dispatch(getSaloonRequest(defaultProps));
     },
   });
+
+  useEffect(()=>{
+    if(token){
+      dispatch(getSaloonRequest(defaultProps));
+    }
+  },[token])
 
   return (
     <>

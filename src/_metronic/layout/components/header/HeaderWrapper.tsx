@@ -4,10 +4,12 @@ import {Link} from 'react-router-dom'
 import {KTIcon, toAbsoluteUrl} from '../../../helpers'
 import {useLayout} from '../../core'
 import {HeaderToolbar} from './HeaderToolbar'
+import { useSelector } from 'react-redux'
 
 export function HeaderWrapper() {
   const {config, classes, attributes} = useLayout()
-  const {aside} = config
+  const {aside} = config;
+  const { saloonId } = useSelector((state: any) => state.saloon);
 
   return (
     <div
@@ -27,7 +29,7 @@ export function HeaderWrapper() {
         </Link>
         {/* end::Logo */}
 
-        {aside.minimize && (
+        {saloonId && aside.minimize && (
           <div
             id='kt_aside_toggle'
             className='btn btn-icon w-auto px-0 btn-active-color-primary aside-minimize'

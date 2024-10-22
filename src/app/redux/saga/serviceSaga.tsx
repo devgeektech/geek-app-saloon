@@ -20,10 +20,12 @@ import {
   getServiceFailure,
   getServiceSuccess,
   setSelectedTab,
+  setServiceForMultiSelect,
 } from '../reducer/serviceSlice'
 import { deleteSubCategoryFailure } from '../reducer/subCategorySlice'
 import { FETCH_LIST_REQUEST, fetchListFailure, fetchListSuccess } from '../actions/serviceAction'
 import { setRequestStatus } from '../reducer/helperSlice'
+import { transformArr } from '../../utils/common'
 
 const call: any = Effects.call
 
@@ -99,9 +101,14 @@ function* deleteServiceSaga(action) {
 function* fetchDataSaga(action) {
   try {
     const { skip, limit, searchUser , saloonId} = action.payload;
-
     const data = yield call(getAllServices, searchUser, skip, limit, saloonId);
     yield put(fetchListSuccess(data.data));
+    console.log('data.data-->',data.data?.data)
+    if(data.data?.data?.length > 0){
+      let arr = transformArr(data.data?.data);
+      yield put(setServiceForMultiSelect(arr));
+      console.log('arr-->',arr)
+    }
   } catch (error:any) {
     yield put(fetchListFailure(error.message));
   }

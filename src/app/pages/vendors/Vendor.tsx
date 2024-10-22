@@ -32,6 +32,7 @@ import {
   editSaloonRequest,
   getSaloonRequest,
   setSaloonId,
+  setUpdatedSaloonId,
 } from "../../redux/reducer/saloonSlice";
 import { closeModalRequest } from "../../redux/reducer/modalSlice";
 import { resetServiceForm } from "../../redux/reducer/serviceSlice";
@@ -46,7 +47,7 @@ import { setRequestStatus } from "../../redux/reducer/helperSlice";
 
 const ShopWrapper = () => {
   const dispatch = useDispatch();
-  const { saloonList, loading, totalRecord, saloonId } = useSelector(
+  const { saloonList, loading, totalRecord, saloonId, updatedSaloonId } = useSelector(
     (state: any) => state.saloon
   );
   const {requestStatus} = useSelector(
@@ -108,7 +109,7 @@ const ShopWrapper = () => {
         if (modalType == ADD) {
           dispatch(addSaloonRequest(reqObj));
         } else {
-          reqObj["id"] = saloonId;
+          reqObj["id"] = updatedSaloonId;
           dispatch(editSaloonRequest(reqObj));
         }
         setTimeout(()=>{
@@ -155,7 +156,7 @@ const ShopWrapper = () => {
   const openSaloonModal = async (type: any, id: any) => {
     setShow(true);
     if (type == EDIT) {
-      dispatch(setSaloonId(id));
+      dispatch(setUpdatedSaloonId(id));
       await getSaloonById(id).then((res: any) => {
         if (res.data.responseCode === 200) {
           formik.setFieldValue("name", res.data.data.name);
@@ -176,7 +177,7 @@ const ShopWrapper = () => {
   const cancelButton = () => {
     dispatch(closeModalRequest({}));
     dispatch(resetServiceForm());
-    dispatch(setSaloonId(""));
+    dispatch(setUpdatedSaloonId(""));
     setShow(false);
     formik.resetForm();
   };

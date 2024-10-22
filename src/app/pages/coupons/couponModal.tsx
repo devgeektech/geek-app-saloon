@@ -1,15 +1,15 @@
 import { Field, FormikProvider } from 'formik';
 import { Button, Col, Modal, Row } from 'react-bootstrap';
-import clsx from 'clsx';
 import { useDispatch, useSelector } from 'react-redux';
 import FieldInputText from '../../components/common/inputs/FieldInputText';
 import FieldSelectInput from '../../components/common/inputs/FIeldSelectInput';
-
 import 'react-image-crop/src/ReactCrop.scss'
 import 'react-image-crop/dist/ReactCrop.css'
-import FieldTextArea from '../../components/common/inputs/FieldTextArea';
 import { useEffect, useState } from 'react';
 import { fetchListRequest } from '../../redux/actions/serviceAction';
+import { MultiSelect } from 'react-multi-select-component';
+import DatePickerInput from '../../components/common/inputs/datePickerInput';
+import { setSelectedSaloon } from '../../redux/reducer/saloonSlice';
 
 const CouponModal = (props: any) => {
   const {
@@ -21,30 +21,24 @@ const CouponModal = (props: any) => {
   } = props;
   const { couponId } = useSelector((state: any) => state.coupon);
   const serviceList = useSelector((state: any) => state.saloonService?.data?.data)
+  const { serviceMultipSelectArr } = useSelector((state: any) => state.service)
+  const { saloonList, saloonSelectArr, selectedSaloonArr } = useSelector((state: any) => state.saloon)
   const [subCategories, setSubcategories] = useState([]);
   const [disablesubCategory, setDisablesubCategory] = useState(true);
   const dispatch = useDispatch();
+  const [selected, setSelected] = useState([]);
+
   useEffect(() => {
     dispatch(fetchListRequest(0, 0, ''));
     if (couponId) {
       setSelectedSubCategories(formik.values?.category);
     }
   }, [])
-  const handleCategoryChange = (e) => {
-    formik.setFieldValue(e.target.id, e.target.value);
-    if (e.target.id === "subcategory") {
-      return formik.setFieldValue(e.target.id, e.target.value);
-    }
-    let index = categories.findIndex(
-      (item: any) => e.target.value === item._id
-    );
-    if (index === -1) {
-      setSubcategories([]);
-      setDisablesubCategory(true);
-    } else {
-      setSubcategories(categories[index].subCategory);
-      setDisablesubCategory(false);
-    }
+
+  const handleChange = (selectedOptions) => {
+    dispatch(setSelectedSaloon(selectedOptions));
+    const valuesArray = selectedOptions.map(option => option.value);
+    formik.setFieldValue("saloon", valuesArray);
   };
 
   const setSelectedSubCategories = (cid: string) => {
@@ -56,6 +50,7 @@ const CouponModal = (props: any) => {
       setDisablesubCategory(false);
     }
   }
+
   return (
     <Modal show={show} size='lg' onHide={cancelButton}>
       <FormikProvider value={formik}>
@@ -84,7 +79,6 @@ const CouponModal = (props: any) => {
                 <Col sm={6}>
                   <Field
                     name="offerName"
-                    required={true}
                     validate={schema}
                     label="Offer Name"
                     component={FieldInputText}
@@ -92,18 +86,19 @@ const CouponModal = (props: any) => {
                   />
                 </Col>
                 <Col sm={6}>
-                  <Field
-                    as="select"
-                    name="status"
-                    validate={schema}
-                    label="Status"
-                    component={FieldSelectInput}
-                    options={['Active', 'InActive'].map(t => ({ label: t, value: t }))}
-                    onChange={formik.handleChange}
-                    value={formik.values.status}
-
+                  <label className='form-label'>Saloon</label><br />
+                  <MultiSelect
+                    options={saloonSelectArr}
+                    value={selectedSaloonArr || formik?.values?.saloon}
+                    onChange={handleChange}
+                    labelledBy={"Select"}
+                    isCreatable={true}
                   />
+                  {formik.errors.saloon && (
+                    <div style={{ color: 'red' }}>{formik.errors.saloon}</div>
+                  )}
                 </Col>
+
                 <Col sm={6}>
                   <Field
                     as="select"
@@ -111,17 +106,15 @@ const CouponModal = (props: any) => {
                     validate={schema}
                     label="Service"
                     component={FieldSelectInput}
-                    options={serviceList}
+                    options={serviceMultipSelectArr}
                     onChange={formik.handleChange}
                     value={formik.values.service}
-
                   />
-
                 </Col>
+
                 <Col sm={6}>
-                <Field
+                  <Field
                     name="discount"
-                    required={true}
                     validate={schema}
                     label="Discount %"
                     type="number"
@@ -131,43 +124,39 @@ const CouponModal = (props: any) => {
                 </Col>
 
                 <Col sm={6} className="mt-4">
+                  <label className='form-label'>Offer Start</label><br />
                   <Field
-                    as="select"
-                    name="category"
+                    className='form-select'
+                    name="offerStart"
                     validate={schema}
-                    label="Category"
-                    component={FieldSelectInput}
-                    options={categories}
-                    handleCategoryChange={handleCategoryChange}
-                    value={formik.values.category}
-
+                    component={DatePickerInput}
+                    placeholderText="Select a start date"
                   />
                 </Col>
+
+                <Col sm={6} className="mt-4">
+                  <label className='form-label'>Offer Closed</label><br />
+                  <Field
+                    className='form-select'
+                    name="offerClose"
+                    component={DatePickerInput}
+                    placeholderText="Select an end date"
+                  />
+                </Col>
+
                 <Col sm={6} className="mt-4">
                   <Field
                     as="select"
-                    name="subcategory"
+                    name="status"
                     validate={schema}
-                    label="Sub Category"
+                    label="Status"
                     component={FieldSelectInput}
-                    disabled={formik.values.category ? false : true}
-                    options={subCategories}
-                    handleCategoryChange={handleCategoryChange}
-                    value={formik.values.subcategory}
+                    options={['Active', 'InActive'].map(t => ({ label: t, value: t }))}
+                    onChange={formik.handleChange}
+                    value={formik.values.status}
                   />
                 </Col>
-                <Col sm={12} className='coupons d-flex align-items-center my-2'>
-                  <span className='me-2 fs-5 fw-bold'>
-                    Applies To All Services
-                  </span>
-                  <td className={'active'}>
-                    <label className='switch'>
-                      <input type='checkbox' checked={formik.values.appliesToAllServices}
-                        onChange={(e) => formik.setFieldValue('appliesToAllServices', e.target.checked)} />
-                      <span className='slider round'></span>
-                    </label>
-                  </td>
-                </Col>
+
               </Row>
             </div>
           </Modal.Body>

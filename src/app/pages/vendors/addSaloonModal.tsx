@@ -15,7 +15,6 @@ const SaloonModal = (props: any) => {
   const { formik, show, schema, cancelButton, modalType } = props;
   const { address } = useSelector((state: any) => state.saloon);
   const dispatch = useDispatch();
-console.log('formik--->',formik.errors);
 
   const handleSelect = (address) => {
     formik.setFieldValue("location", address);
