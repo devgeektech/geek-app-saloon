@@ -86,7 +86,7 @@ const CouponModal = (props: any) => {
                   />
                 </Col>
                 <Col sm={6}>
-                  <label>Saloon</label>
+                  <label className='form-label'>Saloon</label><br />
                   <MultiSelect
                     options={saloonSelectArr}
                     value={selectedSaloonArr || formik?.values?.saloon}
@@ -124,25 +124,27 @@ const CouponModal = (props: any) => {
                 </Col>
 
                 <Col sm={6} className="mt-4">
-                  <label>Saloon</label><br />
+                  <label className='form-label'>Offer Start</label><br />
                   <Field
+                    className='form-select'
                     name="offerStart"
                     validate={schema}
                     component={DatePickerInput}
                     placeholderText="Select a start date"
                   />
-
                 </Col>
+
                 <Col sm={6} className="mt-4">
-                  <label>Saloon</label><br />
+                  <label className='form-label'>Offer Closed</label><br />
                   <Field
+                    className='form-select'
                     name="offerClose"
                     component={DatePickerInput}
                     placeholderText="Select an end date"
                   />
-
                 </Col>
-                <Col sm={6}>
+
+                <Col sm={6} className="mt-4">
                   <Field
                     as="select"
                     name="status"
@@ -154,6 +156,7 @@ const CouponModal = (props: any) => {
                     value={formik.values.status}
                   />
                 </Col>
+
               </Row>
             </div>
           </Modal.Body>

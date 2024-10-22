@@ -54,7 +54,7 @@ const CouponsWrapper = () => {
   const couponSchema = Yup.object().shape({
     offerName: Yup.string().required(REQUIRED_FIELD),
     status: Yup.string().required(REQUIRED_FIELD),
-    service: Yup.string().required(REQUIRED_FIELD),
+    service: Yup.string().optional(),
     saloon: Yup.array().required(REQUIRED_FIELD),
     appliesToAllServices: Yup.bool().required(REQUIRED_FIELD),
     discount: Yup.number().min(0).max(100).required(REQUIRED_FIELD),
@@ -65,9 +65,15 @@ const CouponsWrapper = () => {
   const formik = useFormik({
     initialValues,
     validationSchema: couponSchema,
-    enableReinitialize: true,
+    // enableReinitialize: true,
     onSubmit: async (values, { setStatus, setSubmitting }) => {
       try {
+        if(values?.service != ''){
+          values['offerType'] = 'service'
+        }
+        if(values?.service == ''){
+          values['offerType'] = 'saloon'
+        }
         if (editMode) {
           const data: any = { ...values };
           data['couponId'] = couponId;
@@ -112,6 +118,7 @@ const CouponsWrapper = () => {
     setModalShow(false);
     setEditMode(false);
     formik.resetForm();
+    dispatch(setSelectedSaloon([]));
   };
 
   const closeDeleteModal = () => {
@@ -225,11 +232,11 @@ const CouponsWrapper = () => {
               </div>
               <div className='tableWrapper mb-5'>
                 <ActiveTable coupons={couponList} deleteItem={deleteOpenModal} handleToggleChange={handleToggleChange} editItem={editCoupon} />
-                <div className='select-all mt-4 d-flex align-items-center'>
+                {/* <div className='select-all mt-4 d-flex align-items-center'>
                   <label className='d-flex align-items-center gap-2'>
                     <input type='checkbox'></input>select-all
                   </label>
-                </div>
+                </div> */}
                 {totalRecord > limit && (<Pagenation limit={limit}
                   totalRecord={totalRecord}
                   paginitionClbk={handlePageChange}

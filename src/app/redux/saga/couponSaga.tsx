@@ -11,7 +11,7 @@ function* addCouponSaga(action) {
     yield put(setRequestStatus(true));
     yield put(setSelectedSaloon([]));
   } catch (error: any) {
-    yield put(addCouponFailure(error.response));
+    yield put(addCouponFailure(error));
   }
 }
 
@@ -44,7 +44,7 @@ function* updateCouponSaga(action) {
       yield put(updateCouponSuccess(response.data));
       yield put(setSelectedSaloon([]));
     } catch (error: any) {
-      yield put(updateCouponFailure(error.response));
+      yield put(updateCouponFailure(error));
     }
   }
 
