@@ -1,5 +1,5 @@
 import { call, put } from 'redux-saga/effects';
-import { addAppointment, deleteAppointment, getAllAppointment, updateAppointment, updateAppointmentStatus } from '../../services/_requests';
+import { addAppointment, deleteAppointment, deleteAppointmentApi, getAllAppointment, updateAppointment, updateAppointmentStatus } from '../../services/_requests';
 import { addAppointmentFailure, addAppointmentSuccess, deleteAppointmentFailure, deleteAppointmentSuccess, getAppointmentListFailure, getAppointmentListSuccess, updateAppointmentFailure, updateAppointmentStatusFailure, updateAppointmentStatusSuccess, updateAppointmentSuccess } from '../reducer/appointmentSlice';
 
 function* addAppointmentSaga(action) {
@@ -13,7 +13,7 @@ function* addAppointmentSaga(action) {
 
 function* deleteAppointmentSaga(action) {
   try {
-    const response = yield call(deleteAppointment, action.payload);
+    const response = yield call(deleteAppointmentApi, action.payload);
     yield put(deleteAppointmentSuccess(response.data));
   } catch (error: any ) {
     yield put(deleteAppointmentFailure(error.response));
@@ -22,8 +22,8 @@ function* deleteAppointmentSaga(action) {
 
 function* getAppointmentSaga(action) {
   try {
-    const { search, skip, limit,status } = action.payload;
-    const response = yield call(getAllAppointment, search, skip, limit)
+    const { search, skip, limit,status, type } = action.payload;
+    const response = yield call(getAllAppointment, search, skip, limit, type)
     yield put(getAppointmentListSuccess(response));
   } catch (error) {
     yield put(getAppointmentListFailure(error));

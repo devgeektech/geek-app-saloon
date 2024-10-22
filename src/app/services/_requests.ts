@@ -2,7 +2,7 @@ import axios from 'axios'
 import { AuthModel, UserModel, CategoryModel } from './_models'
 import { setSelectedTab } from '../redux/reducer/serviceSlice'
 const API_URL = process.env.REACT_APP_API_URL
-const APPOINTMNET_API_URL = process.env.REACT_APPOINTMENT_APP_API_URL
+const {REACT_APP_APPOINTMENT_API_URL} = process.env
 export const GET_USER_BY_ACCESSTOKEN_URL = `${API_URL}/auth/verify_token`
 export const LOGIN_URL = `${API_URL}/login`
 export const REGISTER_URL = `${API_URL}/register`
@@ -15,6 +15,7 @@ export const ADD_SALOON = `${API_URL}/vendor`
 export const DELETE_VENDOR = `${API_URL}/vendor`
 export const GET_USERS = `${API_URL}/users`
 export const DELETE_USER = `${API_URL}/users`
+export const DELETE_APPOINTMET = `${REACT_APP_APPOINTMENT_API_URL}/booking`
 export const BANNER = `${API_URL}/banner`;
 export const SERVICE_URL = `${API_URL}/product`;
 export const FILE_UPLOAD = `${API_URL}/product/upload`;
@@ -26,14 +27,16 @@ export const Edit_SALOON = `${API_URL}/vendor`;
 export const DELETE_SERVICE = `${API_URL}/product`;
 export const DELETE_BANNER = `${API_URL}/banner`;
 export const STAFF = `${API_URL}/staff`;
-export const STAFFAPPOINTMENT = `http://122.180.29.167:3002/appointment/api/v1/staff`
+export const STAFFAPPOINTMENT = `${REACT_APP_APPOINTMENT_API_URL}/staff`
 export const STAFFStatus = `${API_URL}/staff/status`;
-export const STAFFLEAVE = `http://122.180.29.167:3002/appointment/api/v1/booking/admin/updateStaffLeaves`
+export const STAFFLEAVE = `${REACT_APP_APPOINTMENT_API_URL}/booking/admin/updateStaffLeaves`
 export const COUPON = `${API_URL}/coupon`;
 export const COUPONSTATUS = `${API_URL}/coupon/status`;
 export const APPOINTMENT = `${API_URL}/booking`;
+export const GET_APPOINTMENT_URL = `${REACT_APP_APPOINTMENT_API_URL}`
+
 export const BOOKING = `${API_URL}/booking`;
-export const DEFAULTSLOTS = `http://122.180.29.167:3002/appointment/api/v1/booking/admin/getDefaultSlots`
+export const DEFAULTSLOTS = `${REACT_APP_APPOINTMENT_API_URL}/booking/admin/getDefaultSlots`
 
 // Server should return AuthModel
 export function login(email: any, password: any) {
@@ -283,8 +286,13 @@ export function addAppointment(body: any) {
   return axios.post(APPOINTMENT, body)
 }
 
-export function getAllAppointment(search: string, skip: number, limit: number) {
-  return axios.get(APPOINTMENT + `?search=${search}&skip=${skip}&limit=${limit}`, {})
+export function getAllAppointment(search: string, skip: number, limit: number, type: string) {
+  // return axios.get(APPOINTMENT_URL + `?search=${search}&skip=${skip}&limit=${limit}`, {})
+  return axios.get(GET_APPOINTMENT_URL + `?type=${type}`, {})
+}
+
+export function deleteAppointmentApi(id: string) {
+  return axios.delete(DELETE_APPOINTMET + `/${id}`, {})
 }
 
 export function getAppointment(skip:any,limit:any,search:any) {

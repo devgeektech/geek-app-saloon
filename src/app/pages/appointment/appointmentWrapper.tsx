@@ -13,17 +13,19 @@ import { toast } from "react-toastify";
 import { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { addAppointmentSuccess, getAppointmentRequest, setAppointmentId, updateAppointmentSuccess } from '../../redux/reducer/appointmentSlice'
-import { addAppointment, getAppointment, updateAppointment } from '../../services/_requests'
+import { addAppointment, deleteAppointmentApi, getAppointment, updateAppointment } from '../../services/_requests'
 import AppointmentModal from './appointmentModal'
 import { Link } from 'react-router-dom'
 import { REQUIRED_FIELD } from '../../utils/ErrorMessages'
 import moment from 'moment';
+import DeleteModal from '../../components/common/modal/DeleteModal'
 
 
 const AppointmentWrapper = () => {
   const intl = useIntl();
   const dispatch: any = useDispatch();
   const [modalShow, setModalShow] = useState<boolean>(false);
+  const [deleteModalShow, setDeleteModal] = useState<boolean>(false);
   const [id, setId] = useState<string>("");
   const [showDeleteModal, setShowDeleteModal] = useState<boolean>(false);
   const [pageNumber, setPageNumber] = useState<number>(1);
@@ -31,12 +33,36 @@ const AppointmentWrapper = () => {
   const { appointmentList, totalRecord, loading, appointmentId } = useSelector((state: any) => state?.appointment) || [];
   const { saloonId } = useSelector((state: any) => state.saloon);
   const [editMode, setEditMode] = useState<boolean>(false);
-
-
-
+  const [deleteAppointmnetId, setDeleteAppointmentId] = useState("");
+  const [key, setKey] = useState('prev');
+  const deleteCloseModal = () => {
+    setDeleteModal(false);
+  };
+  const deleteOpenModal = (id:any) => {
+    console.log("working >>>>")
+    setDeleteModal(true);
+    setDeleteAppointmentId(id);
+  };
+  const deleteAppointment: any = async (event: any) => {
+    if (event === true) {
+      console.log("True working >>>>>",deleteAppointmnetId)
+      await deleteAppointmentApi(deleteAppointmnetId).then((res: any) => {
+        if (res.data.responseCode === 200) {
+          toast.success("Appointment Deleted Successfully");
+          setDeleteModal(false);
+          dispatch(getAppointmentRequest({ skip: 0, limit: 10, search: '', type: key }))
+        }
+      });
+      // setModalShow(false);
+      // dispatch(getAppointmentRequest({ skip: 0, limit: 10, search: '', type: key }))
+    }
+  };
+  const handleSelect = (k) => {
+    setKey(k);
+  };
   useEffect(() => {
-    dispatch(getAppointmentRequest({ skip: 0, limit: 10, search: '' }))
-  }, [dispatch])
+    dispatch(getAppointmentRequest({ skip: 0, limit: 10, search: '', type: key }))
+  }, [dispatch, key])
 
   const initialValues = {
     name: '',
@@ -92,6 +118,11 @@ const AppointmentWrapper = () => {
     formik.setValues(item);
   };
 
+  const getDate = (date)=> {
+    const formattedDate = moment(date).format('ddd, MMM D, h:mm a');
+    return formattedDate   
+  }
+
   const closeAppointmentModal = () => {
     setModalShow(false);
     formik.resetForm();
@@ -114,8 +145,8 @@ const AppointmentWrapper = () => {
           <Link to={'/appointment/availability'}><button className='yellowBtn'>Availability</button></Link>
         </div>
         <div className='tabWrapper'>
-          <Tabs defaultActiveKey='past' id='uncontrolled-tab-example'>
-            <Tab eventKey='past' title='Past'>
+          <Tabs defaultActiveKey='prev' id='uncontrolled-tab-example' activeKey={key} onSelect={(k:any) => handleSelect(k)}>
+            <Tab eventKey='prev' title='Prev'>
               <div className='searchbar_filter d-flex justify-content-end'>
                 <div className='searchbar'>
                   <input type='text' className='form-control' placeholder='Search...' />
@@ -123,7 +154,7 @@ const AppointmentWrapper = () => {
                     <img src={searchIcon} alt='searchIcon' />
                   </button>
                 </div>
-                <div className='filterWrapper'>
+                {/* <div className='filterWrapper'>
                   <Dropdown>
                     <Dropdown.Toggle
                       className='filterDropdown'
@@ -139,17 +170,17 @@ const AppointmentWrapper = () => {
                       <Dropdown.Item href='#/action-3'>Something else</Dropdown.Item>
                     </Dropdown.Menu>
                   </Dropdown>
-                </div>
+                </div> */}
               </div>
               <div className='tableWrapper mb-5'>
                 <h2 className='h2'>My Upcoming Appointments</h2>
                 <Table responsive className='table table-bordered'>
                   <thead>
                     <tr>
+                      <th>Sr no</th>
                       <th>Salon</th>
                       <th>Customer Name</th>
                       <th>Service (Category)</th>
-                      <th>Sub-Category</th>
                       <th>Date/Time</th>
                       <th>Status</th>
                       <th>Payment</th>
@@ -157,45 +188,25 @@ const AppointmentWrapper = () => {
                     </tr>
                   </thead>
                   <tbody>
-                    {appointmentList.map((item: any) => (
+                    {appointmentList.map((item: any, index:number) => (
                       <tr>
-                        <td>{item.saloon?.name ? item.saloon?.name : ""}</td>
-                        <td>{item.userId?.name ? item.userId.name : ""}</td>
+                        <td>{index+1}</td>
+                        <td>{item.saloonData?.name ? item.saloonData?.name : ""}</td>
+                        <td>{item.customerDetails?.name ? item.customerDetails.name : ""}</td>  
+                        <td>{ item.productsSummary ? item?.productsSummary : "" }</td>
                         <td>{
-                          item.categoryId.map((cat:any, index:number) => (
-                            <>
-                              <span>{cat.name ? cat.name : ""}</span>
-                              <span>{index < item.categoryId.length - 1 && ", "}</span>
-                            </>
-                          ))
-                        }</td>
-                        {/* <td>1 x Haircut(Spice)+1 x Shave(Normal) + 2 Body Massage(Thai)</td> */}
-                        <td>{
-                          item.cartId.items.map((item: any, index: number) => (
-                            <>
-                            <span> + {`${item.quantity} ${item.product.name ? item.product.name : ""}`}</span>
-                            <span>{index < item.length - 1 && ", "}</span>
-                          </>
-                          ))
-                        }</td>
-                        {/* <td>Tue, Sept 4, 11:30 am</td> */}
-                        <td>{item.bookingDate ? moment(item.bookingDate).format('ll') : ""}, {item.bookingTime ? item.bookingTime : ""}</td>
-                        <td>
-                          <span className='pending'>{item.status ? item.status : ""}</span>
+                          item.date? getDate(item.date) : ""
+                          }
                         </td>
-                        <td>
-                          <span className='unpaidbadge'>Unpaid</span>
-                        </td>
+                        <td>{ (item.appointmentStatus ? item.appointmentStatus: '').toUpperCase() }</td>
+                        <td>{ (item.paymentStatus ? item.paymentStatus: '').toUpperCase() }</td>
                         <td>
                           <div className='d-flex'>
-                            <button className='editBtn' onClick={() => editAppointment({ _id: 1 })}>
-                              <img src={pencilEditIcon} alt='pencilEditIcon' />
-                            </button>
-                            <button className='deleteBtn'>
+                            <button className='deleteBtn' onClick={() => deleteOpenModal(item._id)}>
                               <img src={deleteIcon} alt='deleteIcon' />
                             </button>
                           </div>
-                        </td>
+                        </td> 
                       </tr>
                     ))}
                   </tbody>
@@ -210,7 +221,7 @@ const AppointmentWrapper = () => {
                     <img src={searchIcon} alt='searchIcon' />
                   </button>
                 </div>
-                <div className='filterWrapper'>
+                {/* <div className='filterWrapper'>
                   <Dropdown>
                     <Dropdown.Toggle
                       className='filterDropdown'
@@ -226,22 +237,17 @@ const AppointmentWrapper = () => {
                       <Dropdown.Item href='#/action-3'>Something else</Dropdown.Item>
                     </Dropdown.Menu>
                   </Dropdown>
-                </div>
+                </div> */}
               </div>
               <div className='tableWrapper mb-5'>
                 <h2 className='h2'>My Upcoming Appointments</h2>
                 <Table responsive className='table table-bordered'>
                   <thead>
                     <tr>
-                      <th>
-                        <input type='checkbox' />
-                      </th>
                       <th>Sr no</th>
-                      <th>Appointment ID</th>
                       <th>Salon</th>
                       <th>Customer Name</th>
                       <th>Service (Category)</th>
-                      <th>Sub-Category</th>
                       <th>Date/Time</th>
                       <th>Status</th>
                       <th>Payment</th>
@@ -249,174 +255,28 @@ const AppointmentWrapper = () => {
                     </tr>
                   </thead>
                   <tbody>
-                    <tr>
-                      <td>
-                        <input type='checkbox' />
-                      </td>
-                      <td>001</td>
-                      <td>545151511451</td>
-                      <td>Cleaned Salon</td>
-                      <td>Joe Doe</td>
-                      <td>Hair, Massage</td>
-                      <td>1 x Haircut(Spice)+1 x Shave(Normal) + 2 Body Massage(Thai)</td>
-                      <td>Tue, Sept 4, 11:30 am</td>
-                      <td>
-                        <span className='pending'>Pending</span>
-                      </td>
-                      <td>
-                        <span className='paidbadge'>Paid</span>
-                      </td>
-                      <td>
-                        <div className='d-flex'>
-                          <button className='editBtn'>
-                            <img src={pencilEditIcon} alt='pencilEditIcon' />
-                          </button>
-                          <button className='deleteBtn'>
-                            <img src={deleteIcon} alt='deleteIcon' />
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>
-                        <input type='checkbox' />
-                      </td>
-                      <td>002</td>
-                      <td>545151511451</td>
-                      <td>Cleaned Salon</td>
-                      <td>Joe Doe</td>
-                      <td>Hair, Massage</td>
-                      <td>1 x Haircut(Spice)+1 x Shave(Normal) + 2 Body Massage(Thai)</td>
-                      <td>Tue, Sept 4, 11:30 am</td>
-                      <td>
-                        <span className='pending'>Pending</span>
-                      </td>
-                      <td>
-                        <span className='unpaidbadge'>Unpaid</span>
-                      </td>
-                      <td>
-                        <div className='d-flex'>
-                          <button className='editBtn'>
-                            <img src={pencilEditIcon} alt='pencilEditIcon' />
-                          </button>
-                          <button className='deleteBtn'>
-                            <img src={deleteIcon} alt='deleteIcon' />
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>
-                        <input type='checkbox' />
-                      </td>
-                      <td>003</td>
-                      <td>545151511451</td>
-                      <td>Cleaned Salon</td>
-                      <td>Joe Doe</td>
-                      <td>Hair, Massage</td>
-                      <td>1 x Haircut(Spice)+1 x Shave(Normal) + 2 Body Massage(Thai)</td>
-                      <td>Tue, Sept 4, 11:30 am</td>
-                      <td>
-                        <span className='pending'>Pending</span>
-                      </td>
-                      <td>
-                        <span className='paidbadge'>Paid</span>
-                      </td>
-                      <td>
-                        <div className='d-flex'>
-                          <button className='editBtn'>
-                            <img src={pencilEditIcon} alt='pencilEditIcon' />
-                          </button>
-                          <button className='deleteBtn'>
-                            <img src={deleteIcon} alt='deleteIcon' />
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>
-                        <input type='checkbox' />
-                      </td>
-                      <td>004</td>
-                      <td>545151511451</td>
-                      <td>Cleaned Salon</td>
-                      <td>Joe Doe</td>
-                      <td>Hair, Massage</td>
-                      <td>1 x Haircut(Spice)+1 x Shave(Normal) + 2 Body Massage(Thai)</td>
-                      <td>Tue, Sept 4, 11:30 am</td>
-                      <td>
-                        <span className='pending'>Pending</span>
-                      </td>
-                      <td>
-                        <span className='paidbadge'>Paid</span>
-                      </td>
-                      <td>
-                        <div className='d-flex'>
-                          <button className='editBtn'>
-                            <img src={pencilEditIcon} alt='pencilEditIcon' />
-                          </button>
-                          <button className='deleteBtn'>
-                            <img src={deleteIcon} alt='deleteIcon' />
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>
-                        <input type='checkbox' />
-                      </td>
-                      <td>005</td>
-                      <td>545151511451</td>
-                      <td>Cleaned Salon</td>
-                      <td>Joe Doe</td>
-                      <td>Hair, Massage</td>
-                      <td>1 x Haircut(Spice)+1 x Shave(Normal) + 2 Body Massage(Thai)</td>
-                      <td>Tue, Sept 4, 11:30 am</td>
-                      <td>
-                        <span className='pending'>Pending</span>
-                      </td>
-                      <td>
-                        <span className='paidbadge'>Paid</span>
-                      </td>
-                      <td>
-                        <div className='d-flex'>
-                          <button className='editBtn'>
-                            <img src={pencilEditIcon} alt='pencilEditIcon' />
-                          </button>
-                          <button className='deleteBtn'>
-                            <img src={deleteIcon} alt='deleteIcon' />
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>
-                        <input type='checkbox' />
-                      </td>
-                      <td>006</td>
-                      <td>545151511451</td>
-                      <td>Cleaned Salon</td>
-                      <td>Joe Doe</td>
-                      <td>Hair, Massage</td>
-                      <td>1 x Haircut(Spice)+1 x Shave(Normal) + 2 Body Massage(Thai)</td>
-                      <td>Tue, Sept 4, 11:30 am</td>
-                      <td>
-                        <span className='pending'>Pending</span>
-                      </td>
-                      <td>
-                        <span className='paidbadge'>Paid</span>
-                      </td>
-                      <td>
-                        <div className='d-flex'>
-                          <button className='editBtn'>
-                            <img src={pencilEditIcon} alt='pencilEditIcon' />
-                          </button>
-                          <button className='deleteBtn'>
-                            <img src={deleteIcon} alt='deleteIcon' />
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
+                    {appointmentList.map((item: any, index:number) => (
+                      <tr>
+                        <td>{index+1}</td>
+                        <td>{item.saloonData?.name ? item.saloonData?.name : ""}</td>
+                        <td>{item.customerDetails?.name ? item.customerDetails.name : ""}</td>
+                        
+                        <td>{ item.productsSummary ? item?.productsSummary : "" }</td>
+                        <td>{
+                          item.date? getDate(item.date) : ""
+                          }
+                        </td>
+                        <td>{ (item.appointmentStatus ? item.appointmentStatus: '').toUpperCase() }</td>
+                        <td>{ (item.paymentStatus ? item.paymentStatus: '').toUpperCase() }</td>
+                        <td>
+                          <div className='d-flex'>
+                            <button className='deleteBtn' onClick={() => deleteOpenModal(item._id)}>
+                              <img src={deleteIcon} alt='deleteIcon' />
+                            </button>
+                          </div>
+                        </td> 
+                      </tr>
+                    ))}
                   </tbody>
                 </Table>
               </div>
@@ -424,6 +284,13 @@ const AppointmentWrapper = () => {
           </Tabs>
         </div>
       </div>
+      <DeleteModal
+        deleteUserClbk={(e: any) => {
+          deleteAppointment(e);
+        }}
+        openModal={deleteModalShow}
+        closeModal={deleteCloseModal}
+      />
       {modalShow && (
         <AppointmentModal
           show={modalShow}

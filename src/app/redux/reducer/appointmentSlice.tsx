@@ -51,10 +51,10 @@ const appointmentSlice = createSlice({
         },
         deleteAppointmentSuccess: (state: any, action) => {
             toast.success(action.payload.responseMessage);
-            state.appointmentList = state.appointmentList.filter(
-                (appointment: any ) => appointment._id !== action.payload.data._id
-            );
-            state.totalRecord -= 1;
+            // state.appointmentList = state.appointmentList.filter(
+            //     (appointment: any ) => appointment._id !== action.payload.data._id
+            // );
+            // state.totalRecord -= 1;
             state.loading = false;
         },
         deleteAppointmentFailure: (state, action) => {

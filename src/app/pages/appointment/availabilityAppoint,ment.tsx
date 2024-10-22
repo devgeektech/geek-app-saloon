@@ -12,8 +12,8 @@ import { REQUIRED } from '../../utils/const';
 import { toast } from "react-toastify";
 import { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { addAppointmentSuccess, setAppointmentId, updateAppointmentSuccess } from '../../redux/reducer/appointmentSlice'
-import { addAppointment, updateAppointment } from '../../services/_requests'
+import { addAppointmentSuccess, getAppointmentRequest, setAppointmentId, updateAppointmentSuccess } from '../../redux/reducer/appointmentSlice'
+import { addAppointment, deleteAppointmentApi, updateAppointment } from '../../services/_requests'
 import AppointmentModal from './appointmentModal'
 import { Link } from 'react-router-dom'
 import FullCalendar from '@fullcalendar/react';
@@ -137,7 +137,7 @@ const AvailabilityAppointment = () => {
                 />
               </div>
             </Tab>
-            <Tab eventKey='day' title='Day'>
+            {/* <Tab eventKey='day' title='Day'>
               <Row>
                 <Col sm={9}>
                   <div className='tableWrapper my-5'>
@@ -280,7 +280,7 @@ const AvailabilityAppointment = () => {
                   </div>
                 </Col>
               </Row>
-            </Tab>
+            </Tab> */}
           </Tabs>
         </div>
       </div>
