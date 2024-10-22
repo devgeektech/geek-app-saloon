@@ -2,7 +2,7 @@ import axios from 'axios'
 import { AuthModel, UserModel, CategoryModel } from './_models'
 import { setSelectedTab } from '../redux/reducer/serviceSlice'
 const API_URL = process.env.REACT_APP_API_URL
-const {REACT_APP_APPOINTMENT_API_URL} = process.env
+const {REACT_APP_APPOINTMENT_API_URL, REACT_APP_PAYMENT_API_URL} = process.env
 export const GET_USER_BY_ACCESSTOKEN_URL = `${API_URL}/auth/verify_token`
 export const LOGIN_URL = `${API_URL}/login`
 export const REGISTER_URL = `${API_URL}/register`
@@ -33,7 +33,7 @@ export const STAFFLEAVE = `${REACT_APP_APPOINTMENT_API_URL}/booking/admin/update
 export const COUPON = `${API_URL}/coupon`;
 export const COUPONSTATUS = `${API_URL}/coupon/status`;
 export const APPOINTMENT = `${API_URL}/booking`;
-export const GET_APPOINTMENT_URL = `${REACT_APP_APPOINTMENT_API_URL}`
+export const GET_APPOINTMENT_URL = `${REACT_APP_PAYMENT_API_URL}/payment`
 
 export const BOOKING = `${API_URL}/booking`;
 export const DEFAULTSLOTS = `${REACT_APP_APPOINTMENT_API_URL}/booking/admin/getDefaultSlots`
