@@ -27,10 +27,20 @@ export const saloonSlice = createSlice({
         saloonSelectArr : [],
         selectedSaloonArr:[],
         updatedSaloonId: null,
+        lat:30.741482,
+        lng:76.768066,
+        saloonModal:false,
+        saloonName: '',
     },
     reducers: {
+        setSaloonModal: (state, action) => {
+            state.saloonModal = action.payload;
+        },
         setSaloonId: (state, action) => {
             state.saloonId = action.payload;
+        },
+        setSaloonName: (state, action) => {
+            state.saloonName = action.payload;
         },
         setUpdatedSaloonId: (state, action) => {
             state.updatedSaloonId = action.payload;
@@ -128,7 +138,7 @@ export const selectServiceSlice = createSlice({
 
 
 export const {
-    addSaloonFailure, addSaloonRequest, addSaloonSuccess, getSaloonRequest, getSaloonListSuccess, getSaloonListFailure, setSaloonId, editSaloonRequest, editSaloonFailure, editSaloonSuccess, setAddress,setSaloonKeyValues,setSelectedSaloon,setUpdatedSaloonId
+    addSaloonFailure, addSaloonRequest, addSaloonSuccess, getSaloonRequest, getSaloonListSuccess, getSaloonListFailure, setSaloonId, editSaloonRequest, editSaloonFailure, editSaloonSuccess, setAddress,setSaloonKeyValues,setSelectedSaloon,setUpdatedSaloonId,setSaloonModal,setSaloonName
 } = saloonSlice.actions;
 
 

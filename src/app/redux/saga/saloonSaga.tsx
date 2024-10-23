@@ -3,7 +3,8 @@ import {
 addSaloonSuccess,addSaloonFailure,getSaloonListSuccess,getSaloonListFailure,
 // setSaloonId,
 editSaloonSuccess,
-setSaloonKeyValues
+setSaloonKeyValues,
+setSaloonModal
 } from '../reducer/saloonSlice';
 import {  addSaloon, editSaloon, getVendors } from '../../services/_requests';
 import { setRequestStatus } from '../reducer/helperSlice';
@@ -14,8 +15,10 @@ function* addSaloonSaga(action) {
     const response = yield call(addSaloon, action.payload);
     yield put(addSaloonSuccess(response.data));
     yield put(setRequestStatus(true));
+    yield put(setSaloonModal(false));
   } catch (error: any) {
     yield put(setRequestStatus(false));
+    yield put(setSaloonModal(false));
     yield put(addSaloonFailure(error));
   }
 }

@@ -19,7 +19,7 @@ import { toast } from 'react-toastify'
 import { deleteCoupon, updateCouponStatus } from '../../services/_requests'
 import { addCouponRequest, getCouponRequest, setCouponId, updateCouponRequest } from '../../redux/reducer/couponSlice'
 import { getCategoryRequest } from '../../redux/reducer/categorySlice'
-import { REQUIRED_FIELD } from '../../utils/ErrorMessages'
+import { OFFER_CHAR_LIMIT_MESSAGE, REQUIRED_FIELD } from '../../utils/ErrorMessages'
 import { setRequestStatus } from '../../redux/reducer/helperSlice'
 import { setSelectedSaloon } from '../../redux/reducer/saloonSlice'
 
@@ -52,7 +52,7 @@ const CouponsWrapper = () => {
   }
 
   const couponSchema = Yup.object().shape({
-    offerName: Yup.string().required(REQUIRED_FIELD),
+    offerName: Yup.string().required(REQUIRED_FIELD).max(10, OFFER_CHAR_LIMIT_MESSAGE),
     status: Yup.string().required(REQUIRED_FIELD),
     service: Yup.string().optional(),
     saloon: Yup.array().required(REQUIRED_FIELD),
@@ -65,6 +65,7 @@ const CouponsWrapper = () => {
   const formik = useFormik({
     initialValues,
     validationSchema: couponSchema,
+    validateOnChange: true,
     // enableReinitialize: true,
     onSubmit: async (values, { setStatus, setSubmitting }) => {
       try {

@@ -28,6 +28,7 @@ export default function InActiveTable({coupons, deleteItem, editItem,handleToggl
             <th>Offer Name</th>
             <th>Service</th>
             <th>Start Date</th>
+            <th>Close Date</th>
             <th>Status</th>
             <th>Action</th>
           </tr>
@@ -42,7 +43,8 @@ export default function InActiveTable({coupons, deleteItem, editItem,handleToggl
             <td>{index+1}</td>
             <td>{capitalizeFirstLetter(coupon?.offerName)}</td>
             <td>{coupon?.service ? getServiceName(coupon?.service) : ''}</td>
-            <td>{moment(coupon?.createdAt).format('Do MMM YYYY')}</td>
+            <td>{moment(coupon?.offerStart).format('Do MMM YYYY')}</td>
+            <td>{moment(coupon?.offerClose).format('Do MMM YYYY')}</td>
             <td className='inactive'> {coupon.status}
               <label className='switch' >
               <input type='checkbox' checked onChange={() => handleToggleChange(coupon._id,'Active')}/>

@@ -4,15 +4,14 @@ import '../../components/aside/AsideToolbar.scss'
 import LoginIcon from '../../../images/M1_S3_3.png'
 import { useDispatch, useSelector } from 'react-redux'
 import { logout } from '../../../../app/redux/reducer/authSlice'
-import { setSaloonId } from '../../../../app/redux/reducer/saloonSlice'
-import Form from 'react-bootstrap/Form';
+import { setSaloonId, setSaloonName } from '../../../../app/redux/reducer/saloonSlice'
 import { useLocation, useNavigate } from 'react-router-dom'
-import { DASHBOARD, USERS, VENDOR } from '../../../../app/utils/const'
 import { setModalStatus, setToken } from '../../../../app/redux/reducer/helperSlice'
+import { useEffect } from 'react'
 
 const HeaderToolbar = () => {
   const dispatch = useDispatch()
-  const { saloonList, saloonId } = useSelector((state: any) => state.saloon);
+  const { saloonList, saloonName, saloonId } = useSelector((state: any) => state.saloon);
   const location = useLocation()
   const navigate = useNavigate();
 
@@ -27,6 +26,11 @@ const HeaderToolbar = () => {
     navigate('/saloon')
     dispatch(setModalStatus(true))
   }
+
+  useEffect(()=>{
+    let saloonValue = saloonList.filter((item: any) => { return (item?._id == saloonId) });
+    dispatch(setSaloonName(saloonValue[0]?.name))
+  },[saloonId])
 
   // const handleSelect = (event: any) => {
   //   const saloonID = event.target.value;
@@ -64,7 +68,10 @@ const HeaderToolbar = () => {
                   <div className='log-out-left'>
                     <img src={LoginIcon} alt='LoginIcon' />
                   </div>
-                  <h5 className=' ms-lg-2'>Admin</h5>
+                  <div className='ms-lg-2'>
+                    <h5>Admin</h5>
+                    <h6 className='mb-0'>{saloonName}</h6>
+                  </div>
                 </div>
                 {/* <button onClick={logOut} className='btn btn-sm btn-danger ms-lg-2'>Logout</button> */}
               </div>
