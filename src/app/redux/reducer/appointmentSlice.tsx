@@ -3,6 +3,7 @@ import { toast } from "react-toastify";
 
 const initialState = {
     appointmentList: [],
+    adminSlotsList: [],
     error: null,
     loading: false,
     skip: 0,
@@ -75,6 +76,45 @@ const appointmentSlice = createSlice({
             state.error = action.payload;
             state.loading = false;
         },
+        getAdminAppointmentSlots: (state, action) => {
+            return { ...state, loading: true, error: null };
+        },
+        getAdminAppointmentSlotsSuccess: (state, action) => {
+            state.loading = false;
+            state.adminSlotsList = action.payload.data.data;
+        },
+        getAdminAppointmentSlotsFailure: (state, action) => {
+            state.error = action.payload;
+            state.loading = false;
+        },
+        updateAdminAppointmentSlotsRequest: (state) => {
+            state.loading = true;
+            state.error = null;
+        },
+        updateAdminAppointmentSlotsSuccess: (state: any, action) => {
+            toast.success(action.payload.responseMessage);
+            state.loading = false;
+            state.error = null;
+        },
+        updateAdminAppointmentSlotsFailure: (state, action) => {
+            toast.error(action.payload.responseMessage);
+            state.error = action.payload;
+            state.loading = false;
+        },
+        confirmAdminAppointmentSlotsRequest: (state) => {
+            state.loading = true;
+            state.error = null;
+        },
+        confirmAppointmentSlotsSuccess: (state: any, action) => {
+            toast.success(action.payload.responseMessage);
+            state.loading = false;
+            state.error = null;
+        },
+        confirmAdminAppointmentSlotsFailure: (state, action) => {
+            toast.error(action.payload.responseMessage);
+            state.error = action.payload;
+            state.loading = false;
+        },
         updateAppointmentRequest: (state) => {
             state.loading = true;
             state.error = null;
@@ -132,7 +172,15 @@ export const {
     updateAppointmentStatusRequest,
     updateAppointmentStatusSuccess,
     updateAppointmentStatusFailure,
-    setAppointmentId
+    setAppointmentId,
+    getAdminAppointmentSlots,
+    getAdminAppointmentSlotsSuccess,
+    getAdminAppointmentSlotsFailure,
+    updateAdminAppointmentSlotsSuccess,
+    updateAdminAppointmentSlotsRequest,
+    updateAdminAppointmentSlotsFailure,
+    confirmAppointmentSlotsSuccess,
+    confirmAdminAppointmentSlotsFailure
 } = appointmentSlice.actions;
 
 export default appointmentSlice.reducer;

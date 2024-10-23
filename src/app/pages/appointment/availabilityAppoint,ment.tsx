@@ -5,14 +5,14 @@ import pencilEditIcon from '../../../_metronic/images/pencilEditIcon.svg'
 import deleteIcon from '../../../_metronic/images/deleteIcon.svg'
 import searchIcon from '../../../_metronic/images/searchIcon.svg'
 import './style.scss'
-import { Col, Dropdown, Row, Tab, Table, Tabs } from 'react-bootstrap'
+import { Button, Col, Container, Dropdown, Form, Row, Tab, Table, Tabs } from 'react-bootstrap'
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { REQUIRED } from '../../utils/const';
 import { toast } from "react-toastify";
 import { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { addAppointmentSuccess, getAppointmentRequest, setAppointmentId, updateAppointmentSuccess } from '../../redux/reducer/appointmentSlice'
+import { addAppointmentSuccess, getAdminAppointmentSlots, getAppointmentRequest, setAppointmentId, updateAdminAppointmentSlotsRequest, updateAppointmentSuccess } from '../../redux/reducer/appointmentSlice'
 import { addAppointment, deleteAppointmentApi, updateAppointment } from '../../services/_requests'
 import AppointmentModal from './appointmentModal'
 import { Link } from 'react-router-dom'
@@ -21,6 +21,12 @@ import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid'
 import Calendar from 'react-calendar'
 import { REQUIRED_FIELD } from '../../utils/ErrorMessages'
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+import { FaEdit } from 'react-icons/fa';
+import moment from 'moment'
+import ShareModal from '../../components/common/modal/ShareModal'
+
 
 function renderEventContent(eventInfo) {
   return (
@@ -39,9 +45,18 @@ const AvailabilityAppointment = () => {
   const [showDeleteModal, setShowDeleteModal] = useState<boolean>(false);
   const [pageNumber, setPageNumber] = useState<number>(1);
   const [searchValue, setSearchValue] = useState<string>('');
-  const { appointmentList, totalRecord, loading, appointmentId } = useSelector((state: any) => state.appointment);
+  const { appointmentList, totalRecord, loading, appointmentId, adminSlotsList } = useSelector((state: any) => state.appointment);
   const { saloonId } = useSelector((state: any) => state.saloon);
   const [editMode, setEditMode] = useState<boolean>(false);
+  const [dateState , setDateState] = useState({
+    date: new Date()
+  })
+  const [deleteModalShow, setDeleteModal] = useState<boolean>(false);
+  const [TimeState, setTimeState] = useState('');
+  const deleteCloseModal = () => {
+    setDeleteModal(false);
+  };
+  const [selectedSlot, setSelectedSlot] = useState({});
   const initialValues = {
     name: '',
     gender: '',
@@ -95,41 +110,77 @@ const AvailabilityAppointment = () => {
     formik.setValues(item);
   };
 
+  const handleChangeDate = (date, event) => {
+    setDateState({ date: new Date(date) });
+  };
+
+  const handleChangeTime = (e) => {
+    const intValue = e.target.value;
+    // Only update if the value is empty or a valid integer
+    if (intValue === '' || /^[0-9]+$/.test(intValue)) {
+      setTimeState(intValue);
+    }
+  };
+
   const closeAppointmentModal = () => {
     setModalShow(false);
     formik.resetForm();
   };
+
+  const onEdit = (slot:any)=>{
+    if(TimeState == '' || !dateState.date) {
+      return toast.info("Select Date & Time First!")
+    }
+    let obj= {
+      startSlot: slot.start,
+      date : moment(dateState.date).format("YYYY-MM-DD"),
+      amount: 0,
+      isBookedByAdmin: true,
+      serviceTime: TimeState
+    }
+    setSelectedSlot(obj)
+    setDeleteModal(true)
+  }
+
+  const getAdminAppointments = () => {
+    if(TimeState == '' || !dateState.date) {
+      return toast.info("Select Date & Time First!")
+    }
+    let obj = {date : moment(dateState.date).format("YYYY-MM-DD"), data:{ isBookedByAdmin: true, serviceTime:TimeState} }
+    dispatch(getAdminAppointmentSlots(obj))
+  };
+
   const events = [
     { title: 'Meeting', start: new Date() }
   ]
   return (
     <>
-      <div className='appointmentContent'>
-        <div className='title_text d-flex justify-content-between align-items-center'>
-          <div className=''>
-            <h2 className='page_title'>
-              <img src={appointmentBlackIcon} alt='appointmentBlackIcon' />
-              <Link to={'/appointment'} className=''>
+      <div className="appointmentContent">
+        <div className="title_text d-flex justify-content-between align-items-center">
+          <div className="">
+            <h2 className="page_title">
+              <img src={appointmentBlackIcon} alt="appointmentBlackIcon" />
+              <Link to={"/appointment"} className="">
                 <h2> Appointments & Rescheduling &gt;&gt; Availability </h2>
               </Link>
             </h2>
             <p>Empowers you to manage appointments efficiently</p>
           </div>
         </div>
-        <div className='tabWrapper'>
-          <Tabs defaultActiveKey='week' id='uncontrolled-tab-example'>
-            <Tab eventKey='week' title='Week'>
-              <div className='tableWrapper my-5'>
+        <div className="tabWrapper">
+          <Tabs defaultActiveKey="week" id="uncontrolled-tab-example">
+            <Tab eventKey="week" title="Week">
+              <div className="tableWrapper my-5">
                 <FullCalendar
                   plugins={[timeGridPlugin]}
-                  initialView='timeGridWeek'
+                  initialView="timeGridWeek"
                   weekends={false}
                   weekNumbers={false}
                   events={events}
                   headerToolbar={{
-                    left: 'title',
-                    center: '',
-                    right: 'prev,next'
+                    left: "title",
+                    center: "",
+                    right: "prev,next",
                   }}
                   showNonCurrentDates={true}
                   allDayMaintainDuration={true}
@@ -137,153 +188,73 @@ const AvailabilityAppointment = () => {
                 />
               </div>
             </Tab>
-            {/* <Tab eventKey='day' title='Day'>
-              <Row>
-                <Col sm={9}>
-                  <div className='tableWrapper my-5'>
-                    <Table responsive className='table table-bordered'>
-                      <thead>
-                        <tr>
-                          <th>Spot no</th>
-                          <th>Time</th>
-                          <th>Appointment ID</th>
-                          <th>Customer Name</th>
-                          <th>Service (Category)</th>
-                          <th>Sub-Category</th>
-                          <th>Action</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <tr>
-                          <td>001</td>
-                          <td>12:30 PM</td>
-                          <td>53434343</td>
-                          <td>Joe Doe</td>
-                          <td>Hair, Massage</td>
-                          <td>1 x Haircut(Spice)+1 x Shave(Normal) + 2 Body Massage(Thai)</td>
-                          <td>
-                            <div className='d-flex'>
-                              <button className='editBtn'>
-                                <img src={pencilEditIcon} alt='pencilEditIcon' />
-                              </button>
-                              <button className='deleteBtn'>
-                                <img src={deleteIcon} alt='deleteIcon' />
-                              </button>
-                            </div>
-                          </td>
-                        </tr>
-                        <tr>
-                          <td>002</td>
-                          <td>12:30 PM</td>
-                          <td>53434343</td>
-                          <td>Joe Doe</td>
-                          <td>Hair, Massage</td>
-                          <td>1 x Haircut(Spice)+1 x Shave(Normal) + 2 Body Massage(Thai)</td>
-                          <td>
-                            <div className='d-flex'>
-                              <button className='editBtn'>
-                                <img src={pencilEditIcon} alt='pencilEditIcon' />
-                              </button>
-                              <button className='deleteBtn'>
-                                <img src={deleteIcon} alt='deleteIcon' />
-                              </button>
-                            </div>
-                          </td>
-                        </tr>
-                        <tr>
-                          <td>003</td>
-                          <td>12:30 PM</td>
-                          <td>53434343</td>
-                          <td>Joe Doe</td>
-                          <td>Hair, Massage</td>
-                          <td>1 x Haircut(Spice)+1 x Shave(Normal) + 2 Body Massage(Thai)</td>
-
-                          <td>
-                            <div className='d-flex'>
-                              <button className='editBtn'>
-                                <img src={pencilEditIcon} alt='pencilEditIcon' />
-                              </button>
-                              <button className='deleteBtn'>
-                                <img src={deleteIcon} alt='deleteIcon' />
-                              </button>
-                            </div>
-                          </td>
-                        </tr>
-                        <tr>
-                          <td>004</td>
-                          <td>12:30 PM</td>
-                          <td>53434343</td>
-                          <td>Joe Doe</td>
-                          <td>Hair, Massage</td>
-                          <td>1 x Haircut(Spice)+1 x Shave(Normal) + 2 Body Massage(Thai)</td>
-                          <td>
-                            <div className='d-flex'>
-                              <button className='editBtn'>
-                                <img src={pencilEditIcon} alt='pencilEditIcon' />
-                              </button>
-                              <button className='deleteBtn'>
-                                <img src={deleteIcon} alt='deleteIcon' />
-                              </button>
-                            </div>
-                          </td>
-                        </tr>
-                        <tr>
-                          <td>005</td>
-                          <td>12:30 PM</td>
-                          <td>53434343</td>
-                          <td>Joe Doe</td>
-                          <td>Hair, Massage</td>
-                          <td>1 x Haircut(Spice)+1 x Shave(Normal) + 2 Body Massage(Thai)</td>
-                          <td>
-                            <div className='d-flex'>
-                              <button className='editBtn'>
-                                <img src={pencilEditIcon} alt='pencilEditIcon' />
-                              </button>
-                              <button className='deleteBtn'>
-                                <img src={deleteIcon} alt='deleteIcon' />
-                              </button>
-                            </div>
-                          </td>
-                        </tr>
-                        <tr>
-                          <td>006</td>
-                          <td>12:30 PM</td>
-                          <td>53434343</td>
-                          <td>Joe Doe</td>
-                          <td>Hair, Massage</td>
-                          <td>1 x Haircut(Spice)+1 x Shave(Normal) + 2 Body Massage(Thai)</td>
-                          <td>
-                            <div className='d-flex'>
-                              <button className='editBtn'>
-                                <img src={pencilEditIcon} alt='pencilEditIcon' />
-                              </button>
-                              <button className='deleteBtn'>
-                                <img src={deleteIcon} alt='deleteIcon' />
-                              </button>
-                            </div>
-                          </td>
-                        </tr>
-                      </tbody>
-                    </Table>
-                  </div>
-                </Col>
-                <Col sm={3} className='position-relative'>
-                  <div className='mt-5 rounded'>
-                    <Calendar onChange={onChange} value={value} />
-                  </div>
-                  <div className='position-absolute bottom-0 w-100 mb-5'>
-                    <button
-                      className="blackBtn btn-sm w-100 py-2"
-                    >
-                      <span className="indicator-label">Save Changes</span>
-                    </button>
-                  </div>
-                </Col>
-              </Row>
-            </Tab> */}
+            <Tab eventKey="adminBooking" title="Admin Booking">
+              <Container>
+                <Row className="mt-5">
+                  <Col sm={3} className="mb-3">
+                    <Form.Group controlId="date">
+                      <Form.Label>Select Date</Form.Label>
+                      <DatePicker
+                        className='form-control'
+                        selected={dateState.date}
+                        onChange={handleChangeDate}
+                      />
+                    </Form.Group>
+                  </Col>
+                  <Col sm={3}>
+                    <Form.Group controlId="Time">
+                      <Form.Label>Select Time In Minutes</Form.Label>
+                      <Form.Control
+                        type="text"
+                        value={TimeState}
+                        onChange={handleChangeTime}
+                        placeholder="Enter an integer"
+                        className="form-control-sm"
+                      />
+                    </Form.Group>
+                  </Col>
+                  <Col>
+                    <Button className='mt-6' variant="primary"  onClick={(e) => {
+                  e.preventDefault()
+                  getAdminAppointments()
+                }}> Submit </Button>
+                  </Col>
+                </Row>
+                <Row>
+                  {adminSlotsList && adminSlotsList.length > 0 && adminSlotsList.map((slot:any, index:number) => (
+                    <Col key={index} xs={4} md={2} className="mb-3">
+                      <div
+                        className={`time-slot ${
+                          slot.status === "available" ? "available" : ""
+                        } ${
+                          slot.status.includes("cancelled") ? "cancelled" : ""
+                        }`}
+                      >
+                        <div className="time-header d-flex justify-content-between">
+                          <span>{slot.start}</span>
+                          <FaEdit className="edit-icon" onClick={(e)=>onEdit(slot)}/>
+                        </div>
+                        <div className="status">{slot.status}</div>
+                      </div>
+                    </Col>
+                  ))}
+                </Row>
+              </Container>
+            </Tab>
           </Tabs>
         </div>
       </div>
+      <ShareModal
+        deleteUserClbk={async (e: any) => {
+          let value:any = selectedSlot
+          dispatch(updateAdminAppointmentSlotsRequest(value));
+        }}
+        openModal={deleteModalShow}
+        closeModal={deleteCloseModal}
+        text="Are you sure you want to Book this time slot"
+        heading= "Are you sure you want to book"
+        button= "Update"
+      />
       {modalShow && (
         <AppointmentModal
           show={modalShow}
@@ -294,7 +265,7 @@ const AvailabilityAppointment = () => {
         />
       )}
     </>
-  )
+  );
 }
 
 export { AvailabilityAppointment }

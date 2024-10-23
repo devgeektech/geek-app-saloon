@@ -1,6 +1,6 @@
 import { call, put } from 'redux-saga/effects';
-import { addAppointment, deleteAppointment, deleteAppointmentApi, getAllAppointment, updateAppointment, updateAppointmentStatus } from '../../services/_requests';
-import { addAppointmentFailure, addAppointmentSuccess, deleteAppointmentFailure, deleteAppointmentSuccess, getAppointmentListFailure, getAppointmentListSuccess, updateAppointmentFailure, updateAppointmentStatusFailure, updateAppointmentStatusSuccess, updateAppointmentSuccess } from '../reducer/appointmentSlice';
+import { addAppointment, deleteAppointment, deleteAppointmentApi, getAllAppointment, updateAppointment, updateAppointmentStatus, getAdminBookingApi,updateAdminAppointmentSlots, confirmAdminAppointmentSlots } from '../../services/_requests';
+import { addAppointmentFailure, addAppointmentSuccess, deleteAppointmentFailure, deleteAppointmentSuccess, getAppointmentListFailure, getAppointmentListSuccess, updateAppointmentFailure, updateAppointmentStatusFailure, updateAppointmentStatusSuccess, updateAppointmentSuccess, getAdminAppointmentSlotsSuccess, getAdminAppointmentSlotsFailure, updateAdminAppointmentSlotsSuccess, updateAdminAppointmentSlotsFailure, confirmAppointmentSlotsSuccess, confirmAdminAppointmentSlotsFailure, } from '../reducer/appointmentSlice';
 
 function* addAppointmentSaga(action) {
   try {
@@ -30,6 +30,48 @@ function* getAppointmentSaga(action) {
   }
 }
 
+function* getAdminBooking(action) {
+  try {
+    const { date, data } = action.payload;
+    const response = yield call(getAdminBookingApi, date, data)
+    yield put(getAdminAppointmentSlotsSuccess(response));
+  } catch (error) {
+    yield put(getAdminAppointmentSlotsFailure(error));
+  }
+}
+
+function* updateAdminAppointmentSlotsSaga(action){
+  try {
+    const values = action.payload;
+    const response = yield call(updateAdminAppointmentSlots,values);
+    yield put(updateAdminAppointmentSlotsSuccess(response.data));
+    debugger
+    if(response.data.data){
+    let obj = {
+      paymentIntent: response.data.data.paymentIntentId,
+      appointmentId: response.data.data._id,
+      status: 'success',
+      date: values.date,
+      isBookedByAdmin: true,
+      serviceTime: 60
+    }
+    yield call(confirmAdminAppointmentSlotsSaga, { payload: obj });
+  }
+ 
+  } catch (error: any) {
+    yield put(updateAdminAppointmentSlotsFailure(error.response));
+  }
+}
+
+function* confirmAdminAppointmentSlotsSaga(action){
+  try {
+    const values = action.payload;
+    const response = yield call(confirmAdminAppointmentSlots,values);
+    yield put(confirmAppointmentSlotsSuccess(response.data));
+  } catch (error: any) {
+    yield put(confirmAdminAppointmentSlotsFailure(error.response));
+  }
+}
 
 function* updateAppointmentSaga(action) {
     try {
@@ -55,4 +97,4 @@ function* updateAppointmentStatusSaga(action) {
     yield put(updateAppointmentStatusFailure(error.response));
   }
 }
-export {addAppointmentSaga, getAppointmentSaga, deleteAppointmentSaga, updateAppointmentSaga,updateAppointmentStatusSaga};
+export {addAppointmentSaga, getAppointmentSaga, deleteAppointmentSaga, updateAppointmentSaga,updateAppointmentStatusSaga, getAdminBooking, updateAdminAppointmentSlotsSaga, confirmAdminAppointmentSlotsSaga};
