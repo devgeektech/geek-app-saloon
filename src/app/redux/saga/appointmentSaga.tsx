@@ -1,6 +1,6 @@
 import { call, put } from 'redux-saga/effects';
-import { addAppointment, deleteAppointment, deleteAppointmentApi, getAllAppointment, updateAppointment, updateAppointmentStatus, getAdminBookingApi,updateAdminAppointmentSlots, confirmAdminAppointmentSlots } from '../../services/_requests';
-import { addAppointmentFailure, addAppointmentSuccess, deleteAppointmentFailure, deleteAppointmentSuccess, getAppointmentListFailure, getAppointmentListSuccess, updateAppointmentFailure, updateAppointmentStatusFailure, updateAppointmentStatusSuccess, updateAppointmentSuccess, getAdminAppointmentSlotsSuccess, getAdminAppointmentSlotsFailure, updateAdminAppointmentSlotsSuccess, updateAdminAppointmentSlotsFailure, confirmAppointmentSlotsSuccess, confirmAdminAppointmentSlotsFailure, } from '../reducer/appointmentSlice';
+import { addAppointment, deleteAppointment, deleteAppointmentApi, getAllAppointment, updateAppointment, updateAppointmentStatus, getAdminBookingApi,updateAdminAppointmentSlots, confirmAdminAppointmentSlots, getAppointmentAvailability } from '../../services/_requests';
+import { addAppointmentFailure, addAppointmentSuccess, deleteAppointmentFailure, deleteAppointmentSuccess, getAppointmentListFailure, getAppointmentListSuccess, updateAppointmentFailure, updateAppointmentStatusFailure, updateAppointmentStatusSuccess, updateAppointmentSuccess, getAdminAppointmentSlotsSuccess, getAdminAppointmentSlotsFailure, updateAdminAppointmentSlotsSuccess, updateAdminAppointmentSlotsFailure, confirmAppointmentSlotsSuccess, confirmAdminAppointmentSlotsFailure, getAppointmentAvailabilitySuccess, getAppointmentAavailabilityFailure, } from '../reducer/appointmentSlice';
 
 function* addAppointmentSaga(action) {
   try {
@@ -97,4 +97,14 @@ function* updateAppointmentStatusSaga(action) {
     yield put(updateAppointmentStatusFailure(error.response));
   }
 }
-export {addAppointmentSaga, getAppointmentSaga, deleteAppointmentSaga, updateAppointmentSaga,updateAppointmentStatusSaga, getAdminBooking, updateAdminAppointmentSlotsSaga, confirmAdminAppointmentSlotsSaga};
+function* getAppointmentAvailabilitySaga(action) {
+  try {
+    const { start, end } = action.payload;
+    const response = yield call(getAppointmentAvailability, start,end)
+    yield put(getAppointmentAvailabilitySuccess(response));
+  } catch (error) {
+    yield put(getAppointmentAavailabilityFailure(error));
+  }
+}
+
+export {addAppointmentSaga, getAppointmentSaga, deleteAppointmentSaga, updateAppointmentSaga,updateAppointmentStatusSaga, getAdminBooking, updateAdminAppointmentSlotsSaga, confirmAdminAppointmentSlotsSaga, getAppointmentAvailabilitySaga};

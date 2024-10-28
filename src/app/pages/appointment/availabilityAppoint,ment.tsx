@@ -10,9 +10,9 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 import { REQUIRED } from '../../utils/const';
 import { toast } from "react-toastify";
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { addAppointmentSuccess, getAdminAppointmentSlots, getAppointmentRequest, setAppointmentId, updateAdminAppointmentSlotsRequest, updateAppointmentSuccess } from '../../redux/reducer/appointmentSlice'
+import { addAppointmentSuccess, getAdminAppointmentSlots, getAppointentAvailabilityRequest, getAppointmentRequest, setAppointmentId, updateAdminAppointmentSlotsRequest, updateAppointmentSuccess } from '../../redux/reducer/appointmentSlice'
 import { addAppointment, deleteAppointmentApi, updateAppointment } from '../../services/_requests'
 import AppointmentModal from './appointmentModal'
 import { Link } from 'react-router-dom'
@@ -26,6 +26,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import { FaEdit } from 'react-icons/fa';
 import moment from 'moment'
 import ShareModal from '../../components/common/modal/ShareModal'
+import { AnyAaaaRecord } from 'dns'
 
 
 function renderEventContent(eventInfo) {
@@ -41,11 +42,13 @@ const AvailabilityAppointment = () => {
   const intl = useIntl();
   const dispatch = useDispatch();
   const [modalShow, setModalShow] = useState<boolean>(false);
+  const [availableAppointments, setAvailableAppointments] = useState<any>([]);
+  const [fullcalendar, setFullCalendar] = useState<any>({start: '', end: ''});
   const [id, setId] = useState<string>("");
   const [showDeleteModal, setShowDeleteModal] = useState<boolean>(false);
   const [pageNumber, setPageNumber] = useState<number>(1);
   const [searchValue, setSearchValue] = useState<string>('');
-  const { appointmentList, totalRecord, loading, appointmentId, adminSlotsList } = useSelector((state: any) => state.appointment);
+  const { appointmentList, totalRecord, loading, appointmentId, adminSlotsList, appointmnetAvailability } = useSelector((state: any) => state.appointment);
   const { saloonId } = useSelector((state: any) => state.saloon);
   const [editMode, setEditMode] = useState<boolean>(false);
   const [dateState , setDateState] = useState({
@@ -142,6 +145,12 @@ const AvailabilityAppointment = () => {
     setDeleteModal(true)
   }
 
+  const formatDateToISO = (date:any) => {
+    const d = new Date(date);
+    d.setUTCHours(0, 0, 0, 0); // Set time to midnight in UTC
+    return d.toISOString();
+  }
+
   const getAdminAppointments = () => {
     if(TimeState == '' || !dateState.date) {
       return toast.info("Select Date & Time First!")
@@ -150,9 +159,31 @@ const AvailabilityAppointment = () => {
     dispatch(getAdminAppointmentSlots(obj))
   };
 
-  const events = [
-    { title: 'Meeting', start: new Date() }
-  ]
+  // const events = [
+  //   { title: 'Meeting', start: '2024-10-24T07:30:00', end: '2024-10-24T08:00:00', allDay: false },
+  //   { title: 'event 1', start: '2024-10-25T05:30:00', end: '2024-10-25T09:00:00', allDay: false }
+  // ]
+
+  useEffect(() => {
+    console.log("Use effect works >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
+    let obj:any = { start:fullcalendar.start, end: fullcalendar.end }
+    dispatch(getAppointentAvailabilityRequest(obj));
+    let array:any = []
+    // console.log(appointmnetAvailability,">>>>> appointment availability >>>>>>")
+    if(appointmnetAvailability && appointmnetAvailability.length > 0) {
+      appointmnetAvailability.forEach((item:any)=>{
+          array.push({...item,
+          title: item?.serviceDetails,
+          start : item?.calenderStart,
+          end : item?.calenderEnd })
+      })
+    }
+
+    console.log(array,">>> array::::")
+    setAvailableAppointments(array);
+    // console.log('available fixes', availableAppointments)
+  }, [fullcalendar])
+
   return (
     <>
       <div className="appointmentContent">
@@ -176,7 +207,7 @@ const AvailabilityAppointment = () => {
                   initialView="timeGridWeek"
                   weekends={false}
                   weekNumbers={false}
-                  events={events}
+                  events={availableAppointments}
                   headerToolbar={{
                     left: "title",
                     center: "",
@@ -185,6 +216,16 @@ const AvailabilityAppointment = () => {
                   showNonCurrentDates={true}
                   allDayMaintainDuration={true}
                   eventContent={renderEventContent}
+                  slotDuration="00:30:00" // 30-minute intervals
+                  // viewDidMount={(viewInfo) => {
+                  //   console.log("View mounted:", viewInfo.view.type);
+                  //   // Optionally fetch data for initial view here
+                  // }}
+                  datesSet={(dateInfo) => {
+                    // console.log("View range changed:", formatDateToISO(dateInfo.startStr), "to", formatDateToISO(dateInfo.endStr));
+                    setFullCalendar({start:formatDateToISO(dateInfo.startStr), end:formatDateToISO(dateInfo.endStr) })
+                    // Perform any necessary operation, like fetching data based on new date range
+                  }}
                 />
               </div>
             </Tab>

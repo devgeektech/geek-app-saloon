@@ -10,7 +10,7 @@ import { addSaloonSaga, editSaloonSaga, getSaloonSaga } from './saloonSaga'
 import { FETCH_LIST_REQUEST } from '../actions/serviceAction'
 import { addStaffSaga, deleteStaffSaga, getStaffSaga, updateStaffSaga, updateStaffStatusSaga, getDefaultSlotsSaga, updateLeaveStaffSaga } from './staffSaga'
 import { addCouponSaga, deleteCouponSaga, getCouponSaga, updateCouponSaga, updateCouponStatusSaga } from './couponSaga'
-import { addAppointmentSaga, deleteAppointmentSaga, getAppointmentSaga, updateAppointmentSaga, updateAppointmentStatusSaga, getAdminBooking, updateAdminAppointmentSlotsSaga, confirmAdminAppointmentSlotsSaga } from './appointmentSaga'
+import { addAppointmentSaga, deleteAppointmentSaga, getAppointmentSaga, updateAppointmentSaga, updateAppointmentStatusSaga, getAdminBooking, updateAdminAppointmentSlotsSaga, confirmAdminAppointmentSlotsSaga, getAppointmentAvailabilitySaga } from './appointmentSaga'
 
 function* rootSaga() {
   yield takeLatest('auth/loginRequest', loginSaga)
@@ -85,6 +85,7 @@ function* rootSaga() {
    yield takeLatest('appointment/getAdminAppointmentSlots', getAdminBooking);
    yield takeLatest('appointment/updateAdminAppointmentSlotsRequest', updateAdminAppointmentSlotsSaga);
    yield takeLatest('appointment/confirmAdminAppointmentSlotsRequest', confirmAdminAppointmentSlotsSaga);
+   yield takeLatest('appointment/getAppointentAvailabilityRequest', getAppointmentAvailabilitySaga);
 
 }
 

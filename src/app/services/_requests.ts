@@ -39,6 +39,7 @@ export const BOOKING = `${API_URL}/booking`;
 export const DEFAULTSLOTS = `${REACT_APP_APPOINTMENT_API_URL}/booking/admin/getDefaultSlots`
 export const UPDATE_ADMIN_BOOKING_URL = `${REACT_APP_PAYMENT_API_URL}/payment/createPayment`
 export const CONFIRM_ADMIN_BOOKING_URL = `${REACT_APP_PAYMENT_API_URL}/payment/confirmPayment`
+export const GET_APPOINTMENT_AVAILABILITY_URL = `${REACT_APP_APPOINTMENT_API_URL}/booking/admin/appointmentAvailabilty`
 // Server should return AuthModel
 export function login(email: any, password: any) {
   return axios.post(LOGIN_URL, {
@@ -316,6 +317,13 @@ export function updateAppointmentStatus(id: string, payload) {
 export function getAdminBookingApi(date: string, body: any) {
   // return axios.get(APPOINTMENT_URL + `?search=${search}&skip=${skip}&limit=${limit}`, {})
   return axios.post(GET_ADMIN_BOOKING_URL + `/${date}`, body)
+}
+export function getAppointmentAvailability(start: string, end: any) {
+  let url = GET_APPOINTMENT_AVAILABILITY_URL;
+  if(start && end){
+    url += `?start=${start}&end=${end}`
+  }
+  return axios.get(url, {})
 }
 
 export function updateAdminAppointmentSlots(payload) {

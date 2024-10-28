@@ -4,6 +4,7 @@ import { toast } from "react-toastify";
 const initialState = {
     appointmentList: [],
     adminSlotsList: [],
+    appointmnetAvailability: [],
     error: null,
     loading: false,
     skip: 0,
@@ -151,6 +152,18 @@ const appointmentSlice = createSlice({
             state.error = action.payload;
             state.loading = false;
         },
+        getAppointentAvailabilityRequest:(state) => {
+            state.loading = true;
+            state.error = null;
+        },
+        getAppointmentAvailabilitySuccess: (state, action) => {
+            state.loading = false;
+            state.appointmnetAvailability = action.payload.data.data;
+        },
+        getAppointmentAavailabilityFailure: (state, action)=> {
+            state.error = action.payload;
+            state.loading = false;
+        }
     },
 });
 
@@ -180,7 +193,10 @@ export const {
     updateAdminAppointmentSlotsRequest,
     updateAdminAppointmentSlotsFailure,
     confirmAppointmentSlotsSuccess,
-    confirmAdminAppointmentSlotsFailure
+    confirmAdminAppointmentSlotsFailure,
+    getAppointentAvailabilityRequest,
+    getAppointmentAvailabilitySuccess,
+    getAppointmentAavailabilityFailure
 } = appointmentSlice.actions;
 
 export default appointmentSlice.reducer;
