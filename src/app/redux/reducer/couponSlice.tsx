@@ -9,7 +9,8 @@ const initialState = {
     limit: 10,
     search: '',
     totalRecord: 0,
-    couponId: null
+    couponId: null,
+    couponModalStatus:false
 };
 
 const couponSlice = createSlice({
@@ -18,6 +19,9 @@ const couponSlice = createSlice({
     reducers: {
         setCouponId: (state, action) => {
             state.couponId = action.payload;
+        },
+        setCouponModal: (state, action) => {
+            state.couponModalStatus = action.payload;
         },
         addCouponRequest: (state, action) => {
             state.loading = true;
@@ -129,7 +133,8 @@ export const {
     setCouponId,
     updateCouponStatusRequest,
     updateCouponStatusSuccess,
-    updateCouponStatusFailure
+    updateCouponStatusFailure,
+    setCouponModal
 } = couponSlice.actions;
 
 export default couponSlice.reducer;

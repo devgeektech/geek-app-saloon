@@ -17,10 +17,10 @@ import { SUCCESS } from '../../utils/const'
 import { useFormik } from 'formik'
 import { toast } from 'react-toastify'
 import { deleteCoupon, updateCouponStatus } from '../../services/_requests'
-import { addCouponRequest, getCouponRequest, setCouponId, updateCouponRequest } from '../../redux/reducer/couponSlice'
+import { addCouponRequest, getCouponRequest, setCouponId, setCouponModal, updateCouponRequest } from '../../redux/reducer/couponSlice'
 import { getCategoryRequest } from '../../redux/reducer/categorySlice'
 import { OFFER_CHAR_LIMIT_MESSAGE, REQUIRED_FIELD } from '../../utils/ErrorMessages'
-import { setRequestStatus } from '../../redux/reducer/helperSlice'
+import { setModalStatus, setRequestStatus } from '../../redux/reducer/helperSlice'
 import { setSelectedSaloon } from '../../redux/reducer/saloonSlice'
 
 const CouponsWrapper = () => {
@@ -30,7 +30,7 @@ const CouponsWrapper = () => {
   const [showDeleteModal, setShowDeleteModal] = useState<boolean>(false);
   const [pageNumber, setPageNumber] = useState<number>(1);
   const [searchValue, setSearchValue] = useState<string>('');
-  const { couponList, totalRecord, loading, couponId } = useSelector((state: any) => state.coupon);
+  const { couponList, totalRecord, loading, couponId, couponModalStatus } = useSelector((state: any) => state.coupon);
   const { saloonId, saloonSelectArr } = useSelector((state: any) => state.saloon);
   const categoriesState: [] = useSelector((state: any) => state.category.categoryList);
   const [editMode, setEditMode] = useState<boolean>(false);
@@ -94,7 +94,6 @@ const CouponsWrapper = () => {
   });
 
   const editCoupon = (item: any) => {
-    console.log('item', item)
     setEditMode(true);
     const { discount, service, offerClose, offerStart, status, offerName, saloon } = item;
     formik.setFieldValue("status", status);
@@ -109,14 +108,15 @@ const CouponsWrapper = () => {
         saloon.includes(option.value)
       );
       dispatch(setSelectedSaloon(defaultSelectedOptions));
-      console.log('defaultSelectedOptions-->', defaultSelectedOptions)
     }
     dispatch(setCouponId(item?._id));
-    setModalShow(true);
+    dispatch(setCouponModal(true));
+    // setModalShow(true);
   };
 
   const closeCouponModal = () => {
-    setModalShow(false);
+    // setModalShow(false);
+    dispatch(setCouponModal(false));
     setEditMode(false);
     formik.resetForm();
     dispatch(setSelectedSaloon([]));
@@ -151,7 +151,8 @@ const CouponsWrapper = () => {
         }
       });
       dispatch(setCouponId(null))
-      setModalShow(false);
+      dispatch(setModalStatus(false))
+      // setModalShow(false);
     }
   };
 
@@ -173,6 +174,17 @@ const CouponsWrapper = () => {
       toast.error('Failed to update status');
     }
   };
+
+  const openModal=()=>{
+    if(saloonId){
+      let defaultSelectedOptions = saloonSelectArr.filter(option =>
+        saloonId.includes(option.value)
+      );
+      dispatch(setSelectedSaloon(defaultSelectedOptions));
+    }
+    dispatch(setCouponModal(true));
+    dispatch(setCouponId(null));
+  }
 
 
   useEffect(() => {
@@ -197,10 +209,7 @@ const CouponsWrapper = () => {
             </h2>
             <p>Coupon management to attract and reward customers</p>
           </div>
-          <button className='yellowBtn' onClick={() => {
-            setModalShow(true);
-            dispatch(setCouponId(null));
-          }}>Add</button>
+          <button className='yellowBtn' onClick={openModal}>Add</button>
         </div>
         <div className='tabWrapper'>
           <p className='viewList'>viewing {limit} of {totalRecord}  of {pageNumber}</p>
@@ -290,9 +299,9 @@ const CouponsWrapper = () => {
           </Tabs>
         </div>
       </div>
-      {modalShow && (
+      {couponModalStatus && (
         <CouponModal
-          show={modalShow}
+          show={couponModalStatus}
           schema={couponSchema}
           formik={formik}
           categories={categoriesState}
