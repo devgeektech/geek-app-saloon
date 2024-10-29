@@ -27,7 +27,6 @@ const CouponModal = (props: any) => {
   const [disablesubCategory, setDisablesubCategory] = useState(true);
   const dispatch = useDispatch();
   const [selected, setSelected] = useState([]);
-
   useEffect(() => {
     dispatch(fetchListRequest(0, 0, ''));
     if (couponId) {
@@ -109,6 +108,7 @@ const CouponModal = (props: any) => {
                     options={serviceMultipSelectArr}
                     onChange={formik.handleChange}
                     value={formik.values.service}
+                    disabled={(selectedSaloonArr?.length > 0) ? false : true}
                   />
                 </Col>
 
