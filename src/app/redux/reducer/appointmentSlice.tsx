@@ -153,17 +153,18 @@ const appointmentSlice = createSlice({
             state.loading = false;
         },
         getAppointentAvailabilityRequest:(state) => {
+            state.appointmnetAvailability = [];
             state.loading = true;
             state.error = null;
         },
         getAppointmentAvailabilitySuccess: (state, action) => {
             state.loading = false;
-            state.appointmnetAvailability = action.payload.data.data;
+            state.appointmnetAvailability = action?.payload?.data?.data;
         },
         getAppointmentAavailabilityFailure: (state, action)=> {
             state.error = action.payload;
             state.loading = false;
-        }
+        },
     },
 });
 
@@ -196,7 +197,7 @@ export const {
     confirmAdminAppointmentSlotsFailure,
     getAppointentAvailabilityRequest,
     getAppointmentAvailabilitySuccess,
-    getAppointmentAavailabilityFailure
+    getAppointmentAavailabilityFailure,
 } = appointmentSlice.actions;
 
 export default appointmentSlice.reducer;
