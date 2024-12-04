@@ -13,12 +13,15 @@ import staffReducer from './staffSlice';
 import couponReducer from './couponSlice';
 import appointmentReducer from './appointmentSlice';
 import { helperSlice } from './helperSlice'
+import { userList } from '../actions/user/userSlice'
 
 
 
 export const rootReducer = combineReducers({
+  userList: userList.reducer,
+  // auth:auth.reducer,
   auth: authReducer,
-  users: userReducer,
+  // users: userReducer,
   category: categoryReducer,
   banner: bannerReducer,
   subcategory: subCategoryReducer,

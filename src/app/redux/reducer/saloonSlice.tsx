@@ -61,7 +61,6 @@ export const saloonSlice = createSlice({
             toast.success(action.payload?.responseMessage);
             state.loading = false;
             state.error = null;
-            console.log(action.payload)
             state.saloonList = [action.payload.data,...state.saloonList];
         },
         addSaloonFailure: (state, action) => {
@@ -74,7 +73,6 @@ export const saloonSlice = createSlice({
             return { ...state, loading: true, error: null }
         },
         editSaloonSuccess: (state: any, action) => {
-            console.log(action.payload)
             const index= state.saloonList.findIndex((s:any)=>s?._id===action.payload?.data?._id);
             if(index>-1) state.saloonList.splice(index,1,action.payload.data);
             toast.success(action.payload.responseMessage);

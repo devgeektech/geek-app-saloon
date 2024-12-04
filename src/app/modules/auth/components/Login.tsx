@@ -27,6 +27,7 @@ const initialValues = {
 };
 export function Login() {
   const authState = useSelector((authState: any) => authState.auth);
+  
   const {token} = useSelector((state: any) => state.helper);
   const dispatch = useDispatch();
   const defaultProps={
@@ -38,6 +39,7 @@ export function Login() {
     initialValues,
     validationSchema: loginSchema,
     onSubmit: async (values, { setStatus, setSubmitting }) => {
+      
       dispatch(loginRequest(values));
       // dispatch(getSaloonRequest(defaultProps));
     },

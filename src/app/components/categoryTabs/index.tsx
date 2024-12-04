@@ -25,7 +25,7 @@ export default function CategoryTabs() {
 
   useEffect(() => {
     getCategoryList();
-    console.log(category.details)
+    // console.log(category.details)
   }, [dispatch, saloonId]);
 
   const categorySchema: any = Yup.object().shape({

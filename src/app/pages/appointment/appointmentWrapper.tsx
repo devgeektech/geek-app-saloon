@@ -39,13 +39,13 @@ const AppointmentWrapper = () => {
     setDeleteModal(false);
   };
   const deleteOpenModal = (id:any) => {
-    console.log("working >>>>")
+    // console.log("working >>>>")
     setDeleteModal(true);
     setDeleteAppointmentId(id);
   };
   const deleteAppointment: any = async (event: any) => {
     if (event === true) {
-      console.log("True working >>>>>",deleteAppointmnetId)
+      // console.log("True working >>>>>",deleteAppointmnetId)
       await deleteAppointmentApi(deleteAppointmnetId).then((res: any) => {
         if (res.data.responseCode === 200) {
           toast.success("Appointment Deleted Successfully");
@@ -111,7 +111,7 @@ const AppointmentWrapper = () => {
     },
   });
   const editAppointment = (item: any) => {
-    console.log(item)
+    // console.log(item)
     setEditMode(true);
     dispatch(setAppointmentId(item?._id));
     setModalShow(true);

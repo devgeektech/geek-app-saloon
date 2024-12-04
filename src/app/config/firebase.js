@@ -21,11 +21,11 @@ export const signInWithGoogle = async () => {
     try {
         const provider = new firebase.auth.GoogleAuthProvider();
         provider.addScope("email");
-        console.log("firebase", firebase.auth());
+        // console.log("firebase", firebase.auth());
         const res = await firebase.auth().signInWithPopup(provider);
-        console.log("res", res)
+        // console.log("res", res)
         const token = await firebase.auth().currentUser?.getIdToken();
-        console.log("token", token);
+        // console.log("token", token);
     } catch (err) {
         console.warn(err);
         

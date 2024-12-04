@@ -33,6 +33,7 @@ const authSlice = createSlice({
       };
     },
     loginFailure: (state, action) => {
+      console.log("actiuon", action)
       return {
         ...state,
         error: action.payload,

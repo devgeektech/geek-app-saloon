@@ -62,7 +62,7 @@ const EditLeave = (props: any) => {
   const handleStartSlotChange = (e) => {
     setCustomSlotsDuration({...customeSlotsDuration, start: e.target.value})
     const index = defaultSlots.findIndex(item => item._id === e.target.value);
-    console.log(defaultSlots,">> default")
+    // console.log(defaultSlots,">> default")
     formik.setFieldValue('start', defaultSlots[index].start);
     formik.setFieldValue('startIndex', index);
   };
@@ -79,7 +79,7 @@ const EditLeave = (props: any) => {
       <FormikProvider value={formik}>
         <form
           onSubmit={(e) => {
-            console.log("onSubmit works")
+            // console.log("onSubmit works")
             e.preventDefault();
             formik.handleSubmit();
           }}

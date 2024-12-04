@@ -191,7 +191,7 @@ const AvailabilityAppointment = () => {
           });
         });
       }
-      console.log("arrappointmnetAvailabilityay", appointmnetAvailability)
+      // console.log("arrappointmnetAvailabilityay", appointmnetAvailability)
       // setAvailableAppointments(array);
     }, 1000)
 
@@ -202,7 +202,7 @@ const AvailabilityAppointment = () => {
     fetchAppointmentAvailability();
   }, [fetchAppointmentAvailability]);
 
-  console.log("available appointments", availableAppointments);
+  // console.log("available appointments", availableAppointments);
 
   return (
     <>

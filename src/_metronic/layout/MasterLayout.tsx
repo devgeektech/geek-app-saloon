@@ -13,7 +13,7 @@ import { useSelector } from 'react-redux'
 
 const MasterLayout = () => {
   const location = useLocation()
-  const { saloonId } = useSelector((state: any) => state.saloon);
+  const {  saloonId } = useSelector((state: any) => state.saloon);
 
   useEffect(() => {
     setTimeout(() => {

@@ -103,11 +103,11 @@ function* fetchDataSaga(action) {
     const { skip, limit, searchUser , saloonId} = action.payload;
     const data = yield call(getAllServices, searchUser, skip, limit, saloonId);
     yield put(fetchListSuccess(data.data));
-    console.log('data.data-->',data.data?.data)
+    // console.log('data.data-->',data.data?.data)
     if(data.data?.data?.length > 0){
       let arr = transformArr(data.data?.data);
       yield put(setServiceForMultiSelect(arr));
-      console.log('arr-->',arr)
+      // console.log('arr-->',arr)
     }
   } catch (error:any) {
     yield put(fetchListFailure(error.message));

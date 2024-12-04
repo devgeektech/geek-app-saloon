@@ -125,14 +125,7 @@ export default function TableCategory() {
         openModal={showDeleteModal}
         closeModal={() => dispatch(closeDeleteModal())}
       />
-      {/*  <KTCard>
-        <PartnersListHeader />
-      <CommonTable data={data} columns={categoryColumns} /> */}
-      {/* {sharedActions.categoryModal && <CategoryModal />}
-        {totalRecord > 10 && (
-          <Pagination totalRecord={totalRecord} handleClick={handleClick} />
-        )} 
-      </KTCard>*/}
+     
     </>
   )
 }

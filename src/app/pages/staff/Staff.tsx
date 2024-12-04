@@ -107,7 +107,7 @@ const StaffWrapper = () => {
             dispatch(updateStaffSuccess(res.data));
           }
         } else {
-          console.log('ADD STAFF',data);
+          // console.log('ADD STAFF',data);
           let res = await addStaff(data);
           dispatch(addStaffSuccess(res.data));
           dispatch(getStaffRequest({ search: debounceSearch, skip, limit }));
@@ -149,7 +149,7 @@ const StaffWrapper = () => {
           start: values.startIndex,
           end: values.endIndex,
         }
-        console.log(payload, " payload >>>>")          
+        // console.log(payload, " payload >>>>")          
           dispatch(updateLeaveStaffRequest(payload));
         }
         else {
@@ -165,7 +165,7 @@ const StaffWrapper = () => {
         console.error(error)
       }
       finally {
-        console.log(">>>> Formik on Finally >>>>")
+        // console.log(">>>> Formik on Finally >>>>")
 
         setSubmitting(false);
       }
@@ -277,7 +277,7 @@ const StaffWrapper = () => {
       });
   }
 
-  console.log('staffList--->',staffList)
+  // console.log('staffList--->',staffList)
 
   return (
     <>

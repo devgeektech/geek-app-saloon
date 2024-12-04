@@ -18,6 +18,7 @@ import { ShopWrapper } from '../pages/vendors/Vendor'
 import { StaffWrapper } from '../pages/staff/Staff'
 import { AvailabilityAppointment } from '../pages/appointment/availabilityAppoint,ment'
 import { SaloonWrapper } from '../pages/saloon'
+import SharedTable from '../components/dataTable/SharedTable'
 
 const PrivateRoutes = () => {
   return (
@@ -25,6 +26,8 @@ const PrivateRoutes = () => {
       <Route element={<MasterLayout />}>
         <Route path='auth/*' element={<Navigate to='/saloon' />} />
         <Route path='dashboard' element={<DashboardWrapper />} />
+
+
         <Route
           path='builder'
           element={
@@ -55,7 +58,8 @@ const PrivateRoutes = () => {
             index={true}
             element={
               <SuspensedView>
-                <UsersWrapper />
+                <SharedTable/>
+                {/* <UsersWrapper /> */}
               </SuspensedView>
             }
           ></Route>
