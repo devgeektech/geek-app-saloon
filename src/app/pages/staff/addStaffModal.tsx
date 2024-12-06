@@ -29,7 +29,6 @@ const StaffModal = (props: any) => {
     ? formik.errors.image
     : '';
 
-    // console.log('formik---->>>>',formik.errors)
   function onImageLoad(e: any) {    
     const { naturalWidth: width, naturalHeight: height } = e.currentTarget
     const crop = centerCrop(

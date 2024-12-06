@@ -10,8 +10,8 @@ import {
   updateCategoryFailure,
   updateCategorySuccess,
 } from '../reducer/categorySlice'
+import { setRequestStatus } from '../actions/helper/helperSlice'
 import { createCategory, deleteCategory, getCategory, updateCategory } from '../../services/_requests'
-import { setRequestStatus } from '../reducer/helperSlice'
 
 const call: any = Effects.call
 

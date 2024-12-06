@@ -1,18 +1,17 @@
 import { renderMessageToaster } from "../utils/common"
-
-
 export function setupAxios(axios: any,store: any) {
   axios.defaults.headers.Accept = 'application/json'
   axios.interceptors.request.use(
     (config: { headers: { Authorization: string,Saloon_id:any } }) => {
+      
       const auth = localStorage.getItem('token')
       const saloon:any = store.getState().saloon;
-      console.log("salooo", saloon);
+      
       
       if (auth) {
         config.headers.Authorization = `${auth}`;
+        config.headers.Saloon_id = `${saloon.saloonId}`
         if(saloon.saloonId){
-          config.headers.Saloon_id = `${saloon.saloonId}`
         }
       }
       return config

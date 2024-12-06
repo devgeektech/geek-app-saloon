@@ -45,7 +45,6 @@ function* updateAdminAppointmentSlotsSaga(action){
     const values = action.payload;
     const response = yield call(updateAdminAppointmentSlots,values);
     yield put(updateAdminAppointmentSlotsSuccess(response.data));
-    debugger
     if(response.data.data){
     let obj = {
       paymentIntent: response.data.data.paymentIntentId,

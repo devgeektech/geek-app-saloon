@@ -2,7 +2,7 @@ import { Button, Modal } from 'react-bootstrap';
 import 'react-image-crop/src/ReactCrop.scss'
 import 'react-image-crop/dist/ReactCrop.css'
 import { useDispatch, useSelector } from 'react-redux';
-import { setModalStatus, setRequestStatus } from '../../redux/reducer/helperSlice';
+import { setModalStatus, setRequestStatus } from '../../redux/actions/helper/helperSlice';
 import * as Yup from "yup";
 import { FormikProvider, useFormik, Field } from 'formik';
 import { ADD, INVALID_PHONE_NUMBER, PHONE_REGEX, REQUIRED } from '../../utils/const';
@@ -12,11 +12,16 @@ import { useNavigate } from 'react-router-dom';
 import { useEffect } from 'react'
 import SaloonModal from '../../pages/vendors/addSaloonModal';
 import { REQUIRED_FIELD } from '../../utils/ErrorMessages';
+import { saloon } from '../../redux/actions/saloon/saloonAction';
+import { saloonSlice } from '../../redux/actions/saloon/saloonSlice';
+import { modalStatus } from '../../services/_requests';
+// import { saloon } from '../../redux/actions/saloon/saloonSlice';
 
 const SelectSaloonModal = (props: any) => {
-    const dispatch = useDispatch();
+    const dispatch: any = useDispatch();
     const navigate = useNavigate();
     const { saloonList, saloonId, skip, limit, lat, lng, saloonModal } = useSelector((state: any) => state.saloon);
+
     const modalType = ADD
     const { requestStatus } = useSelector(
         (state: any) => state.helper
@@ -43,6 +48,7 @@ const SelectSaloonModal = (props: any) => {
 
     const closeModal = () => {
         dispatch(setModalStatus(false))
+
         navigate('/dashboard');
     }
 
@@ -111,7 +117,7 @@ const SelectSaloonModal = (props: any) => {
 
     useEffect(() => {
         if (requestStatus) {
-            dispatch(getSaloonRequest({ lat, lng, skip, limit, searchUser: '' }));
+            dispatch(saloon({ lat, lng, skip, limit, searchUser: '' }));
         }
     }, [requestStatus])
 

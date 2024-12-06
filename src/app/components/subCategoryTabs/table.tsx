@@ -10,7 +10,7 @@ import { closeDeleteModal, deleteSubCategoryRequest, getSubCategoryRequest, rese
 import DeleteIcon from '../common/Icons/DeleteIcon'
 import Pagination from '../common/pagination'
 import ArrowRightIcon from '../common/Icons/ArrowRightIcon'
-import { setRequestStatus } from '../../redux/reducer/helperSlice'
+import { setRequestStatus } from '../../redux/actions/helper/helperSlice'
 import { SUBCATEGORY } from '../../utils/const'
 
 // Interface for Category

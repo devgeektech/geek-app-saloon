@@ -27,13 +27,16 @@ import {
 } from "../../utils/common";
 import SaloonModal from "./addSaloonModal";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  addSaloonRequest,
-  editSaloonRequest,
-  getSaloonRequest,
-  setSaloonId,
-  setUpdatedSaloonId,
-} from "../../redux/reducer/saloonSlice";
+// import {
+//   addSaloonRequest,
+//   editSaloonRequest,
+//   getSaloonRequest,
+//   setSaloonId,
+//   setUpdatedSaloonId,
+// } from "../../redux/reducer/saloonSlice";
+
+// import { addSaloonRequest } from "../../redux/actions/saloon/saloonSlice";
+import { saloonSlice } from "../../redux/actions/saloon/saloonSlice";
 import { closeModalRequest } from "../../redux/reducer/modalSlice";
 import { resetServiceForm } from "../../redux/reducer/serviceSlice";
 import {
@@ -43,10 +46,11 @@ import {
   PHONE_REGEX,
 } from "../../utils/const";
 import { REQUIRED_FIELD } from "../../utils/ErrorMessages";
-import { setRequestStatus } from "../../redux/reducer/helperSlice";
+import { setRequestStatus } from "../../redux/actions/helper/helperSlice";
+import { saloon } from "../../redux/actions/saloon/saloonAction";
 
 const ShopWrapper = () => {
-  const dispatch = useDispatch();
+  const dispatch :any = useDispatch();
   const { saloonList, loading, totalRecord, saloonId, updatedSaloonId } = useSelector(
     (state: any) => state.saloon
   );
@@ -68,7 +72,7 @@ const ShopWrapper = () => {
   const debounceValue = useDebounce(searchUser, 1000);
   
   useEffect(() => {
-      dispatch(getSaloonRequest({ lat, lng, skip, limit, searchUser }));
+      dispatch(saloon({ lat, lng, skip, limit, searchUser }));
   }, [skip, debounceVal]);
 
   const initialValues = {
@@ -107,13 +111,13 @@ const ShopWrapper = () => {
           phone: values?.phone,
         };
         if (modalType == ADD) {
-          dispatch(addSaloonRequest(reqObj));
+          dispatch(saloon(reqObj));
         } else {
           reqObj["id"] = updatedSaloonId;
-          dispatch(editSaloonRequest(reqObj));
+          dispatch(saloon(reqObj));
         }
         setTimeout(()=>{
-          dispatch(getSaloonRequest({ lat, lng, skip, limit, searchUser }));
+          dispatch(saloon({ lat, lng, skip, limit, searchUser }));
         },1000)       
         setShow(false);
         dispatch(setRequestStatus(false))
@@ -145,7 +149,7 @@ const ShopWrapper = () => {
         if (res.data.responseCode === 200) {
           toast.success("Saloon has been Deleted!");
           setModalShow(false);
-          dispatch(getSaloonRequest({ lat, lng, skip, limit, searchUser }));
+          dispatch(saloon({ lat, lng, skip, limit, searchUser }));
         }
       });
       setDeleteUserId("");
@@ -156,7 +160,7 @@ const ShopWrapper = () => {
   const openSaloonModal = async (type: any, id: any) => {
     setShow(true);
     if (type == EDIT) {
-      dispatch(setUpdatedSaloonId(id));
+      dispatch(saloon(id));
       await getSaloonById(id).then((res: any) => {
         if (res.data.responseCode === 200) {
           formik.setFieldValue("name", res.data.data.name);
@@ -177,14 +181,14 @@ const ShopWrapper = () => {
   const cancelButton = () => {
     dispatch(closeModalRequest({}));
     dispatch(resetServiceForm());
-    dispatch(setUpdatedSaloonId(""));
+    dispatch(saloon(""));
     setShow(false);
     formik.resetForm();
   };
 
   useEffect(()=>{
     if(requestStatus){
-      dispatch(getSaloonRequest({ lat, lng, skip, limit, searchUser }));
+      dispatch(saloon({ lat, lng, skip, limit, searchUser }));
     }
   },[requestStatus])
 

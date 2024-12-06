@@ -20,16 +20,13 @@ export const getUsers = createAsyncThunk(
   }
 );
 
-
-
-
 export const deleteUser = createAsyncThunk(
   "deleteUser",
   async (values: any, { rejectWithValue, dispatch ,getState}) => {
     try {
       const store :any= getState();
       const {page ,limit} = store.userList;
-      const id = values._id;
+      const id = values;
       const { data } = await axios.delete(`${USER_URL}/${id}`, {});
 
       dispatch(getUsers({ page: page, limit: limit }))

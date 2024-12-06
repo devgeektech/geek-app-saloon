@@ -9,9 +9,10 @@ import {
 import storage from "redux-persist/lib/storage";
 import { createLogger } from 'redux-logger';
 import { userList } from "./actions/user/userSlice";
+// import rootSaga from "./saga/rootSaga";
 
 
-const sagaMiddleware = createSagaMiddleware();
+// const sagaMiddleware = createSagaMiddleware();
 
 const persistConfig = {
   key: "root",
@@ -23,8 +24,12 @@ const persistConfig = {
 const persistedReducer = persistReducer(persistConfig, rootReducer);
 const store = configureStore({
   reducer: persistedReducer,
+  // middleware: [sagaMiddleware, createLogger()],
+
 
 });
 
 const persistor = persistStore(store);
+// sagaMiddleware.run(rootSaga);
+
 export { store, persistor };

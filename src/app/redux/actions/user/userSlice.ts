@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { getUsers } from "./userAction";
+import { deleteUser, getUsers } from "./userAction";
 
 const initialState: any = {
   data: [],
@@ -9,17 +9,28 @@ const initialState: any = {
   limit: 10,
   totalRecord: 0,
   page: 1,
-
+  openUserDeleteModal: false,
+  selectedUserId:""
 };
 
 
 export const userList = createSlice({
   name: "userList",
   initialState: initialState,
-  reducers: {},
+  reducers: {
+    handleOpenUserDeleteModal: (state: any) => {
+      state.openUserDeleteModal = true
+    },
+    handleCloseUserDeleteModal: (state: any) => {
+      state.openUserDeleteModal = false
+    },
+    setSelectedUserId: (state: any, action) => {
+      state.selectedUserId = action.payload;
+    }
+  },
 
   extraReducers(builder) {
-    
+
     builder
       .addCase(getUsers.pending, (state) => {
         state.isLoading = true;
@@ -32,8 +43,6 @@ export const userList = createSlice({
         state.data = payload.data
         state.page = payload.page
         state.limit = payload.limit
-        state.responseMessage = payload.responseMessage
-        state.responseCode = payload.responseCode
         state.totalRecord = payload.totalRecord
 
       })
@@ -43,8 +52,25 @@ export const userList = createSlice({
         state.error = payload;
       })
 
+      .addCase(deleteUser.pending, (state) => {
+        state.isLoading = true;
+        state.isSuccess = false;
+      })
 
+      .addCase(deleteUser.fulfilled, (state, { payload }) => {
+        state.selectedUserId=payload
+        state.isLoading = false;
+        state.isSuccess = true;
+        state.error = payload;
+        state.selectedUserId = payload.data._id; 
 
+      })
+      .addCase(deleteUser.rejected, (state, { payload }) => {
+        state.isLoading = true;
+        state.isSuccess = false;
+        state.error = payload;
+      })
   },
 });
 
+export const { handleOpenUserDeleteModal, handleCloseUserDeleteModal, setSelectedUserId } = userList.actions

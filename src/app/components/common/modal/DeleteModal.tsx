@@ -2,20 +2,23 @@ import Modal from 'react-bootstrap/Modal'
 import './style.scss'
 import DeleteIcon from '../Icons/TrashIcon'
 import TrashIcon from '../Icons/TrashIcon'
+import { deleteUser } from '../../../redux/actions/user/userAction'
+import { useDispatch } from 'react-redux'
 
 
 
 export default function DeleteModal(props) {
-  const { closeModal, deleteUserClbk,openModal } = props
+  let dispatch: any = useDispatch()
+
   return (
     <>
 
-      <Modal show={openModal} onHide={closeModal} aria-labelledby='contained-modal-title-vcenter' centered>
+      <Modal show={props.openModal} onHide={props.closeModal} aria-labelledby='contained-modal-title-vcenter' centered>
         <div className='delete-modal'>
           <Modal.Header>
             <button>
               <svg
-                onClick={closeModal}
+                onClick={props.closeModal}
                 xmlns='http://www.w3.org/2000/svg'
                 width='19'
                 height='19'
@@ -36,15 +39,13 @@ export default function DeleteModal(props) {
           </Modal.Body>
           <Modal.Footer>
             <button
-              onClick={() => {
-                deleteUserClbk(true)
-              }}
+              onClick={ props.dispatchAction}
               className='whitebtn'
             >
               Delete
             </button>
             <button
-              onClick={closeModal}
+              onClick={props.closeModal}
               className='yellowBtn'
             >
               Cancel
@@ -52,7 +53,6 @@ export default function DeleteModal(props) {
           </Modal.Footer>
         </div>
       </Modal>
-      {/* <MyVerticallyCenteredModal show={openModal} onHide={closeModal} clbk={deleteUserClbk} /> */}
     </>
   )
 }

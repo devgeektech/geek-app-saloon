@@ -1,7 +1,7 @@
 import { call, put } from 'redux-saga/effects';
 import { addCoupon, deleteCoupon, getAllCoupon, updateCoupon, updateCouponStatus } from '../../services/_requests';
 import { addCouponFailure, addCouponSuccess, deleteCouponFailure, deleteCouponSuccess, getCouponListFailure, getCouponListSuccess, updateCouponFailure, updateCouponStatusFailure, updateCouponStatusSuccess, updateCouponSuccess } from '../reducer/couponSlice';
-import { setRequestStatus } from '../reducer/helperSlice';
+import { setRequestStatus } from '../actions/helper/helperSlice';
 import { setSelectedSaloon } from '../reducer/saloonSlice';
 
 function* addCouponSaga(action) {

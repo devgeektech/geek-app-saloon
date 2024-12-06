@@ -11,7 +11,7 @@ import Pagination from '../common/pagination'
 import { useEffect, useState } from 'react'
 import ArrowRightIcon from '../common/Icons/ArrowRightIcon'
 import NoDataFound from '../common/noDataFound/NoDataFound'
-import { setRequestStatus } from '../../redux/reducer/helperSlice'
+import { setRequestStatus } from '../../redux/actions/helper/helperSlice'
 import { CATEGORY } from '../../utils/const'
 
 export default function TableCategory() {

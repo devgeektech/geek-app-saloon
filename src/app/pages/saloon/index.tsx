@@ -1,11 +1,16 @@
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import SelectSaloonModal from '../../components/saloonModal'
 import './saloonStyle.scss'
+import { setModalStatus } from '../../redux/actions/helper/helperSlice'
+import { modalStatus } from '../../services/_requests'
 
 
 const SaloonWrapper = () => {
-  const { modalStatus } = useSelector((state: any) => state.helper)
+let dispatch:any= useDispatch()
 
+  const { modalStatus } = useSelector((state: any) => state.helper)
+  dispatch(setModalStatus(true))
+  
   return (
     <>
       <div className="spinner-container">

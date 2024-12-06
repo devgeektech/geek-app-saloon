@@ -1,13 +1,17 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import * as Yup from "yup";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Field, FormikProvider, useFormik } from "formik";
 import { useDispatch, useSelector } from "react-redux";
-import { loginRequest } from "../../../redux/reducer/authSlice";
+// import { loginRequest } from "../../../redux/reducer/authSlice";
 import FieldInputText from "../../../components/common/inputs/FieldInputText";
 import { INVALID_EMAIL } from "../../../utils/ErrorMessages";
 import { getSaloonRequest } from "../../../redux/reducer/saloonSlice";
 import { useEffect } from "react";
+import { login } from "../../../redux/actions/auth/authSlice";
+import { loginUser } from "../../../redux/actions/auth/authAction";
+import { saloon } from "../../../redux/actions/saloon/saloonAction";
+import { setModalStatus, setToken } from "../../../redux/actions/helper/helperSlice";
 
 const loginSchema = Yup.object().shape({
   email: Yup.string()
@@ -25,29 +29,23 @@ const initialValues = {
   email: "admin@demo.com",
   password: "Qwerty@1",
 };
-export function Login() {
-  const authState = useSelector((authState: any) => authState.auth);
-  
+export function Login() {    
   const {token} = useSelector((state: any) => state.helper);
-  const dispatch = useDispatch();
+  const dispatch:any = useDispatch();
   const defaultProps={
     lat:30.741482, lng:76.768066, skip:0, limit:10, searchUser:""
   }
-
-
   const formik = useFormik({
     initialValues,
     validationSchema: loginSchema,
     onSubmit: async (values, { setStatus, setSubmitting }) => {
-      
-      dispatch(loginRequest(values));
-      // dispatch(getSaloonRequest(defaultProps));
+       let data= await dispatch(loginUser(values))
+        dispatch(saloon(defaultProps));
     },
   });
-
   useEffect(()=>{
     if(token){
-      dispatch(getSaloonRequest(defaultProps));
+      dispatch(saloon(defaultProps));
     }
   },[token])
 
@@ -95,15 +93,6 @@ export function Login() {
               disabled={formik.isSubmitting || !formik.isValid}
             >
               {<span className="indicator-label">Login</span>}
-              {/* {authState && authState.loading && (
-                <span
-                  className="indicator-progress"
-                  style={{ display: "block" }}
-                >
-                  Please wait...
-                  <span className="spinner-border spinner-border-sm align-middle ms-2"></span>
-                </span>
-              )} */}
             </button>
           </div>
         </form>

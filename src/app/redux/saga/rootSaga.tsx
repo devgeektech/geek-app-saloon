@@ -1,5 +1,5 @@
 import {take, takeEvery, takeLatest} from 'redux-saga/effects'
-import {loginSaga} from './authSaga'
+// import {loginSaga} from './authSaga'
 import {fetchUserListSaga} from './usersSaga'
 import {addcategorySaga, deleteCategorySaga, getCategorySaga, updateCategorySaga} from './categorySaga'
 import {addSubCategorySaga, deleteSubCategorySaga, getSubCategorySaga, updateSubCategorySaga} from './subCategorySaga'
@@ -13,7 +13,7 @@ import { addCouponSaga, deleteCouponSaga, getCouponSaga, updateCouponSaga, updat
 import { addAppointmentSaga, deleteAppointmentSaga, getAppointmentSaga, updateAppointmentSaga, updateAppointmentStatusSaga, getAdminBooking, updateAdminAppointmentSlotsSaga, confirmAdminAppointmentSlotsSaga, getAppointmentAvailabilitySaga } from './appointmentSaga'
 
 function* rootSaga() {
-  yield takeLatest('auth/loginRequest', loginSaga)
+  // yield takeLatest('auth/loginRequest', loginSaga)
 
   // category request 
   yield takeLatest('category/addCategoryRequest', addcategorySaga)

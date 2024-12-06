@@ -7,7 +7,7 @@ setSaloonKeyValues,
 setSaloonModal
 } from '../reducer/saloonSlice';
 import {  addSaloon, editSaloon, getVendors } from '../../services/_requests';
-import { setRequestStatus } from '../reducer/helperSlice';
+import { setRequestStatus } from '../actions/helper/helperSlice';
 import { transformArr } from '../../utils/common';
 
 function* addSaloonSaga(action) {

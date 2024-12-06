@@ -91,7 +91,6 @@ const AvailabilityAppointment = () => {
   const formik = useFormik({
     initialValues,
     validationSchema: appointmentSchema,
-    // enableReinitialize: true, // important to reset form values when 'initialValues' change
     onSubmit: async (values, { setStatus, setSubmitting }) => {
       try {
         if (!saloonId) {
@@ -168,15 +167,9 @@ const AvailabilityAppointment = () => {
     dispatch(getAdminAppointmentSlots(obj));
   };
 
-  // const events = [
-  //   { title: 'Meeting', start: '2024-10-24T07:30:00', end: '2024-10-24T08:00:00', allDay: false },
-  //   { title: 'event 1', start: '2024-10-25T05:30:00', end: '2024-10-25T09:00:00', allDay: false }
-  // ]
 
   const fetchAppointmentAvailability: any = useCallback(() => {
-    // let obj: any = { start: fullcalendar.start, end: fullcalendar.end };
-    // dispatch(getAppointentAvailabilityRequest(obj));
-
+    
 
     setTimeout(() =>{
       let array: any = [];
@@ -191,8 +184,7 @@ const AvailabilityAppointment = () => {
           });
         });
       }
-      // console.log("arrappointmnetAvailabilityay", appointmnetAvailability)
-      // setAvailableAppointments(array);
+  
     }, 1000)
 
   
@@ -202,7 +194,6 @@ const AvailabilityAppointment = () => {
     fetchAppointmentAvailability();
   }, [fetchAppointmentAvailability]);
 
-  // console.log("available appointments", availableAppointments);
 
   return (
     <>
@@ -237,14 +228,7 @@ const AvailabilityAppointment = () => {
                   allDayMaintainDuration={true}
                   eventContent={renderEventContent}
                   slotDuration="00:30:00" // 30-minute intervals
-                  // viewDidMount={(viewInfo) => {
-                  //   console.log("View mounted:", viewInfo.view.type);
-                  //   // Optionally fetch data for initial view here
-                  // }}
-                  // dayCellDidMount={(dateInfo) => {
-                  //     console.log("date1`>>>>>>>>>>>>>>>>", dateInfo.view.currentStart) 
-                  //     console.log("date1`>>>>>>>>>>>>>>>>", dateInfo.view.currentEnd) 
-                  // }}
+                 
                   datesSet={(dateInfo) => {
                     setFullCalendar(() => ({
                       start: formatDateToISO(dateInfo.startStr),

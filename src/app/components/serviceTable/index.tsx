@@ -15,7 +15,7 @@ import { deleteService } from '../../services/_requests'
 import { toast } from 'react-toastify'
 import { SERVICE, SUCCESS } from '../../utils/const'
 import { fetchListRequest } from '../../redux/actions/serviceAction'
-import { setRequestStatus } from '../../redux/reducer/helperSlice'
+import { setRequestStatus } from '../../redux/actions/helper/helperSlice'
 
 export default function Servicetable(props: any) {
 

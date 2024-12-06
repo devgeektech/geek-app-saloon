@@ -20,7 +20,7 @@ import { deleteCoupon, updateCouponStatus } from '../../services/_requests'
 import { addCouponRequest, getCouponRequest, setCouponId, setCouponModal, updateCouponRequest } from '../../redux/reducer/couponSlice'
 import { getCategoryRequest } from '../../redux/reducer/categorySlice'
 import { OFFER_CHAR_LIMIT_MESSAGE, REQUIRED_FIELD } from '../../utils/ErrorMessages'
-import { setModalStatus, setRequestStatus } from '../../redux/reducer/helperSlice'
+import { setModalStatus, setRequestStatus } from '../../redux/actions/helper/helperSlice'
 import { setSelectedSaloon } from '../../redux/reducer/saloonSlice'
 
 const CouponsWrapper = () => {

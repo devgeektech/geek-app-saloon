@@ -14,7 +14,7 @@ import { fileTypeMap } from '../../utils/const'
 import UploadIcon from '../common/Icons/UploadIcon'
 import FieldInputText from '../common/inputs/FieldInputText'
 import FieldTextArea from '../common/inputs/FieldTextArea'
-import { setRequestStatus } from '../../redux/reducer/helperSlice'
+import { setRequestStatus } from '../../redux/actions/helper/helperSlice'
 
 export default function SubCategoryTabs() {
   const dispatch = useDispatch();

@@ -30,8 +30,8 @@ import { AddServiceModal } from "./addServiceModal";
 import { useDebounce } from "../../../_metronic/helpers";
 import { fetchListRequest } from "../../redux/actions/serviceAction";
 import { toast } from 'react-toastify'
+import { setRequestStatus } from "../../redux/actions/helper/helperSlice";
 import { CATEGORY, GENDER_TAGS, SALOON_ID_REQUIRED, SERVICE, SUBCATEGORY } from "../../utils/const";
-import { setRequestStatus } from "../../redux/reducer/helperSlice";
 
 
 const ServiceWrapper = () => {

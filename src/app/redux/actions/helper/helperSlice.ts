@@ -1,13 +1,12 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { toast } from "react-toastify";
 
+const initialState: any = {
+    requestStatus:false,
+    modalStatus:false,
+    token:''}
 export const helperSlice = createSlice({
     name: "helper",
-    initialState: {
-        requestStatus:false,
-        modalStatus:false,
-        token:''
-    },
+    initialState:initialState,
     reducers: {
         setRequestStatus: (state, action) => {
             state.requestStatus = action.payload;

@@ -12,7 +12,7 @@ import {
   updateSubCategorySuccess,
 } from '../reducer/subCategorySlice'
 import { toast } from "react-toastify";
-import { setRequestStatus } from '../reducer/helperSlice';
+import { setRequestStatus } from '../actions/helper/helperSlice';
 
 const call: any = Effects.call
 

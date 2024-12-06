@@ -39,13 +39,11 @@ const AppointmentWrapper = () => {
     setDeleteModal(false);
   };
   const deleteOpenModal = (id:any) => {
-    // console.log("working >>>>")
     setDeleteModal(true);
     setDeleteAppointmentId(id);
   };
   const deleteAppointment: any = async (event: any) => {
     if (event === true) {
-      // console.log("True working >>>>>",deleteAppointmnetId)
       await deleteAppointmentApi(deleteAppointmnetId).then((res: any) => {
         if (res.data.responseCode === 200) {
           toast.success("Appointment Deleted Successfully");
@@ -53,8 +51,7 @@ const AppointmentWrapper = () => {
           dispatch(getAppointmentRequest({ skip: 0, limit: 10, search: '', type: key }))
         }
       });
-      // setModalShow(false);
-      // dispatch(getAppointmentRequest({ skip: 0, limit: 10, search: '', type: key }))
+     
     }
   };
   const handleSelect = (k) => {
@@ -83,7 +80,6 @@ const AppointmentWrapper = () => {
   const formik = useFormik({
     initialValues,
     validationSchema: appointmentSchema,
-    // enableReinitialize: true, // important to reset form values when 'initialValues' change
     onSubmit: async (values, { setStatus, setSubmitting }) => {
       try {
         if (!saloonId) {
@@ -111,7 +107,6 @@ const AppointmentWrapper = () => {
     },
   });
   const editAppointment = (item: any) => {
-    // console.log(item)
     setEditMode(true);
     dispatch(setAppointmentId(item?._id));
     setModalShow(true);
@@ -130,9 +125,7 @@ const AppointmentWrapper = () => {
   return (
     <>
       <PageTitle breadcrumbs={[]}>{intl.formatMessage({ id: 'MENU.DASHBOARD' })}</PageTitle>
-      {/* <DashboardPage /> */}
-
-      {/* Dashboard Page Html Start */}
+    
       <div className='appointmentContent'>
         <div className='title_text d-flex justify-content-between align-items-center'>
           <div className=''>
@@ -154,23 +147,7 @@ const AppointmentWrapper = () => {
                     <img src={searchIcon} alt='searchIcon' />
                   </button>
                 </div>
-                {/* <div className='filterWrapper'>
-                  <Dropdown>
-                    <Dropdown.Toggle
-                      className='filterDropdown'
-                      variant='success'
-                      id='dropdown-basic'
-                    >
-                      Fillter
-                    </Dropdown.Toggle>
-
-                    <Dropdown.Menu>
-                      <Dropdown.Item href='#/action-1'>Action</Dropdown.Item>
-                      <Dropdown.Item href='#/action-2'>Another action</Dropdown.Item>
-                      <Dropdown.Item href='#/action-3'>Something else</Dropdown.Item>
-                    </Dropdown.Menu>
-                  </Dropdown>
-                </div> */}
+               
               </div>
               <div className='tableWrapper mb-5'>
                 <h2 className='h2'>My Upcoming Appointments</h2>
@@ -221,23 +198,7 @@ const AppointmentWrapper = () => {
                     <img src={searchIcon} alt='searchIcon' />
                   </button>
                 </div>
-                {/* <div className='filterWrapper'>
-                  <Dropdown>
-                    <Dropdown.Toggle
-                      className='filterDropdown'
-                      variant='success'
-                      id='dropdown-basic'
-                    >
-                      Fillter
-                    </Dropdown.Toggle>
-
-                    <Dropdown.Menu>
-                      <Dropdown.Item href='#/action-1'>Action</Dropdown.Item>
-                      <Dropdown.Item href='#/action-2'>Another action</Dropdown.Item>
-                      <Dropdown.Item href='#/action-3'>Something else</Dropdown.Item>
-                    </Dropdown.Menu>
-                  </Dropdown>
-                </div> */}
+                
               </div>
               <div className='tableWrapper mb-5'>
                 <h2 className='h2'>My Upcoming Appointments</h2>
@@ -300,7 +261,6 @@ const AppointmentWrapper = () => {
           gender={["Male", "Female", "Other"]}
         />
       )}
-      {/* Dashboard Page Html End */}
     </>
   )
 }
