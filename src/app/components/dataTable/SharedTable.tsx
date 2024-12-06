@@ -7,6 +7,8 @@ import DeleteModal from '../common/modal/DeleteModal'
 import ImageWithFallback from '../../utils/FallbackImage'
 import fallBackImage from '../../../_metronic/assets/images/fallBackImage.png'
 import './SharedTable.css'
+import DataTable from 'react-data-table-component';
+import userTable from '../../utils/dataTable';
 
 function SharedTable() {
     const dispatch: any = useDispatch();
@@ -17,6 +19,7 @@ function SharedTable() {
     }, [dispatch])
     const userState = useSelector((state: any) => state.userList)
 
+    console.log("userState", userState.data)
     const deleteOpenModal = (id: string) => {
         dispatch(handleOpenUserDeleteModal())
     };
@@ -31,7 +34,7 @@ function SharedTable() {
 
     return (
         <>
-            <table className="table">
+            {/* <table className="table">
                 <thead>
                     <tr>
                         <th scope="col">Customer Name</th>
@@ -43,10 +46,10 @@ function SharedTable() {
                 </thead>
                 <tbody>
                     {
-                        userState?.data?.map((item: any) => {
+                        userState?.data?.map((item: any, i:any) => {
                             return (
                                 <>
-                                    <tr>
+                                    <tr key={i}>
                                         <td>{item?.name || "N/A"}</td>
                                         <td>{item?.email || "N/A"}</td>
                                         <td><ImageWithFallback
@@ -69,7 +72,13 @@ function SharedTable() {
                         })
                     }
                 </tbody>
-            </table>
+            </table> */}
+
+            <DataTable 
+            columns={userTable}
+            data={userState.data}
+            pagination
+            />
 
             {userState.openUserDeleteModal && <DeleteModal
                 id={userState.selectedUserId}
